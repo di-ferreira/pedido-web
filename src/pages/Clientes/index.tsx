@@ -7,6 +7,7 @@ import { formatLocalDate } from '../../utils/index';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Loading } from '../../components/Loading';
+import { Icon } from '../../components/Icon';
 
 interface iCliente {
   id: number;
@@ -84,9 +85,9 @@ export const Clientes: React.FC = () => {
               );
 
               item.bloqueado
-                ? (item.bloqueado = <FontAwesomeIcon icon={faCheck} />)
+                ? (item.bloqueado = <Icon Icon={faCheck} Type='success' />)
                 : (item.bloqueado = item.bloqueado =
-                    <FontAwesomeIcon icon={faBan} />);
+                    <Icon Icon={faBan} Type='danger' />);
             }
             return item;
           }
