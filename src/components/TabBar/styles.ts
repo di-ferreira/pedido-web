@@ -9,7 +9,7 @@ export const Container = styled.nav`
   height: 5.5rem;
   margin-top: 5rem;
   justify-content: center;
-  background-color: ${colors.RedInst};
+  background-color: ${colors.RedRose};
 
   & h1 {
     font-size: 3.5rem;

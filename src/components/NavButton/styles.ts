@@ -16,7 +16,7 @@ export const Container = styled.li<isActiveLink>`
     props.Active ? `rgba(${colors.whiteGrayRgb}, 0.3)` : 'transparent'};
   padding-left: ${(props) => (props.Active ? '0rem' : '0.6rem')};
   padding-top: 3%;
-  border-left: solid 0rem ${colors.RedInst};
+  border-left: solid 0rem ${colors.RedRose};
   border-left-width: ${(props) => (props.Active ? '0.6rem' : '0rem')};
   transition: all 0.3s ease;
   &:hover {

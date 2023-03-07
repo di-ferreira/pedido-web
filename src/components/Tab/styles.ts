@@ -10,7 +10,7 @@ interface iContainer {
 export const Container = styled.li<iContainer>`
   height: 4rem;
   margin: 0rem 0.25rem 1.46rem 0.25rem;
-  background-color: ${colors.RedInst};
+  background-color: ${colors.RedRose};
   opacity: ${(props) => (props.active ? '1' : '0.5')};
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
@@ -24,10 +24,9 @@ export const IconClose = styled(FontAwesomeIcon)`
   display: flex;
   width: 1.1rem;
   height: 1.1rem;
-  /* border-radius: 50%; */
   align-items: center;
   justify-content: center;
-  color: ${colors.RedInst};
+  color: ${colors.RedRose};
   background-color: ${colors.white};
 `;
 

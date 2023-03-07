@@ -3,7 +3,6 @@ import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { isActiveLink } from '../../utils';
 import { Container, IconMain, IconClose, TabLink, TabTitle } from './styles';
-import { useNavigate } from 'react-router-dom';
 
 interface iTab {
   Icon: IconProp;
