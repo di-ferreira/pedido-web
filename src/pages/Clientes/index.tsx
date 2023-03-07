@@ -2,12 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { iColumnType } from '../../@types';
 import Table from '../../components/Table';
 import api from '../../services';
-import { Container } from './styles';
+import { Container, ActionContainer } from './styles';
 import { formatLocalDate } from '../../utils/index';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBan, faCheck } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBan,
+  faCheck,
+  faEdit,
+  faTrashAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import { Loading } from '../../components/Loading';
 import { Icon } from '../../components/Icon';
+import Button from '../../components/Button';
 
 interface iCliente {
   id: number;
@@ -64,10 +69,23 @@ export const Clientes: React.FC = () => {
       title: 'AÇÕES',
       width: 200,
       render: () => (
-        <>
-          <button>editar</button>
-          <button>excluir</button>
-        </>
+        <ActionContainer>
+          <Button
+            Icon={faEdit}
+            Type='warn'
+            Title='Editar'
+            Rounded
+            onclick={() => console.info('Editar')}
+          />
+
+          <Button
+            Type='danger'
+            Title='Excluir'
+            Rounded
+            Icon={faTrashAlt}
+            onclick={() => console.log('excluir')}
+          />
+        </ActionContainer>
       ),
     },
   ];

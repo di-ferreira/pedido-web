@@ -8,3 +8,9 @@ export const Container = styled.div`
   overflow: hidden auto;
 `;
 
+export const ActionContainer = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+`;
+

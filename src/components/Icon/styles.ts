@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { colors } from '../../colors';
-
-export type iIconType = 'default' | 'success' | 'warn' | 'danger';
+import { iIconType } from '../../@types';
 
 interface iStyleIcon {
   typeButton?: iIconType;

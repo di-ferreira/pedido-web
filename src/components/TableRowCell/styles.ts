@@ -6,5 +6,7 @@ export const TableCell = styled.td`
   font-size: 1.5rem;
   text-align: center;
   color: rgba(${colors.darkRgb}, 0.85);
+  text-transform: capitalize;
+  font-variant: small-caps;
 `;
 

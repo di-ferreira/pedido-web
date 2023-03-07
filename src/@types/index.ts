@@ -9,3 +9,7 @@ export interface iTableProps<T> {
   data: T[];
   columns: iColumnType<T>[];
 }
+
+export type iButtonType = 'default' | 'success' | 'warn' | 'danger';
+
+export type iIconType = iButtonType;
