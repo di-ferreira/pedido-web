@@ -13,6 +13,7 @@ import {
 import { Loading } from '../../components/Loading';
 import { Icon } from '../../components/Icon';
 import Button from '../../components/Button';
+import useModal from '../../hooks/useModal';
 
 interface iCliente {
   id: number;
@@ -26,7 +27,11 @@ interface iCliente {
 
 export const Clientes: React.FC = () => {
   const [users, setUsers] = useState<iCliente[]>([]);
+  const [user, setUser] = useState<iCliente | null>(null);
+
   const [loading, setLoading] = useState(true);
+
+  const { Modal, showModal } = useModal();
 
   const headers: iColumnType<iCliente>[] = [
     {
@@ -75,7 +80,7 @@ export const Clientes: React.FC = () => {
             Type='warn'
             Title='Editar'
             Rounded
-            onclick={() => console.info('Editar')}
+            onclick={() => LoadUser()}
           />
 
           <Button
@@ -89,6 +94,10 @@ export const Clientes: React.FC = () => {
       ),
     },
   ];
+
+  const LoadUser = (userID: number): iCliente => {
+    return {} as iCliente;
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -118,6 +127,11 @@ export const Clientes: React.FC = () => {
 
   return (
     <Container>
+      {Modal && (
+        <Modal Title='Título'>
+          <label>Nome:</label> <input type='text' />
+        </Modal>
+      )}
       {loading && <Loading />}
       {users.length > 0 && !loading && <Table columns={headers} data={users} />}
       {users.length <= 0 && !loading && <p>Não há registros</p>}

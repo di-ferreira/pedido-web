@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { Container, iIconType } from './styles';
+import { Container } from './styles';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { iIconType } from '../../@types';
 
 interface iIconProps {
   Icon: IconProp;
