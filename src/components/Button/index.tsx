@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, IconButton } from './styles';
+import { Container, IconButton, TypeToColor } from './styles';
 import { iButton } from '../../@types';
 
 const Button: React.FC<iButton> = ({
@@ -11,10 +11,13 @@ const Button: React.FC<iButton> = ({
   Title,
   onclick,
 }) => {
+  const { bgColor, color } = TypeToColor[Type ? Type : 'default'];
+
   return (
     <Container
+      bgColor={bgColor}
+      color={color}
       rounded={Rounded}
-      typeButton={Type}
       title={Title}
       onClick={() => onclick()}
     >

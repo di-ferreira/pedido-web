@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { iColumnType } from '../../@types';
 import Table from '../../components/Table';
 import api from '../../services';
-import { Container } from './styles';
+import { Container, FilterContainer } from './styles';
 import { formatLocalDate } from '../../utils/index';
 import {
   faBan,
@@ -12,7 +12,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { Loading } from '../../components/Loading';
 import { Icon } from '../../components/Icon';
-import Button from '../../components/Button';
 import useModal from '../../hooks/useModal';
 
 interface iCliente {
@@ -127,6 +126,18 @@ export const Clientes: React.FC = () => {
 
   return (
     <Container>
+      <FilterContainer>
+        <select>
+          <option value='nome'>NOME</option>
+          <option value='codigo'>CÓDIGO</option>
+          <option value='cic'>CPF/CNPJ</option>
+          <option value='bairro'>BAIRRO</option>
+          <option value='cidade'>CIDADE</option>
+        </select>
+        <input type='text' placeholder='buscar' />
+        <input type='button' value='buscar' />
+        <input type='checkbox' checked={true} />
+      </FilterContainer>
       {Modal && user && (
         <Modal Title={'Cliente - ' + user.nome}>
           <label>Nome:</label> <input type='text' value={user.nome} />
