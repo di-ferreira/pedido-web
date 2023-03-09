@@ -9,12 +9,16 @@ function TableHeader<T>({ columns }: iHeaderProps<T>): JSX.Element {
   return (
     <TableHeaderRow>
       {columns.map((column, columnIndex) => (
-        <TableHeaderCell
-          key={`table-head-cell-${columnIndex}`}
-          style={{ width: column.width }}
-        >
-          {column.title}
-        </TableHeaderCell>
+        <>
+          {!column.isHideMobile && (
+            <TableHeaderCell
+              key={`table-head-cell-${columnIndex}`}
+              style={{ width: column.width }}
+            >
+              {column.title}
+            </TableHeaderCell>
+          )}
+        </>
       ))}
     </TableHeaderRow>
   );

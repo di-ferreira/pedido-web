@@ -64,6 +64,7 @@ export const Clientes: React.FC = () => {
       key: 'bairro',
       title: 'BAIRRO',
       width: 200,
+      isHideMobile: false,
     },
     {
       key: 'cidade',

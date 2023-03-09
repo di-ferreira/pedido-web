@@ -15,6 +15,7 @@ export interface iColumnType<T> {
   key: string;
   title: string;
   width?: number;
+  isHideMobile?: boolean;
   render?: (column: iColumnType<T>, item: T) => void;
   action?: iButtonAction<T>[];
 }
