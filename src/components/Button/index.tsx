@@ -1,17 +1,6 @@
 import React from 'react';
-import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
 import { Container, IconButton } from './styles';
-import { iButtonType } from '../../@types';
-
-interface iButton {
-  Text?: string;
-  Title?: string;
-  Icon?: IconProp;
-  Size?: SizeProp;
-  Rounded?: boolean;
-  Type?: iButtonType;
-  onclick: () => void;
-}
+import { iButton } from '../../@types';
 
 const Button: React.FC<iButton> = ({
   Type,

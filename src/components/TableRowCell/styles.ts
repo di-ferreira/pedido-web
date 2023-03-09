@@ -10,3 +10,8 @@ export const TableCell = styled.td`
   font-variant: small-caps;
 `;
 
+export const ActionContainer = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+`;

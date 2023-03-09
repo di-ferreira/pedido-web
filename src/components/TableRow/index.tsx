@@ -26,3 +26,4 @@ function TableRow<T>({ data, columns }: iTableRowProps<T>): JSX.Element {
 }
 
 export default TableRow;
+

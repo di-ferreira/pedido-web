@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { iColumnType } from '../../@types';
 import Table from '../../components/Table';
 import api from '../../services';
-import { Container, ActionContainer } from './styles';
+import { Container } from './styles';
 import { formatLocalDate } from '../../utils/index';
 import {
   faBan,
@@ -32,6 +32,12 @@ export const Clientes: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { Modal, showModal } = useModal();
+
+  const LoadUser = (cliente: iCliente) => {
+    setUser(cliente);
+    showModal();
+    console.info(cliente);
+  };
 
   const headers: iColumnType<iCliente>[] = [
     {
@@ -73,31 +79,24 @@ export const Clientes: React.FC = () => {
       key: 'acoes',
       title: 'AÇÕES',
       width: 200,
-      render: () => (
-        <ActionContainer>
-          <Button
-            Icon={faEdit}
-            Type='warn'
-            Title='Editar'
-            Rounded
-            onclick={() => LoadUser()}
-          />
-
-          <Button
-            Type='danger'
-            Title='Excluir'
-            Rounded
-            Icon={faTrashAlt}
-            onclick={() => console.log('excluir')}
-          />
-        </ActionContainer>
-      ),
+      action: [
+        {
+          onclick: LoadUser,
+          Icon: faEdit,
+          Rounded: true,
+          Title: 'Editar',
+          Type: 'warn',
+        },
+        {
+          onclick: LoadUser,
+          Icon: faTrashAlt,
+          Rounded: true,
+          Title: 'Excluír',
+          Type: 'danger',
+        },
+      ],
     },
   ];
-
-  const LoadUser = (userID: number): iCliente => {
-    return {} as iCliente;
-  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -127,9 +126,9 @@ export const Clientes: React.FC = () => {
 
   return (
     <Container>
-      {Modal && (
-        <Modal Title='Título'>
-          <label>Nome:</label> <input type='text' />
+      {Modal && user && (
+        <Modal Title={'Cliente - ' + user.nome}>
+          <label>Nome:</label> <input type='text' value={user.nome} />
         </Modal>
       )}
       {loading && <Loading />}
