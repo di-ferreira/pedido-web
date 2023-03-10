@@ -11,6 +11,10 @@ export const Container = styled.div`
 `;
 
 export const FilterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0rem 2rem;
+  /* justify-content: center; */
   width: 100%;
   min-height: 6rem;
   background-color: rgba(${colors.whiteGrayRgb}, 1);

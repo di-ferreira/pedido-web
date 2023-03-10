@@ -13,6 +13,7 @@ import {
 import { Loading } from '../../components/Loading';
 import { Icon } from '../../components/Icon';
 import useModal from '../../hooks/useModal';
+import { Select } from '../../components/Select';
 
 interface iCliente {
   id: number;
@@ -98,6 +99,14 @@ export const Clientes: React.FC = () => {
     },
   ];
 
+  const OptionsSelect = [
+    { label: 'NOME', value: 'nome' },
+    { label: 'CÓDIGO', value: 'codigo' },
+    { label: 'CPF/CNPJ', value: 'cic' },
+    { label: 'BAIRRO', value: 'bairro' },
+    { label: 'CIDADE', value: 'cidade' },
+  ];
+
   useEffect(() => {
     setTimeout(() => {
       let newData: iCliente[] = [];
@@ -127,16 +136,10 @@ export const Clientes: React.FC = () => {
   return (
     <Container>
       <FilterContainer>
-        <select>
-          <option value='nome'>NOME</option>
-          <option value='codigo'>CÓDIGO</option>
-          <option value='cic'>CPF/CNPJ</option>
-          <option value='bairro'>BAIRRO</option>
-          <option value='cidade'>CIDADE</option>
-        </select>
-        <input type='text' placeholder='buscar' />
+        <Select label='Tipo' />
+        {/* <input type='text' placeholder='buscar' />
         <input type='button' value='buscar' />
-        <input type='checkbox' checked={true} />
+        <input type='checkbox' checked={true} /> */}
       </FilterContainer>
       {Modal && user && (
         <Modal Title={'Cliente - ' + user.nome}>
