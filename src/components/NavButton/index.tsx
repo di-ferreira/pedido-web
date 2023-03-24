@@ -25,7 +25,7 @@ export const NavButton: React.FC<iNavButton> = ({ Text, Icon, Link }) => {
 
   return (
     <Container Active={isActiveLink(Link)} onClick={() => verifyHome(Link)}>
-      <NavButtonLink to={Link}>
+      <NavButtonLink Active={isActiveLink(Link)} to={Link}>
         <IconButton icon={Icon} />
         <span>{Text}</span>
       </NavButtonLink>

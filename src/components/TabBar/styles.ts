@@ -1,4 +1,4 @@
-import { colors } from './../../colors';
+import { DarkRed, Light } from './../../colors';
 import styled from 'styled-components';
 
 export const Container = styled.nav`
@@ -9,11 +9,11 @@ export const Container = styled.nav`
   height: 5.5rem;
   margin-top: 5rem;
   justify-content: center;
-  background-color: ${colors.RedRose};
+  background-color: ${(props) => props.theme.colors.secondary};
 
   & h1 {
     font-size: 3.5rem;
-    color: ${colors.white};
+    color: ${(props) => props.theme.colors.onSurface};
     text-transform: uppercase;
     margin-left: 5rem;
   }
@@ -26,4 +26,3 @@ export const TabList = styled.ul`
   width: 100%;
   height: 4rem;
 `;
-

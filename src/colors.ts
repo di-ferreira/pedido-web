@@ -1,26 +1,36 @@
-export const colors = {
-  BlueInst: '#354675',
-  RedInst: '#b53438',
-  RedRose: '#ff162e',
-  OrangeInst: '#f17318',
-  BlueDefault: '#0F2441',
-  backColor: '#1F3140',
-  componentColor: '#203149',
-  componentColorHover: '#385c8f',
-  dark: '#0f0f0f',
-  black: '#000000',
-  red: '#de3431',
-  green: '#3CAEA3',
-  success: '#22BB33',
-  yellow: '#c7ba28',
-  warn: '#f5a43b',
-  danger: '#BB2124',
-  white: '#FAFAFA',
-  gray: '#AAA',
-  RedRoseRGB: '255,22,46',
-  RedInstRGB: '181, 52, 56',
-  OrangeInstRGB: '241, 115, 24',
-  whiteGrayRgb: '230,230,230',
-  darkRgb: '15, 15, 15',
-  blackRgb: '0, 0, 0',
+const Gray = {
+  Dark: '#2A3F55',
+  MediumDark: '#536375',
+  Medium: '#7C8896',
+  MediumLight: '#A4ADB6',
+  Light: '#CDD1D6',
+};
+
+const Primary = { main: '#063778', light: '#0c6ff1', dark: '#031b3b' };
+const Secondary = { main: '#F27318', light: '#f59854', dark: '#bf560b' };
+const Purple = { main: '#7953AD', light: '#9b7ec2', dark: '#3d2957' };
+const DarkRed = { main: '#b51e22', light: '#de353a', dark: '#7e1518' };
+const LightGreen = { main: '#00B98A', light: '#3affcd', dark: '#00392b' };
+const LightBlue = { main: '#6486FF', light: '#a4b8ff', dark: '#001664' };
+const Dark = { main: '#011A35', text: '#101111' };
+const Black = { main: '#0f0f0f', text: '#030202' };
+const Light = { main: '#F6F6F6', surface: '#e6ebf1' };
+const Success = { main: '#22BB33', light: '#76e683', dark: '#0e4f16' };
+const Warn = { main: '#f5a43b', light: '#f8c078', dark: '#a86309' };
+const Danger = { main: '#BB2124', light: '#dd3f42', dark: '#85171a' };
+
+export {
+  Primary,
+  Secondary,
+  Purple,
+  DarkRed,
+  LightGreen,
+  LightBlue,
+  Dark,
+  Black,
+  Light,
+  Success,
+  Warn,
+  Danger,
+  Gray,
 };

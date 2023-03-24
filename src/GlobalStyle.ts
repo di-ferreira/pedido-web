@@ -1,5 +1,4 @@
-import { colors } from "./colors";
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -45,12 +44,12 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: "Roboto",Helvetica Neue,Helvetica,Arial,sans-serif;
+    font-family: "Poppins",Helvetica Neue,Helvetica,Arial,sans-serif;
     -webkit-font-smoothing: antialiased !important;
     font-size: 1.6rem;
     overflow: hidden;
-    color:${colors.dark};
-    background-color: ${colors.white};
+    color:${(props) => props.theme.colors.onBackground};
+    background-color: ${(props) => props.theme.colors.background};
   }
 `;
 

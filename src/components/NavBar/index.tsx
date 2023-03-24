@@ -10,8 +10,9 @@ import {
   faArrowRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Logo from '../../assets/favicon_white.png';
 import ProfileImage from '../../assets/avatar_4.png';
+import LogoLight from '../../assets/EMSoft_icon.v2.png';
+import LogoDark from '../../assets/favicon_white.png';
 import {
   BorderImage,
   Container,
@@ -21,12 +22,14 @@ import {
   ProfileName,
   Top,
 } from './styles';
+import { useTheme } from '../../hooks/useTheme';
 
 interface iNavBar {
   Open: Boolean;
 }
 
 export const NavBar: React.FC<iNavBar> = ({ Open }) => {
+  const { ThemeName } = useTheme();
   const [OpenCloseNavBar, SetOpenCloseNavBar] = useState(Open);
   const IconOpenCloseButton = OpenCloseNavBar ? (
     <FontAwesomeIcon icon={faArrowLeft} />
@@ -39,7 +42,11 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
         {IconOpenCloseButton}
       </OpenCloseButton>
       <Top>
-        <img src={Logo} alt='Logo EMSoft' /> Pedido Web
+        <img
+          src={ThemeName === 'light' ? LogoLight : LogoDark}
+          alt='Logo EMSoft'
+        />{' '}
+        Pedido Web
       </Top>
       <Profile>
         <BorderImage>
@@ -62,4 +69,3 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
     </Container>
   );
 };
-

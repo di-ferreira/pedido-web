@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { colors } from '../../colors';
+import { Dark } from '../../colors';
+import { HEXToRGB } from '../../utils';
 
 interface iNavBarStyle {
   isOpen: Boolean;
@@ -32,7 +33,8 @@ export const BorderImage = styled.span`
   width: 8.5rem;
   height: 8.5rem;
   overflow: hidden;
-  border: solid 0.5rem ${colors.white};
+  border: solid 0.5rem ${(props) => props.theme.colors.onPrimary};
+  box-shadow: 0px 0px 5px 1px rgba(${HEXToRGB(Dark.main)}, 0.26);
   border-radius: 50%;
   & img {
     width: 110%;
@@ -62,12 +64,12 @@ export const OpenCloseButton = styled.button`
   border: none;
   cursor: pointer;
   font-size: 1.6rem;
-  color: ${colors.white};
-  background-color: ${colors.BlueInst};
-  box-shadow: 1px 0px 3px 0px rgba(${colors.darkRgb}, 0.26);
+  color: ${(props) => props.theme.colors.onSurface};
+  background-color: ${(props) => props.theme.colors.surface};
+  box-shadow: 1px 0px 3px 0px rgba(${HEXToRGB(Dark.main)}, 0.26);
   transition: all 0.3s ease;
   &:hover {
-    box-shadow: 4px 1px 3px 0px rgba(${colors.darkRgb}, 0.26);
+    box-shadow: 4px 1px 3px 0px rgba(${HEXToRGB(Dark.main)}, 0.26);
     transition: all 0.3s ease;
   }
 `;
@@ -78,8 +80,8 @@ export const Container = styled.nav<iNavBarStyle>`
   flex-direction: column;
   width: ${(props) => (props.isOpen ? '22rem' : '0rem')};
   height: 100vh;
-  color: ${colors.white};
-  background-color: ${colors.BlueInst};
+  color: ${(props) => props.theme.colors.onSurface};
+  background-color: ${(props) => props.theme.colors.surface};
   transition: all 0.3s ease;
   & h1,
   div {
@@ -89,4 +91,3 @@ export const Container = styled.nav<iNavBarStyle>`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
   }
 `;
-

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { colors } from '../../colors';
+import { Black, DarkRed, Light, Primary } from '../../colors';
+import { HEXToRGB } from '../../utils';
 
 export const Backdrop = styled.div`
   display: flex;
@@ -11,7 +12,10 @@ export const Backdrop = styled.div`
   z-index: 500;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(${colors.darkRgb}, 0.4);
+  background-color: rgba(
+    ${(props) => HEXToRGB(props.theme.colors.background)},
+    0.7
+  );
 `;
 
 export const ModalContainer = styled.section`
@@ -19,9 +23,11 @@ export const ModalContainer = styled.section`
   width: 80rem;
   height: 50rem;
   overflow: hidden;
+  border: 1px solid
+    rgba(${(props) => HEXToRGB(props.theme.colors.onBackground)}, 0.2);
   border-radius: 0.8rem;
-  background-color: ${colors.white};
-  box-shadow: 6px 5px 5px 0px rgba(${colors.darkRgb}, 0.5);
+  background-color: ${(props) => props.theme.colors.background};
+  box-shadow: 6px 5px 5px 0px rgba(${HEXToRGB(Black.main)}, 0.5);
 `;
 
 export const ModalHeader = styled.header`
@@ -30,8 +36,9 @@ export const ModalHeader = styled.header`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: ${colors.BlueInst};
-  color: ${colors.white};
+  border-bottom: 1px solid ${(props) => props.theme.colors.onBackground};
+  background-color: ${(props) => props.theme.colors.surface};
+  color: ${(props) => props.theme.colors.onSurface};
   font-size: 2.5rem;
   font-weight: 700;
   text-transform: uppercase;
@@ -56,20 +63,19 @@ export const CloseButton = styled.button`
   width: 2rem;
   height: 2rem;
   border-radius: 50%;
-  background-color: ${colors.white};
+  background-color: ${Light.main};
   transition: background-color 0.3s ease;
   & svg {
     transition: background-color 0.3s ease;
-    color: ${colors.RedRose};
+    color: ${DarkRed.light};
   }
 
   &:hover {
     & svg {
       transition: background-color 0.3s ease;
-      color: ${colors.white};
+      color: ${Light.main};
     }
     transition: background-color 0.3s ease;
-    background-color: ${colors.RedRose};
+    background-color: ${DarkRed.light};
   }
 `;
-

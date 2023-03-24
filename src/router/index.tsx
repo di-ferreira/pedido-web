@@ -6,6 +6,7 @@ import { Orcamentos } from '../pages/Orcamentos';
 import { PreVendas } from '../pages/PreVendas';
 import { Vendas } from '../pages/Vendas';
 import { isActiveLink } from '../utils';
+import { Login } from '../pages/Login';
 
 const RoutesPage: React.FC = () => {
   return (
@@ -13,7 +14,8 @@ const RoutesPage: React.FC = () => {
       <Route
         path='/'
         element={
-          isActiveLink('/') ? <Navigate to='/home' replace /> : <MainLayout />
+          // isActiveLink('/') ? <Navigate to='/home' replace /> : <MainLayout />
+          isActiveLink('/') ? <Login /> : <MainLayout />
         }
       >
         <Route path='home' element={<Home />} />

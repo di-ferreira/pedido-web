@@ -37,6 +37,8 @@ export interface iModal {
 export interface iButton {
   Text?: string;
   Title?: string;
+  Height?: string;
+  Width?: string;
   Icon?: IconProp;
   Size?: SizeProp;
   Rounded?: boolean;
@@ -44,6 +46,12 @@ export interface iButton {
   onclick: () => void;
 }
 
-export type iButtonType = 'default' | 'success' | 'warn' | 'danger';
+export type iButtonType =
+  | 'default'
+  | 'success'
+  | 'warn'
+  | 'danger'
+  | 'primary'
+  | 'secondary';
 
 export type iIconType = iButtonType;

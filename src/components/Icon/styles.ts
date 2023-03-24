@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { colors } from '../../colors';
+import { Danger, Gray, Success, Warn } from '../../colors';
 import { iIconType } from '../../@types';
 
 interface iStyleIcon {
@@ -10,11 +10,10 @@ interface iStyleIcon {
 export const Container = styled(FontAwesomeIcon)<iStyleIcon>`
   color: ${(props) =>
     props.typeButton === 'danger'
-      ? colors.danger
+      ? Danger.main
       : props.typeButton === 'warn'
-      ? colors.warn
+      ? Warn.main
       : props.typeButton === 'success'
-      ? colors.success
-      : `rgba(${colors.darkRgb}, 0.85)`};
+      ? Success.main
+      : Gray.Medium};
 `;
-

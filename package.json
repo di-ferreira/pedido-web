@@ -16,11 +16,11 @@
     "date-fns": "^2.29.3",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.0",
-    "polished": "^4.2.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.2",
     "react-select": "^5.7.0",
+    "react-switch": "^7.0.0",
     "styled-components": "^5.3.6",
     "zustand": "^4.3.5"
   },

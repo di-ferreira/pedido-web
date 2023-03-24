@@ -10,12 +10,17 @@ const Button: React.FC<iButton> = ({
   Rounded,
   Title,
   onclick,
+  Height,
+  Width,
 }) => {
-  const { bgColor, color } = TypeToColor[Type ? Type : 'default'];
+  const { bgColor, color, hoverColor } = TypeToColor[Type ? Type : 'default'];
 
   return (
     <Container
+      height={Height}
+      width={Width}
       bgColor={bgColor}
+      hoverColor={hoverColor}
       color={color}
       rounded={Rounded}
       title={Title}

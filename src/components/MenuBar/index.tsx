@@ -1,14 +1,16 @@
 import React from 'react';
 import { Container } from './styles';
-import LogoEmpresa from '../../assets/imperio_logo.png';
+import { SwitchTheme } from '../SwitchTheme';
 interface iMenuBar {
   title: string;
+  Logo?: string;
 }
 
-export const MenuBar: React.FC<iMenuBar> = ({ title }) => {
+export const MenuBar: React.FC<iMenuBar> = ({ title, Logo }) => {
   return (
     <Container>
-      <img src={LogoEmpresa} alt={title} />
+      {Logo ? <img src={Logo} alt={title} /> : <h1>{title}</h1>}
+      <SwitchTheme />
     </Container>
   );
 };

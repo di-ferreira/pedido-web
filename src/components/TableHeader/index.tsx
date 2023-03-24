@@ -8,11 +8,11 @@ interface iHeaderProps<T> {
 function TableHeader<T>({ columns }: iHeaderProps<T>): JSX.Element {
   return (
     <TableHeaderRow>
-      {columns.map((column, columnIndex) => (
+      {columns.map((column) => (
         <>
           {!column.isHideMobile && (
             <TableHeaderCell
-              key={`table-head-cell-${columnIndex}`}
+              key={`table-head-cell-${column.title}`}
               style={{ width: column.width }}
             >
               {column.title}

@@ -1,11 +1,10 @@
 import styled from 'styled-components';
-import { colors } from '../../colors';
 
 export const TableCell = styled.td`
   padding: 1.2rem;
   font-size: 1.5rem;
   text-align: center;
-  color: rgba(${colors.darkRgb}, 0.85);
+  color: ${(props) => props.theme.colors.onSurface};
   text-transform: capitalize;
   font-variant: small-caps;
 `;

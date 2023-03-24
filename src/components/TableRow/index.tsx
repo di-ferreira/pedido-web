@@ -10,8 +10,8 @@ interface iTableRowProps<T> {
 function TableRow<T>({ data, columns }: iTableRowProps<T>): JSX.Element {
   return (
     <>
-      {data.map((item, itemIndex) => (
-        <TableRowItem key={`table-body-${itemIndex}`}>
+      {data.map((item, idx) => (
+        <TableRowItem key={`table-body-${idx}`}>
           {columns.map((column, columnIndex) => (
             <TableRowCell
               key={`table-row-cell-${columnIndex}`}
