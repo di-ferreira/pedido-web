@@ -56,7 +56,7 @@ type ContainerProps = {
 export const Container = styled.button<ContainerProps>`
   display: flex;
   align-items: center;
-  /* justify-content: center; */
+  justify-content: center;
   cursor: pointer;
   color: ${(props) => props.color};
   height: ${(props) => (props.height ? props.height : 'auto')};

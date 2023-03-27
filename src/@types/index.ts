@@ -43,6 +43,8 @@ export interface iButton {
   Size?: SizeProp;
   Rounded?: boolean;
   Type?: iButtonType;
+  background?: string;
+  textColor?: string;
   onclick: () => void;
 }
 

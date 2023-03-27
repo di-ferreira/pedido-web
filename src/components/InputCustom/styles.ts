@@ -39,10 +39,10 @@ export const Input = styled.input`
     transition: all ease 0.5s;
   }
   &[type='password'] {
-    color: ${Primary.dark};
+    color: ${(props) => props.theme.colors.onBackground};
   }
   &[type='date'] {
-    color: ${Primary.dark};
+    color: ${(props) => props.theme.colors.onBackground};
     &::-webkit-calendar-picker-indicator {
       cursor: pointer;
     }
