@@ -88,6 +88,7 @@ export const Container = styled.nav<iNavBarStyle>`
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: ${(props) => (props.isOpen ? '22rem' : '0rem')};
   height: 100vh;
   color: ${(props) => props.theme.colors.onSurface};
@@ -100,4 +101,18 @@ export const Container = styled.nav<iNavBarStyle>`
   & ul {
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
   }
+`;
+
+export const ContainerSwitchTheme = styled.div`
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+  width: 100%;
+  height: auto;
+`;
+
+export const ContainerNav = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 `;

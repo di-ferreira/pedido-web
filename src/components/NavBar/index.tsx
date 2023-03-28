@@ -22,10 +22,13 @@ import {
   ProfileName,
   ProfileGroup,
   Top,
+  ContainerSwitchTheme,
+  ContainerNav,
 } from './styles';
 import { useTheme } from '../../hooks/useTheme';
 import { useLogin } from '../../hooks/useLogin';
 import { Navigate } from 'react-router-dom';
+import { SwitchTheme } from '../SwitchTheme';
 
 interface iNavBar {
   Open: Boolean;
@@ -50,40 +53,47 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
       <OpenCloseButton onClick={() => SetOpenCloseNavBar(!OpenCloseNavBar)}>
         {IconOpenCloseButton}
       </OpenCloseButton>
-      <Top>
-        <img
-          src={ThemeName === 'light' ? LogoLight : LogoDark}
-          alt='Logo EMSoft'
-        />{' '}
-        Pedido Web
-      </Top>
-      <Profile>
-        <BorderImage>
-          <img src={ProfileImage} alt='Profile Image' />
-        </BorderImage>
-        <ProfileName>
-          {currentUser.username}
-          <ProfileGroup>{currentUser.group && currentUser.group}</ProfileGroup>
-        </ProfileName>
-      </Profile>
-      <NavigationContainer>
-        <NavButton Icon={faHouseChimney} Text='dashboard' Link='home' />
-        <NavButton Icon={faUsers} Text='clientes' Link='clientes' />
-        <NavButton Icon={faFileLines} Text='orçamentos' Link='orcamentos' />
-        <NavButton
-          Icon={faFileInvoiceDollar}
-          Text='pré-vendas'
-          Link='pre-vendas'
-        />
-        <NavButton Icon={faFileInvoiceDollar} Text='vendas' Link='vendas' />
-        <NavButton
-          Icon={faPowerOff}
-          Text='sair'
-          Link='logout'
-          isButton={true}
-          onClick={Logout}
-        />
-      </NavigationContainer>
+      <ContainerNav>
+        <Top>
+          <img
+            src={ThemeName === 'light' ? LogoLight : LogoDark}
+            alt='Logo EMSoft'
+          />{' '}
+          Pedido Web
+        </Top>
+        <Profile>
+          <BorderImage>
+            <img src={ProfileImage} alt='Profile Image' />
+          </BorderImage>
+          <ProfileName>
+            {currentUser.username}
+            <ProfileGroup>
+              {currentUser.group && currentUser.group}
+            </ProfileGroup>
+          </ProfileName>
+        </Profile>
+        <NavigationContainer>
+          <NavButton Icon={faHouseChimney} Text='dashboard' Link='home' />
+          <NavButton Icon={faUsers} Text='clientes' Link='clientes' />
+          <NavButton Icon={faFileLines} Text='orçamentos' Link='orcamentos' />
+          <NavButton
+            Icon={faFileInvoiceDollar}
+            Text='pré-vendas'
+            Link='pre-vendas'
+          />
+          <NavButton Icon={faFileInvoiceDollar} Text='vendas' Link='vendas' />
+          <NavButton
+            Icon={faPowerOff}
+            Text='sair'
+            Link='logout'
+            isButton={true}
+            onClick={Logout}
+          />
+        </NavigationContainer>
+      </ContainerNav>
+      <ContainerSwitchTheme>
+        <SwitchTheme />
+      </ContainerSwitchTheme>
     </Container>
   );
 };

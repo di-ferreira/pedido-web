@@ -72,8 +72,9 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
       .post('/login/atendente', user)
       .then(async (response) => {
         const userLogin = response.data;
+
         setIsLogged(VerifyToken(userLogin.value));
-        console.log(jwtDecode<iTokenPayload>(userLogin.value));
+
         setCurrentUser({
           username: jwtDecode<iTokenPayload>(userLogin.value).Usuario,
           level: parseInt(jwtDecode<iTokenPayload>(userLogin.value).Nivel),
