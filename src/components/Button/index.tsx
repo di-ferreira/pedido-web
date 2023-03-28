@@ -15,6 +15,9 @@ const Button: React.FC<iButton> = ({
   Width,
   background,
   textColor,
+  disabled,
+  AnimationPulse,
+  AnimationSpin,
 }) => {
   const { bgColor, color, hoverColor } = TypeToColor[Type ? Type : 'default'];
 
@@ -29,8 +32,16 @@ const Button: React.FC<iButton> = ({
       rounded={Rounded}
       title={Title}
       onClick={() => onclick && onclick()}
+      disabled={disabled}
     >
-      {Icon && <IconButton icon={Icon} size={Size} />}
+      {Icon && (
+        <IconButton
+          icon={Icon}
+          size={Size}
+          spin={AnimationSpin}
+          spinPulse={AnimationPulse}
+        />
+      )}
       {Text && <span>{Text}</span>}
     </Container>
   );

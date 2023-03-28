@@ -1,20 +1,20 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { iTokenPayload, iUserLogin } from '../../@types/index';
+import { iCurrentUser, iTokenPayload, iUserLogin } from '../../@types/index';
 import api from '../../services';
 import jwtDecode from 'jwt-decode';
 import { AddZeros } from '../../utils';
-import { Navigate } from 'react-router-dom';
 
-type iStateUser = {
+type iStateLogin = {
   isLogged: boolean;
   isError: boolean;
   errorMsg: string;
   isLoading: boolean;
+  currentUser: iCurrentUser;
   loginUser: (user: iUserLogin) => void;
   logoutUser: () => void;
 };
 
-const LoginContext = createContext({} as iStateUser);
+const LoginContext = createContext({} as iStateLogin);
 
 export const useLogin = () => {
   return useContext(LoginContext);
@@ -24,6 +24,7 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const TOKEN_NAME_STORE = '@PWEMSoftToken';
+  const USER_NAME_STORE = '@PWEMSoftUser';
 
   const [isError, setIsError] = useState(false);
 
@@ -32,6 +33,10 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
   const [errorMsg, setErrorMsg] = useState<string>('');
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [currentUser, setCurrentUser] = useState<iCurrentUser>(
+    {} as iCurrentUser
+  );
 
   const VerifyToken = (token: string | null): boolean => {
     if (token === null) return false;
@@ -44,6 +49,13 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
       AddZeros(today.getUTCMonth() + 1, 2) +
       '/' +
       today.getUTCFullYear();
+
+    setCurrentUser({
+      username: jwtDecode<iTokenPayload>(token).Usuario,
+      level: parseInt(jwtDecode<iTokenPayload>(token).Nivel),
+      type: jwtDecode<iTokenPayload>(token).Tipo,
+      group: jwtDecode<iTokenPayload>(token).Grupo,
+    });
 
     return todayFormated === expirationDate.toString();
   };
@@ -61,7 +73,22 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
       .then(async (response) => {
         const userLogin = response.data;
         setIsLogged(VerifyToken(userLogin.value));
+        console.log(jwtDecode<iTokenPayload>(userLogin.value));
+        setCurrentUser({
+          username: jwtDecode<iTokenPayload>(userLogin.value).Usuario,
+          level: parseInt(jwtDecode<iTokenPayload>(userLogin.value).Nivel),
+          type: jwtDecode<iTokenPayload>(userLogin.value).Tipo,
+          group: jwtDecode<iTokenPayload>(userLogin.value).Grupo,
+        });
+
         localStorage.setItem(TOKEN_NAME_STORE, JSON.stringify(userLogin.value));
+
+        localStorage.setItem(
+          USER_NAME_STORE,
+          JSON.stringify(jwtDecode<iTokenPayload>(userLogin.value))
+        );
+        api.defaults.headers.common['Authorization'] =
+          'Bearer ' + userLogin.value;
       })
       .catch((error) => {
         console.log(error);
@@ -83,12 +110,22 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const logoutUser = () => {
     localStorage.removeItem(TOKEN_NAME_STORE);
+    localStorage.removeItem(USER_NAME_STORE);
+    api.defaults.headers.common['Authorization'] = undefined;
     setIsLogged(false);
   };
 
   return (
     <LoginContext.Provider
-      value={{ loginUser, isLoading, isLogged, logoutUser, errorMsg, isError }}
+      value={{
+        loginUser,
+        isLoading,
+        isLogged,
+        logoutUser,
+        errorMsg,
+        isError,
+        currentUser,
+      }}
     >
       {children}
     </LoginContext.Provider>

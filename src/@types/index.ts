@@ -46,6 +46,9 @@ export interface iButton {
   Type?: iButtonType;
   background?: string;
   textColor?: string;
+  disabled?: boolean;
+  AnimationSpin?: boolean;
+  AnimationPulse?: boolean;
   onclick?: () => void;
 }
 
@@ -76,6 +79,7 @@ export interface iCurrentUser {
   username: string;
   type: string;
   level: number;
+  group?: string;
 }
 
 export interface iTokenPayload {
@@ -83,6 +87,7 @@ export interface iTokenPayload {
   Nivel: string;
   Tipo: string;
   Usuario: string;
+  Grupo?: string;
   Validade: Date;
   iss: string;
 }

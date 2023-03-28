@@ -7,7 +7,14 @@ import { MenuBar } from '../MenuBar';
 import { isActiveLink } from '../../utils';
 
 export const MainLayout: React.FC = () => {
-  return isActiveLink('/login') ? (
+  const verifyRoute = (): boolean => {
+    let result = false;
+    if (isActiveLink('/login')) result = true;
+    if (isActiveLink('/logout')) result = true;
+    return result;
+  };
+
+  return verifyRoute() ? (
     <Outlet />
   ) : (
     <Container>

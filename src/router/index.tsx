@@ -9,6 +9,7 @@ import { Login } from '../pages/Login';
 import { LoginProvider } from '../hooks/useLogin';
 import PrivateRoute from './PrivateRoutes';
 import { Logout } from '../pages/Logout';
+import { NotFound } from '../pages/NotFound';
 
 const RoutesPage: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const RoutesPage: React.FC = () => {
             <Route path='orcamentos' element={<Orcamentos />} />
             <Route path='pre-vendas' element={<PreVendas />} />
             <Route path='vendas' element={<Vendas />} />
+            <Route path='*' element={<NotFound />} />
           </Route>
         </Route>
       </Routes>

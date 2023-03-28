@@ -10,6 +10,7 @@ import {
   Warn,
 } from '../../colors';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { HEXToRGB } from '../../utils';
 
 export const TypeToColor = {
   default: {
@@ -71,6 +72,11 @@ export const Container = styled.button<ContainerProps>`
   &:hover {
     transition: background-color ease 0.5s;
     background-color: ${(props) => props.hoverColor};
+  }
+  &[disabled],
+  &:disabled {
+    transition: background-color ease 0.2s;
+    background-color: ${(props) => `rgba(${HEXToRGB(props.hoverColor)},0.5)`};
   }
 `;
 

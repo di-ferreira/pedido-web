@@ -20,6 +20,7 @@ import {
   OpenCloseButton,
   Profile,
   ProfileName,
+  ProfileGroup,
   Top,
 } from './styles';
 import { useTheme } from '../../hooks/useTheme';
@@ -33,7 +34,7 @@ interface iNavBar {
 export const NavBar: React.FC<iNavBar> = ({ Open }) => {
   const { ThemeName } = useTheme();
   const [OpenCloseNavBar, SetOpenCloseNavBar] = useState(Open);
-  const { logoutUser } = useLogin();
+  const { logoutUser, currentUser } = useLogin();
 
   const Logout = () => {
     logoutUser();
@@ -60,7 +61,10 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
         <BorderImage>
           <img src={ProfileImage} alt='Profile Image' />
         </BorderImage>
-        <ProfileName>Diego Ferreira</ProfileName>
+        <ProfileName>
+          {currentUser.username}
+          <ProfileGroup>{currentUser.group && currentUser.group}</ProfileGroup>
+        </ProfileName>
       </Profile>
       <NavigationContainer>
         <NavButton Icon={faHouseChimney} Text='dashboard' Link='home' />

@@ -42,9 +42,19 @@ export const BorderImage = styled.span`
 `;
 
 export const ProfileName = styled.h3`
+  width: 100%;
   font-size: 1.3rem;
   font-weight: 500;
   margin-top: 1rem;
+  text-transform: uppercase;
+  text-align: center;
+`;
+
+export const ProfileGroup = styled.h5`
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  margin-top: 0.5rem;
   text-transform: uppercase;
 `;
 

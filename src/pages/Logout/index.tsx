@@ -12,7 +12,7 @@ export const Logout: React.FC = () => {
 
     timeout.current = setTimeout(() => {
       setTime((t) => t - 1);
-    }, 1000);
+    }, 2000);
 
     if (time <= 0) {
       navigate('/login');

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   LoginContainer,
@@ -33,10 +33,6 @@ export const Login: React.FC = () => {
     user: '',
     password: '',
   });
-
-  // useEffect(() => {
-  //   console.log('carregando?', isLoading);
-  // }, [isLoading]);
 
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
@@ -107,6 +103,8 @@ export const Login: React.FC = () => {
             Width='90%'
             Height='3.5rem'
             Icon={isLoading ? faSpinner : faLock}
+            disabled={isLoading}
+            AnimationSpin={isLoading}
           />
           <ErrorLoginMsg>{isError && errorMsg}</ErrorLoginMsg>
         </LoginForm>
