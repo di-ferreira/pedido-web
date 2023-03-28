@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 
 import { Container, TabList } from './styles';
 import { Tab } from '../Tab';
-import useTabListStore, { TabData } from '../../stores/TabList';
 import { faHouseChimney } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import useTabList from '../../hooks/useTabList';
+import { iTabData } from '../../@types';
 
 export const TabBar: React.FC = () => {
-  const { Tabs, removeTab, openTab } = useTabListStore((state) => state);
+  const { Tabs, removeTab, openTab } = useTabList((state) => state);
   const [closedTab, setClosedTab] = useState(false);
   const navigate = useNavigate();
 
@@ -28,7 +29,7 @@ export const TabBar: React.FC = () => {
     }
   }, [Tabs, closedTab]);
 
-  const closeCurrentTab = (tab: TabData) => {
+  const closeCurrentTab = (tab: iTabData) => {
     removeTab(tab);
     setClosedTab(true);
   };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Container,
   LoginContainer,
@@ -16,9 +16,39 @@ import LoginIllustration from '../../assets/Login.svg';
 import LogoLight from '../../assets/EMSoft_icon.v2.png';
 import LogoDark from '../../assets/favicon_white.png';
 import { useTheme } from '../../hooks/useTheme';
+import { useLogin } from '../../hooks/useLogin';
+
+interface iUserLogin {
+  user: string;
+  password: string;
+}
 
 export const Login: React.FC = () => {
   const { ThemeName } = useTheme();
+  const { loginUser } = useLogin();
+
+  const [UserLogin, setUserLogin] = useState<iUserLogin>({
+    user: '',
+    password: '',
+  });
+
+  const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+    setUserLogin({
+      ...UserLogin,
+      [name]: value,
+    });
+  };
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    loginUser({
+      username: UserLogin.user,
+      password: UserLogin.password,
+    });
+  };
+
   return (
     <Container>
       <LoginContainer>
@@ -33,24 +63,28 @@ export const Login: React.FC = () => {
           <ImageLogin src={LoginIllustration} />
         </LoginHeader>
         <LineDivisor />
-        <LoginForm>
+        <LoginForm onSubmit={onSubmit}>
           <ContainerInput>
             <InputCustom
-              onChange={() => {}}
+              name='user'
+              value={UserLogin.user}
+              onChange={OnChangeInput}
               label='USUÁRIO'
               placeholder='DIGITE SEU USUÁRIO'
             />
           </ContainerInput>
           <ContainerInput>
             <InputCustom
-              onChange={() => {}}
+              name='password'
+              value={UserLogin.password}
+              onChange={OnChangeInput}
               label='SENHA'
               type='password'
               placeholder='DIGITE SUA SENHA'
             />
           </ContainerInput>
           <Button
-            onclick={() => {}}
+            TypeButton='submit'
             Text='LOGIN'
             Type='secondary'
             Width='90%'

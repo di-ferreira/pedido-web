@@ -2,7 +2,7 @@ import React from 'react';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { Container, IconButton, NavButtonLink } from './styles';
 import { isActiveLink } from '../../utils';
-import useTabListStore from '../../stores/TabList';
+import useTabListStore from '../../hooks/useTabList';
 
 interface iNavButton {
   Text: string;

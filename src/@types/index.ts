@@ -36,6 +36,7 @@ export interface iModal {
 }
 export interface iButton {
   Text?: string;
+  TypeButton?: 'button' | 'reset' | 'submit';
   Title?: string;
   Height?: string;
   Width?: string;
@@ -45,7 +46,7 @@ export interface iButton {
   Type?: iButtonType;
   background?: string;
   textColor?: string;
-  onclick: () => void;
+  onclick?: () => void;
 }
 
 export type iButtonType =
@@ -57,3 +58,22 @@ export type iButtonType =
   | 'secondary';
 
 export type iIconType = iButtonType;
+
+export type iTabData = {
+  Icon: IconProp;
+  TitleTab: string;
+  Link: string;
+  Closable?: boolean;
+  isActive: boolean;
+};
+
+export interface iUserLogin {
+  username: string;
+  password: string;
+}
+
+export interface iCurrentUser {
+  username: string;
+  type: string;
+  level: number;
+}

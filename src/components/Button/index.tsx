@@ -4,6 +4,7 @@ import { iButton } from '../../@types';
 
 const Button: React.FC<iButton> = ({
   Type,
+  TypeButton,
   Icon,
   Text,
   Size,
@@ -19,6 +20,7 @@ const Button: React.FC<iButton> = ({
 
   return (
     <Container
+      type={TypeButton ? TypeButton : 'button'}
       height={Height}
       width={Width}
       bgColor={background ? background : bgColor}
@@ -26,7 +28,7 @@ const Button: React.FC<iButton> = ({
       color={textColor ? textColor : color}
       rounded={Rounded}
       title={Title}
-      onClick={() => onclick()}
+      onClick={() => onclick && onclick()}
     >
       {Icon && <IconButton icon={Icon} size={Size} />}
       {Text && <span>{Text}</span>}

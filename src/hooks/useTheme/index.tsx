@@ -40,7 +40,6 @@ export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const toggleTheme = useCallback(() => {
     setThemeName((oldThemeName) => {
-      console.log(oldThemeName);
       return oldThemeName === 'light' ? 'dark' : 'light';
     });
     localStorage.setItem('theme', ThemeName === 'light' ? 'dark' : 'light');
