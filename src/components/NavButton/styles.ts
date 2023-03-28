@@ -44,3 +44,29 @@ export const NavButtonLink = styled(Link)<isActiveLink>`
 export const IconButton = styled(FontAwesomeIcon)`
   margin: 0.5rem 1rem;
 `;
+
+export const ContainerButton = styled.button`
+  cursor: pointer;
+  width: 100%;
+  height: 4.4rem;
+  display: flex;
+  align-items: baseline;
+  color: ${(props) => props.theme.colors.onSurface};
+  font-weight: 400;
+  font-size: 1.6rem;
+  text-decoration: none;
+  text-transform: capitalize;
+  font-variant: small-caps;
+  border: none;
+  background: transparent;
+  padding-left: 0.6rem;
+  padding-top: 3%;
+  transition: all 0.3s ease;
+  &:hover {
+    padding-left: 0rem;
+    border-left-width: 0.6rem;
+    background: ${(props) =>
+      `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)`};
+    transition: all 0.3s ease;
+  }
+`;

@@ -4,10 +4,12 @@ import { NavBar } from '../NavBar';
 import { TabBar } from '../TabBar';
 import { Container, Main } from './styles';
 import { MenuBar } from '../MenuBar';
-import LogoEmpresa from '../../assets/imperio_logo.png';
+import { isActiveLink } from '../../utils';
 
 export const MainLayout: React.FC = () => {
-  return (
+  return isActiveLink('/login') ? (
+    <Outlet />
+  ) : (
     <Container>
       <NavBar Open={true} />
       <Main>

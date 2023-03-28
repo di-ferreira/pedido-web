@@ -23,6 +23,8 @@ import {
   Top,
 } from './styles';
 import { useTheme } from '../../hooks/useTheme';
+import { useLogin } from '../../hooks/useLogin';
+import { Navigate } from 'react-router-dom';
 
 interface iNavBar {
   Open: Boolean;
@@ -31,6 +33,12 @@ interface iNavBar {
 export const NavBar: React.FC<iNavBar> = ({ Open }) => {
   const { ThemeName } = useTheme();
   const [OpenCloseNavBar, SetOpenCloseNavBar] = useState(Open);
+  const { logoutUser } = useLogin();
+
+  const Logout = () => {
+    logoutUser();
+    <Navigate to='/login' replace />;
+  };
   const IconOpenCloseButton = OpenCloseNavBar ? (
     <FontAwesomeIcon icon={faArrowLeft} />
   ) : (
@@ -64,7 +72,13 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
           Link='pre-vendas'
         />
         <NavButton Icon={faFileInvoiceDollar} Text='vendas' Link='vendas' />
-        <NavButton Icon={faPowerOff} Text='sair' Link='logout' />
+        <NavButton
+          Icon={faPowerOff}
+          Text='sair'
+          Link='logout'
+          isButton={true}
+          onClick={Logout}
+        />
       </NavigationContainer>
     </Container>
   );

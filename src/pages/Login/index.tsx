@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   LoginContainer,
@@ -8,15 +8,17 @@ import {
   ImageLogin,
   ContainerInput,
   LineDivisor,
+  ErrorLoginMsg,
 } from './styles';
 import { InputCustom } from '../../components/InputCustom';
 import Button from '../../components/Button';
-import { faLock } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import LoginIllustration from '../../assets/Login.svg';
 import LogoLight from '../../assets/EMSoft_icon.v2.png';
 import LogoDark from '../../assets/favicon_white.png';
 import { useTheme } from '../../hooks/useTheme';
 import { useLogin } from '../../hooks/useLogin';
+import { Navigate } from 'react-router-dom';
 
 interface iUserLogin {
   user: string;
@@ -25,18 +27,29 @@ interface iUserLogin {
 
 export const Login: React.FC = () => {
   const { ThemeName } = useTheme();
-  const { loginUser } = useLogin();
+  const { loginUser, isError, isLoading, isLogged, errorMsg } = useLogin();
 
   const [UserLogin, setUserLogin] = useState<iUserLogin>({
     user: '',
     password: '',
   });
 
+  // useEffect(() => {
+  //   console.log('carregando?', isLoading);
+  // }, [isLoading]);
+
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, name } = e.target;
     setUserLogin({
       ...UserLogin,
       [name]: value,
+    });
+  };
+
+  const ClearFields = () => {
+    setUserLogin({
+      user: '',
+      password: '',
     });
   };
 
@@ -47,9 +60,13 @@ export const Login: React.FC = () => {
       username: UserLogin.user,
       password: UserLogin.password,
     });
+
+    isLogged ? <Navigate to='/home' /> : ClearFields();
   };
 
-  return (
+  return isLogged ? (
+    <Navigate to='/home' />
+  ) : (
     <Container>
       <LoginContainer>
         <LoginHeader>
@@ -85,12 +102,13 @@ export const Login: React.FC = () => {
           </ContainerInput>
           <Button
             TypeButton='submit'
-            Text='LOGIN'
+            Text={isLoading ? 'Carregando...' : 'LOGIN'}
             Type='secondary'
             Width='90%'
             Height='3.5rem'
-            Icon={faLock}
+            Icon={isLoading ? faSpinner : faLock}
           />
+          <ErrorLoginMsg>{isError && errorMsg}</ErrorLoginMsg>
         </LoginForm>
       </LoginContainer>
     </Container>

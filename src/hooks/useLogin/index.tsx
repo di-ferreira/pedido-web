@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { iUserLogin } from '../../@types/index';
+import { iTokenPayload, iUserLogin } from '../../@types/index';
 import api from '../../services';
 import jwtDecode from 'jwt-decode';
+import { AddZeros } from '../../utils';
+import { Navigate } from 'react-router-dom';
 
 type iStateUser = {
   isLogged: boolean;
@@ -21,7 +23,7 @@ export const useLogin = () => {
 export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [Token, setToken] = useState('');
+  const TOKEN_NAME_STORE = '@PWEMSoftToken';
 
   const [isError, setIsError] = useState(false);
 
@@ -31,27 +33,47 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
+  const VerifyToken = (token: string | null): boolean => {
+    if (token === null) return false;
+    const expirationDate = jwtDecode<iTokenPayload>(token).Validade;
+    let today = new Date();
+
+    let todayFormated =
+      today.getUTCDate() +
+      '/' +
+      AddZeros(today.getUTCMonth() + 1, 2) +
+      '/' +
+      today.getUTCFullYear();
+
+    return todayFormated === expirationDate.toString();
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem('@PWEMSoft');
-    setIsLogged(token ? true : false);
+    const token = localStorage.getItem(TOKEN_NAME_STORE);
+    setIsLogged(VerifyToken(token));
   }, []);
 
   const loginUser = async (user: iUserLogin) => {
+    setIsError(false);
+    setIsLoading(true);
     api
       .post('/login/atendente', user)
       .then(async (response) => {
-        setIsLoading(true);
         const userLogin = response.data;
-        setToken(userLogin.value);
-
-        console.log('token =>', userLogin);
-
-        console.log('token decoded=>', jwtDecode(userLogin.value));
-
-        localStorage.setItem('@PWEMSoft', JSON.stringify(userLogin.value));
+        setIsLogged(VerifyToken(userLogin.value));
+        localStorage.setItem(TOKEN_NAME_STORE, JSON.stringify(userLogin.value));
       })
       .catch((error) => {
-        setErrorMsg(error);
+        console.log(error);
+        if (!error?.response) {
+          setErrorMsg('Sem resposta do servidor');
+        } else if (error.response?.status === 400) {
+          setErrorMsg('Usuario ou senha incorreta');
+        } else if (error.response?.status === 401) {
+          setErrorMsg('não autorizado');
+        } else {
+          setErrorMsg('Falha ao realizar login');
+        }
         setIsError(true);
       })
       .finally(() => {
@@ -59,7 +81,10 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
       });
   };
 
-  const logoutUser = () => {};
+  const logoutUser = () => {
+    localStorage.removeItem(TOKEN_NAME_STORE);
+    setIsLogged(false);
+  };
 
   return (
     <LoginContext.Provider

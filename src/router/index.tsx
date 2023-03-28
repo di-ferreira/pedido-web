@@ -5,26 +5,26 @@ import { Clientes } from '../pages/Clientes';
 import { Orcamentos } from '../pages/Orcamentos';
 import { PreVendas } from '../pages/PreVendas';
 import { Vendas } from '../pages/Vendas';
-import { isActiveLink } from '../utils';
 import { Login } from '../pages/Login';
 import { LoginProvider } from '../hooks/useLogin';
+import PrivateRoute from './PrivateRoutes';
+import { Logout } from '../pages/Logout';
 
 const RoutesPage: React.FC = () => {
   return (
     <LoginProvider>
       <Routes>
-        <Route
-          path='/'
-          element={
-            // isActiveLink('/') ? <Navigate to='/home' replace /> : <MainLayout />
-            isActiveLink('/') ? <Login /> : <MainLayout />
-          }
-        >
-          <Route path='home' element={<Home />} />
-          <Route path='clientes' element={<Clientes />} />
-          <Route path='orcamentos' element={<Orcamentos />} />
-          <Route path='pre-vendas' element={<PreVendas />} />
-          <Route path='vendas' element={<Vendas />} />
+        <Route path='/' element={<MainLayout />}>
+          <Route path='login' element={<Login />} />
+          <Route element={<PrivateRoute />}>
+            <Route path='' element={<Navigate to='home' />} />
+            <Route path='logout' element={<Logout />} />
+            <Route path='home' element={<Home />} />
+            <Route path='clientes' element={<Clientes />} />
+            <Route path='orcamentos' element={<Orcamentos />} />
+            <Route path='pre-vendas' element={<PreVendas />} />
+            <Route path='vendas' element={<Vendas />} />
+          </Route>
         </Route>
       </Routes>
     </LoginProvider>

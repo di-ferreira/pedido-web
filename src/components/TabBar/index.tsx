@@ -36,18 +36,21 @@ export const TabBar: React.FC = () => {
   return (
     <Container>
       <TabList>
-        {Tabs.map((t, idx) => (
-          <Tab
-            key={idx}
-            Icon={t.Icon}
-            Link={t.Link}
-            TitleTab={t.TitleTab}
-            Closable={t.Closable}
-            onClose={() => {
-              closeCurrentTab(t);
-            }}
-          />
-        ))}
+        {Tabs.map(
+          (t, idx) =>
+            t.TitleTab !== 'sair' && (
+              <Tab
+                key={idx}
+                Icon={t.Icon}
+                Link={t.Link}
+                TitleTab={t.TitleTab}
+                Closable={t.Closable}
+                onClose={() => {
+                  closeCurrentTab(t);
+                }}
+              />
+            )
+        )}
       </TabList>
     </Container>
   );

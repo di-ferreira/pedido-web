@@ -1,6 +1,10 @@
 import { useMatch, useResolvedPath } from 'react-router-dom';
 import { format } from 'date-fns';
 
+export const AddZeros = (data: string | number, totalZeros: number) => {
+  return String(data).padStart(totalZeros, '0');
+};
+
 export const isActiveLink = (Link: string): boolean => {
   const revolvedPath = useResolvedPath(Link);
   const isActive = useMatch({ path: revolvedPath.pathname, end: true });

@@ -77,3 +77,12 @@ export interface iCurrentUser {
   type: string;
   level: number;
 }
+
+export interface iTokenPayload {
+  Chave: string;
+  Nivel: string;
+  Tipo: string;
+  Usuario: string;
+  Validade: Date;
+  iss: string;
+}

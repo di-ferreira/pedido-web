@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { HEXToRGB } from '../../utils';
-import { Black, Dark, Light } from '../../colors';
+import { Black, Dark, DarkRed, Light } from '../../colors';
 
 export const Container = styled.div`
   width: 100vw;
@@ -59,7 +59,15 @@ export const LoginForm = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  padding: 15% 0;
+  padding: 13% 0;
+`;
+
+export const ErrorLoginMsg = styled.span`
+  width: 90%;
+  font-size: 1.2rem;
+  text-align: center;
+  color: ${(props) =>
+    props.theme.name === 'light' ? DarkRed.dark : DarkRed.light};
 `;
 
 export const ContainerInput = styled.div`
