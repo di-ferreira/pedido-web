@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { iColumnType } from '../../@types';
+import React, { useState } from 'react';
+import { iColumnType, iSolicitante } from '../../@types';
 import Table from '../../components/Table';
-import api from '../../services';
 import {
   Container,
   ContainerInput,
@@ -9,7 +8,6 @@ import {
   SwitchContainer,
   SwitchLabel,
 } from './styles';
-import { formatLocalDate } from '../../utils/index';
 import {
   faBan,
   faCheck,
@@ -26,19 +24,20 @@ import Switch from 'react-switch';
 import { Black, Light, Secondary } from '../../colors';
 import { InputCustom } from '../../components/InputCustom';
 import { useTheme } from '../../hooks/useTheme/index';
-
-interface iCliente {
-  id: number;
-  nome: string;
-  bloqueado: boolean;
-  vendedor: string;
-  bairro: string;
-  cidade: string;
-  ultima_compra: string;
-}
+import { useSolicitantes } from '../../hooks/useSolicitantes';
+import { useQuery } from 'react-query';
 
 export const Clientes: React.FC = () => {
   const { ThemeName } = useTheme();
+  const { GetSolicitantes } = useSolicitantes();
+  const { data, isLoading } = useQuery('solicitantes-list', GetSolicitantes);
+
+  const [solicitante, setSolicitante] = useState<iSolicitante | null>(null);
+
+  const { Modal, showModal } = useModal();
+
+  const { Select } = useSelect();
+
   const OptionsSelect: iOption[] = [
     { label: 'NOME', value: 'nome' },
     { label: 'CÓDIGO', value: 'codigo' },
@@ -46,55 +45,53 @@ export const Clientes: React.FC = () => {
     { label: 'BAIRRO', value: 'bairro' },
     { label: 'CIDADE', value: 'cidade' },
   ];
-  const [users, setUsers] = useState<iCliente[]>([]);
-  const [user, setUser] = useState<iCliente | null>(null);
 
-  const [loading, setLoading] = useState(true);
-
-  const { Modal, showModal } = useModal();
-
-  const { Select } = useSelect();
-
-  const LoadUser = (cliente: iCliente) => {
-    setUser(cliente);
+  const LoadSolicitante = (value: iSolicitante) => {
+    setSolicitante(value);
     showModal();
   };
 
-  const headers: iColumnType<iCliente>[] = [
+  const RenderIconBloqueado = (value: string): JSX.Element => {
+    if (value === 'S')
+      return <Icon Icon={faCheck} Type='success' key={value} />;
+    return <Icon Icon={faBan} Type='danger' key={value} />;
+  };
+
+  const headers: iColumnType<iSolicitante>[] = [
     {
-      key: 'id',
+      key: 'ID',
       title: 'ID',
       width: 200,
     },
     {
-      key: 'nome',
+      key: 'NOME',
       title: 'NOME',
       width: 200,
     },
     {
-      key: 'bloqueado',
+      key: 'EMPRESA.BLOQUEADO',
       title: 'BLOQUEADO',
       width: 200,
+      render: (_, item) =>
+        item.EMPRESA && (
+          <>{RenderIconBloqueado(String(item.EMPRESA.BLOQUEADO))}</>
+        ),
     },
     {
-      key: 'vendedor',
-      title: 'VENDEDOR',
-      width: 200,
-    },
-    {
-      key: 'bairro',
-      title: 'BAIRRO',
+      key: 'TELEFONES',
+      title: 'TELEFONE',
       width: 200,
       isHideMobile: false,
     },
     {
-      key: 'cidade',
-      title: 'CIDADE',
+      key: 'EMAIL',
+      title: 'EMAIL',
       width: 200,
+      isHideMobile: false,
     },
     {
-      key: 'ultima_compra',
-      title: 'ULTIMA COMPRA',
+      key: 'EMPRESA.NOME',
+      title: 'EMPRESA',
       width: 200,
     },
     {
@@ -103,14 +100,14 @@ export const Clientes: React.FC = () => {
       width: 200,
       action: [
         {
-          onclick: LoadUser,
+          onclick: LoadSolicitante,
           Icon: faEdit,
           Rounded: true,
           Title: 'Editar',
           Type: 'warn',
         },
         {
-          onclick: LoadUser,
+          onclick: LoadSolicitante,
           Icon: faTrashAlt,
           Rounded: true,
           Title: 'Excluír',
@@ -119,32 +116,6 @@ export const Clientes: React.FC = () => {
       ],
     },
   ];
-
-  useEffect(() => {
-    setTimeout(() => {
-      let newData: iCliente[] = [];
-      api.get('/users').then((res) => {
-        newData = res.data.map(
-          (item: { ultima_compra: string; bloqueado: JSX.Element }) => {
-            if (item) {
-              item.ultima_compra = formatLocalDate(
-                item.ultima_compra,
-                'dd/mm/yyyy'
-              );
-
-              item.bloqueado
-                ? (item.bloqueado = <Icon Icon={faCheck} Type='success' />)
-                : (item.bloqueado = item.bloqueado =
-                    <Icon Icon={faBan} Type='danger' />);
-            }
-            return item;
-          }
-        );
-        setUsers(newData);
-        setLoading(false);
-      });
-    }, 3000);
-  }, []);
 
   return (
     <Container>
@@ -185,14 +156,15 @@ export const Clientes: React.FC = () => {
           />
         </SwitchContainer>
       </FilterContainer>
-      {Modal && user && (
-        <Modal Title={'Cliente - ' + user.nome}>
-          <label>Nome:</label> <input type='text' value={user.nome} />
+      {Modal && solicitante && (
+        <Modal Title={'Cliente - ' + solicitante.NOME}>
+          <label>Nome:</label> <input type='text' value={solicitante.NOME} />
+          <InputCustom label='NOME' onChange={() => {}} />
         </Modal>
       )}
-      {loading && <Loading />}
-      {users.length > 0 && !loading && <Table columns={headers} data={users} />}
-      {users.length <= 0 && !loading && <p>Não há registros</p>}
+      {isLoading && <Loading />}
+      {data && !isLoading && <Table columns={headers} data={data} />}
+      {!data && !isLoading && <p>Não há registros</p>}
     </Container>
   );
 };

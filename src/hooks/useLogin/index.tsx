@@ -62,7 +62,12 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
 
   useEffect(() => {
     const token = localStorage.getItem(TOKEN_NAME_STORE);
-    setIsLogged(VerifyToken(token));
+    setIsLogged(false);
+    if (VerifyToken(token)) {
+      setIsLogged(true);
+
+      api.defaults.headers.common.Authorization = 'Bearer ' + token;
+    }
   }, []);
 
   const loginUser = async (user: iUserLogin) => {
@@ -88,8 +93,9 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
           USER_NAME_STORE,
           JSON.stringify(jwtDecode<iTokenPayload>(userLogin.value))
         );
-        api.defaults.headers.common['Authorization'] =
-          'Bearer ' + userLogin.value;
+        api.defaults.headers.common.Accept = '*/*';
+        api.defaults.headers.common['Content-Type'] = 'application/json';
+        api.defaults.headers.common.Authorization = 'bearer ' + userLogin.value;
       })
       .catch((error) => {
         console.log(error);
@@ -112,7 +118,7 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
   const logoutUser = () => {
     localStorage.removeItem(TOKEN_NAME_STORE);
     localStorage.removeItem(USER_NAME_STORE);
-    api.defaults.headers.common['Authorization'] = undefined;
+    api.defaults.headers.common.Authorization = undefined;
     setIsLogged(false);
   };
 

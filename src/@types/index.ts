@@ -91,3 +91,22 @@ export interface iTokenPayload {
   Validade: Date;
   iss: string;
 }
+
+export interface iSolicitante {
+  ID: number;
+  NOME: string;
+  TELEFONES: string;
+  EMAIL: string;
+  SENHA: string;
+  EMPRESA: iEmpresa;
+}
+
+export interface iEmpresa {
+  ID: number;
+  RAZAO_SOCIAL: string;
+  NOME: string;
+  CNPJ: string;
+  TELEFONES: string;
+  BLOQUEADO: string | JSX.Element | null;
+  MOTIVO_BLOQUEADO: string;
+}
