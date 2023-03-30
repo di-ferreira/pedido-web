@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Gray, Light, Primary } from '../../colors';
+import { Gray } from '../../colors';
 import { HEXToRGB } from '../../utils';
 
 export const Container = styled.div`
@@ -10,7 +10,7 @@ export const Container = styled.div`
 `;
 
 export const LabelInput = styled.label`
-  margin: -0.5rem 0 -0.5rem 0;
+  margin: -0.5rem 0 -0.2rem 0;
   color: ${(props) => props.theme.colors.onSurface};
   font-variant: small-caps;
   text-transform: lowercase;

@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { iColumnType, iSolicitante } from '../../@types';
 import Table from '../../components/Table';
 import {
   Container,
   ContainerInput,
   FilterContainer,
+  FormEditCliente,
+  FormEditClienteInputContainer,
+  FormEditClienteRow,
+  FormEditClienteSwitchContainer,
   SwitchContainer,
-  SwitchLabel,
 } from './styles';
 import {
   faBan,
@@ -20,23 +23,32 @@ import { Icon } from '../../components/Icon';
 import useModal from '../../hooks/useModal';
 import useSelect, { iOption } from '../../hooks/UseSelect';
 import Button from '../../components/Button';
-import Switch from 'react-switch';
-import { Black, Light, Secondary } from '../../colors';
 import { InputCustom } from '../../components/InputCustom';
-import { useTheme } from '../../hooks/useTheme/index';
 import { useSolicitantes } from '../../hooks/useSolicitantes';
 import { useQuery } from 'react-query';
+import { CustomSwitch } from '../../components/CustomSwitch';
 
 export const Clientes: React.FC = () => {
-  const { ThemeName } = useTheme();
   const { GetSolicitantes } = useSolicitantes();
-  const { data, isLoading } = useQuery('solicitantes-list', GetSolicitantes);
 
-  const [solicitante, setSolicitante] = useState<iSolicitante | null>(null);
+  const { data, isLoading } = useQuery('solicitantes-list', GetSolicitantes);
 
   const { Modal, showModal } = useModal();
 
   const { Select } = useSelect();
+
+  const [checkedSwitch, setCheckedSwitch] = useState<boolean>(false);
+
+  const [checkedSwitchSolicitante, setCheckedSwitchSolicitante] =
+    useState<boolean>(false);
+
+  const [solicitante, setSolicitante] = useState<iSolicitante | null>(null);
+
+  useEffect(() => {
+    setCheckedSwitchSolicitante(
+      solicitante?.EMPRESA.BLOQUEADO === 'S' ? true : false
+    );
+  }, [solicitante]);
 
   const OptionsSelect: iOption[] = [
     { label: 'NOME', value: 'nome' },
@@ -52,9 +64,22 @@ export const Clientes: React.FC = () => {
   };
 
   const RenderIconBloqueado = (value: string): JSX.Element => {
-    if (value === 'S')
-      return <Icon Icon={faCheck} Type='success' key={value} />;
-    return <Icon Icon={faBan} Type='danger' key={value} />;
+    if (value === 'S') return <Icon Icon={faBan} Type='danger' key={value} />;
+    return <Icon Icon={faCheck} Type='success' key={value} />;
+  };
+
+  const handdleCheckSolicitanteBloqueado = () => {
+    if (solicitante) {
+      let newSolicitante = solicitante;
+      setCheckedSwitchSolicitante((oldCheck) => {
+        oldCheck = !oldCheck;
+        oldCheck
+          ? (newSolicitante.EMPRESA.BLOQUEADO = 'S')
+          : (newSolicitante.EMPRESA.BLOQUEADO = 'N');
+        return oldCheck;
+      });
+      setSolicitante(newSolicitante);
+    }
   };
 
   const headers: iColumnType<iSolicitante>[] = [
@@ -140,26 +165,103 @@ export const Clientes: React.FC = () => {
           Height={'40px'}
         />
         <SwitchContainer>
-          <SwitchLabel>Ativos</SwitchLabel>
-          <Switch
-            checked
-            onChange={() => {}}
-            checkedIcon={false}
-            uncheckedIcon={false}
-            handleDiameter={25}
-            height={20}
-            width={50}
-            onHandleColor={ThemeName === 'light' ? Light.surface : Black.text}
-            offHandleColor={ThemeName === 'light' ? Light.surface : Black.text}
-            offColor={Secondary.light}
-            onColor={Secondary.main}
+          <CustomSwitch
+            label='Ativos'
+            checked={checkedSwitch}
+            style='secondary'
+            onClick={() => {}}
           />
         </SwitchContainer>
       </FilterContainer>
       {Modal && solicitante && (
         <Modal Title={'Cliente - ' + solicitante.NOME}>
-          <label>Nome:</label> <input type='text' value={solicitante.NOME} />
-          <InputCustom label='NOME' onChange={() => {}} />
+          <FormEditCliente>
+            <FormEditClienteRow>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='ID'
+                  onChange={() => {}}
+                  name='id'
+                  value={solicitante.ID}
+                />
+              </FormEditClienteInputContainer>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='NOME'
+                  onChange={() => {}}
+                  name='nome'
+                  value={solicitante.NOME}
+                />
+              </FormEditClienteInputContainer>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='E-MAIL'
+                  onChange={() => {}}
+                  name='email'
+                  value={solicitante.EMAIL}
+                />
+              </FormEditClienteInputContainer>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='TELEFONES'
+                  onChange={() => {}}
+                  name='telefone'
+                  value={solicitante.TELEFONES}
+                />
+              </FormEditClienteInputContainer>
+            </FormEditClienteRow>
+            <FormEditClienteRow>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='EMPRESA'
+                  onChange={() => {}}
+                  name='empresa'
+                  value={solicitante.EMPRESA.NOME}
+                />
+              </FormEditClienteInputContainer>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='CNPJ'
+                  onChange={() => {}}
+                  name='cnpj'
+                  value={solicitante.EMPRESA.CNPJ}
+                />
+              </FormEditClienteInputContainer>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='RAZÃO SOCIAL'
+                  onChange={() => {}}
+                  name='razao'
+                  value={solicitante.EMPRESA.RAZAO_SOCIAL}
+                />
+              </FormEditClienteInputContainer>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='TELEFONES EMPRESA'
+                  onChange={() => {}}
+                  name='telefone_empresa'
+                  value={solicitante.EMPRESA.TELEFONES}
+                />
+              </FormEditClienteInputContainer>
+            </FormEditClienteRow>
+            <FormEditClienteRow>
+              <FormEditClienteSwitchContainer>
+                <CustomSwitch
+                  label='BLOQUEADO'
+                  checked={checkedSwitchSolicitante}
+                  onClick={() => handdleCheckSolicitanteBloqueado()}
+                />
+              </FormEditClienteSwitchContainer>
+              <FormEditClienteInputContainer>
+                <InputCustom
+                  label='MOTIVO BLOQUEIO'
+                  onChange={() => {}}
+                  name='motivo_bloqueado'
+                  value={solicitante.EMPRESA.MOTIVO_BLOQUEADO}
+                />
+              </FormEditClienteInputContainer>
+            </FormEditClienteRow>
+          </FormEditCliente>
         </Modal>
       )}
       {isLoading && <Loading />}

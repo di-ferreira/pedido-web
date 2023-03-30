@@ -62,6 +62,8 @@ export type iButtonType =
 
 export type iIconType = iButtonType;
 
+export type iSwitchType = iButtonType;
+
 export type iTabData = {
   Icon: IconProp;
   TitleTab: string;
