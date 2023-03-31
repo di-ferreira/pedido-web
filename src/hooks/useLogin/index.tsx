@@ -25,6 +25,7 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const TOKEN_NAME_STORE = '@PWEMSoftToken';
   const USER_NAME_STORE = '@PWEMSoftUser';
+  const ROUTE_LOGIN = '/login/atendente';
 
   const [isError, setIsError] = useState(false);
 
@@ -74,7 +75,7 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsError(false);
     setIsLoading(true);
     api
-      .post('/login/atendente', user)
+      .post(ROUTE_LOGIN, user)
       .then(async (response) => {
         const userLogin = response.data;
 

@@ -112,3 +112,26 @@ export interface iEmpresa {
   BLOQUEADO: string | JSX.Element | null;
   MOTIVO_BLOQUEADO: string;
 }
+
+export interface iCliente {
+  Cliente: number;
+  Nome: string;
+  Apelido: string;
+  Endereco: string;
+  Endereco_Num: string;
+  Endereco_Cpl: string;
+  Bairro: string;
+  Cidade: string;
+  UF: string;
+  Cep: string;
+  CIC: string;
+  Insc_Ident: string;
+  Identidade: string;
+  Inscricao_M: string;
+  DT_Cadastro: string;
+  DT_Nascimento: string;
+  Telefone: string;
+  Email: string;
+  Vendedor: number;
+  Vendedor_Interno: number;
+}

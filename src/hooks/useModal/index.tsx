@@ -38,7 +38,7 @@ const useModal = () => {
 
   return {
     Modal: isVisible ? Modal : null,
-    showModal: () => setIsVisible(true),
+    showModal: () => setIsVisible(!isVisible),
   };
 };
 
