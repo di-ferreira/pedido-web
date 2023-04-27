@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { HEXToRGB } from '../../utils';
 
 interface isActiveLink {
-  Active: boolean;
+  active: boolean;
 }
 
 export const Container = styled.li<isActiveLink>`
@@ -13,10 +13,10 @@ export const Container = styled.li<isActiveLink>`
   display: flex;
   align-items: center;
   background: ${(props) =>
-    props.Active
+    props.active
       ? `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)`
       : 'transparent'};
-  padding-left: ${(props) => (props.Active ? '0rem' : '0.6rem')};
+  padding-left: ${(props) => (props.active ? '0rem' : '0.6rem')};
   padding-top: 3%;
   transition: all 0.3s ease;
   &:hover {
@@ -34,8 +34,8 @@ export const NavButtonLink = styled(Link)<isActiveLink>`
   display: flex;
   align-items: baseline;
   color: ${(props) =>
-    props.Active ? props.theme.colors.secondary : props.theme.colors.onSurface};
-  font-weight: ${(props) => (props.Active ? '700' : '400')};
+    props.active ? props.theme.colors.secondary : props.theme.colors.onSurface};
+  font-weight: ${(props) => (props.active ? '700' : '400')};
   text-decoration: none;
   text-transform: capitalize;
   font-variant: small-caps;

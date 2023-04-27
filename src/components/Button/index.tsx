@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, IconButton, TypeToColor } from './styles';
-import { iButton } from '../../@types';
+import { iButton } from '../../@types/Button';
 
 const Button: React.FC<iButton> = ({
   Type,
@@ -32,7 +32,7 @@ const Button: React.FC<iButton> = ({
       rounded={Rounded}
       title={Title}
       onClick={() => onclick && onclick()}
-      disabled={disabled}
+      disabled={disabled ? true : false}
     >
       {Icon && (
         <IconButton

@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { Dark } from '../../colors';
 import { HEXToRGB } from '../../utils';
+import { devices } from '../../Constants';
 
 interface iNavBarStyle {
-  isOpen: Boolean;
+  isOpen: boolean;
 }
 
 export const Top = styled.h1`
@@ -50,7 +51,7 @@ export const ProfileName = styled.h3`
   text-align: center;
 `;
 
-export const ProfileGroup = styled.h5`
+export const ProfileGroup = styled.span`
   text-align: center;
   font-size: 1rem;
   font-weight: 700;
@@ -100,6 +101,10 @@ export const Container = styled.nav<iNavBarStyle>`
   }
   & ul {
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
+  }
+
+  @media only screen and ${devices.sm} {
+    width: ${(props) => (props.isOpen ? '45rem' : '0rem')};
   }
 `;
 

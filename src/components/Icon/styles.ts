@@ -1,19 +1,19 @@
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Danger, Gray, Success, Warn } from '../../colors';
-import { iIconType } from '../../@types';
+import { iIconType } from '../../@types/Button';
 
 interface iStyleIcon {
-  typeButton?: iIconType;
+  type?: iIconType;
 }
 
 export const Container = styled(FontAwesomeIcon)<iStyleIcon>`
   color: ${(props) =>
-    props.typeButton === 'danger'
+    props.type === 'danger'
       ? Danger.main
-      : props.typeButton === 'warn'
+      : props.type === 'warn'
       ? Warn.main
-      : props.typeButton === 'success'
+      : props.type === 'success'
       ? Success.main
       : Gray.Medium};
 `;

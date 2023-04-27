@@ -45,8 +45,8 @@ export const TabLink = styled(Link)`
 
 export const TabTitle = styled.h1<iContainer>`
   position: absolute;
-  top: 3.5rem;
-  display: ${(props) => (props.active ? 'block' : 'none')};
+  top: 4rem;
+  display: ${(props) => (props.active ? 'flex' : 'none')};
   left: 5rem;
   margin-left: 0rem !important;
 `;

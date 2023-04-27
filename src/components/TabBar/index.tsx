@@ -5,7 +5,7 @@ import { Tab } from '../Tab';
 import { faHouseChimney } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import useTabList from '../../hooks/useTabList';
-import { iTabData } from '../../@types';
+import { iTabData } from '../../@types/Table';
 
 export const TabBar: React.FC = () => {
   const { Tabs, removeTab, openTab } = useTabList((state) => state);

@@ -19,18 +19,14 @@ import LogoDark from '../../assets/favicon_white.png';
 import { useTheme } from '../../hooks/useTheme';
 import { useLogin } from '../../hooks/useLogin';
 import { Navigate } from 'react-router-dom';
-
-interface iUserLogin {
-  user: string;
-  password: string;
-}
+import { iVendaLogin } from '../../@types/Login';
 
 export const Login: React.FC = () => {
   const { ThemeName } = useTheme();
   const { loginUser, isError, isLoading, isLogged, errorMsg } = useLogin();
 
-  const [UserLogin, setUserLogin] = useState<iUserLogin>({
-    user: '',
+  const [UserLogin, setUserLogin] = useState<iVendaLogin>({
+    codigoVendedor: '',
     password: '',
   });
 
@@ -44,7 +40,7 @@ export const Login: React.FC = () => {
 
   const ClearFields = () => {
     setUserLogin({
-      user: '',
+      codigoVendedor: '',
       password: '',
     });
   };
@@ -53,7 +49,7 @@ export const Login: React.FC = () => {
     e.preventDefault();
 
     loginUser({
-      username: UserLogin.user,
+      codigoVendedor: UserLogin.codigoVendedor,
       password: UserLogin.password,
     });
 
@@ -79,11 +75,10 @@ export const Login: React.FC = () => {
         <LoginForm onSubmit={onSubmit}>
           <ContainerInput>
             <InputCustom
-              name='user'
-              value={UserLogin.user}
+              name='codigoVendedor'
+              value={UserLogin.codigoVendedor}
               onChange={OnChangeInput}
-              label='USUÁRIO'
-              placeholder='DIGITE SEU USUÁRIO'
+              label='CÓDIGO DE VENDEDOR'
             />
           </ContainerInput>
           <ContainerInput>
@@ -93,7 +88,6 @@ export const Login: React.FC = () => {
               onChange={OnChangeInput}
               label='SENHA'
               type='password'
-              placeholder='DIGITE SUA SENHA'
             />
           </ContainerInput>
           <Button

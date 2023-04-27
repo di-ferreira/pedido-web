@@ -11,7 +11,7 @@ const queryClient = new QueryClient();
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <AppThemeProvider>
-      <BrowserRouter>
+      <BrowserRouter basename='/pedido-web'>
         <GlobalStyle />
         <QueryClientProvider client={queryClient}>
           <RoutesPage />

@@ -29,15 +29,20 @@ import { useTheme } from '../../hooks/useTheme';
 import { useLogin } from '../../hooks/useLogin';
 import { Navigate } from 'react-router-dom';
 import { SwitchTheme } from '../SwitchTheme';
+import { isMobile } from 'react-device-detect';
 
 interface iNavBar {
-  Open: Boolean;
+  Open: boolean;
 }
 
 export const NavBar: React.FC<iNavBar> = ({ Open }) => {
   const { ThemeName } = useTheme();
-  const [OpenCloseNavBar, SetOpenCloseNavBar] = useState(Open);
+  const [OpenCloseNavBar, SetOpenCloseNavBar] = useState<boolean>(Open);
   const { logoutUser, currentUser } = useLogin();
+
+  const CloseNavBarMobile = () => {
+    isMobile && SetOpenCloseNavBar(!OpenCloseNavBar);
+  };
 
   const Logout = () => {
     logoutUser();
@@ -66,22 +71,43 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
             <img src={ProfileImage} alt='Profile Image' />
           </BorderImage>
           <ProfileName>
-            {currentUser.username}
+            {currentUser.vendedor?.NOME}
             <ProfileGroup>
               {currentUser.group && currentUser.group}
             </ProfileGroup>
           </ProfileName>
         </Profile>
         <NavigationContainer>
-          <NavButton Icon={faHouseChimney} Text='dashboard' Link='home' />
-          <NavButton Icon={faUsers} Text='clientes' Link='clientes' />
-          <NavButton Icon={faFileLines} Text='orçamentos' Link='orcamentos' />
           <NavButton
+            onClick={CloseNavBarMobile}
+            Icon={faHouseChimney}
+            Text='dashboard'
+            Link='home'
+          />
+          <NavButton
+            onClick={CloseNavBarMobile}
+            Icon={faUsers}
+            Text='clientes'
+            Link='clientes'
+          />
+          <NavButton
+            onClick={CloseNavBarMobile}
+            Icon={faFileLines}
+            Text='orçamentos'
+            Link='orcamentos'
+          />
+          <NavButton
+            onClick={CloseNavBarMobile}
             Icon={faFileInvoiceDollar}
             Text='pré-vendas'
             Link='pre-vendas'
           />
-          <NavButton Icon={faFileInvoiceDollar} Text='vendas' Link='vendas' />
+          <NavButton
+            onClick={CloseNavBarMobile}
+            Icon={faFileInvoiceDollar}
+            Text='vendas'
+            Link='vendas'
+          />
           <NavButton
             Icon={faPowerOff}
             Text='sair'

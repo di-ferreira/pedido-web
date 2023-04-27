@@ -3,6 +3,7 @@ import { Black, Dark, Light } from '../../colors';
 
 export const TableRowItem = styled.tr`
   cursor: auto;
+  display: flex;
   &:nth-child(even) {
     background-color: ${(props) =>
       props.theme.name === 'light' ? Light.surface : Black.text};

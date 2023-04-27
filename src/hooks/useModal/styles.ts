@@ -21,7 +21,9 @@ export const Backdrop = styled.div`
 export const ModalContainer = styled.section`
   position: relative;
   width: 80rem;
-  height: 50rem;
+  min-height: 50rem;
+  height: auto;
+  max-height: 100vh;
   overflow: hidden;
   border: 1px solid
     rgba(${(props) => HEXToRGB(props.theme.colors.onBackground)}, 0.2);
@@ -38,10 +40,19 @@ export const ModalHeader = styled.header`
   justify-content: center;
   border-bottom: 1px solid ${(props) => props.theme.colors.onBackground};
   background-color: ${(props) => props.theme.colors.surface};
-  color: ${(props) => props.theme.colors.onSurface};
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-transform: uppercase;
+
+  & > h1 {
+    display: flex;
+    justify-content: center;
+    width: 65%;
+    color: ${(props) => props.theme.colors.onSurface};
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 export const ModalBody = styled.article`

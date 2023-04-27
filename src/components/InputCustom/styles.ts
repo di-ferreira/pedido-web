@@ -1,12 +1,23 @@
 import styled from 'styled-components';
 import { Gray } from '../../colors';
 import { HEXToRGB } from '../../utils';
+import { devices } from '../../Constants';
 
-export const Container = styled.div`
+interface iContainer {
+  height?: string;
+  widht?: string;
+}
+
+export const Container = styled.div<iContainer>`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: ${(props) => (props.widht ? props.widht : '100%')};
   margin-top: -0.5rem;
+  height: ${(props) => (props.height ? props.height : 'auto')};
+
+  @media only screen and ${devices.sm} {
+    width: 100%;
+  }
 `;
 
 export const LabelInput = styled.label`
@@ -16,12 +27,16 @@ export const LabelInput = styled.label`
   text-transform: lowercase;
   padding: 0 0.2rem;
   width: 100%;
+  @media only screen and ${devices.sm} {
+    font-size: 1.9rem;
+  }
 `;
 
 export const Input = styled.input`
   border: 1px solid ${(props) => props.theme.colors.onBackground};
   width: 100%;
-  height: 2.5rem;
+  height: 100%;
+  min-height: 2.5rem;
   padding: 0 0.5rem;
   border-radius: 0.4rem;
   color: ${(props) => props.theme.colors.onBackground};
@@ -46,6 +61,10 @@ export const Input = styled.input`
     &::-webkit-calendar-picker-indicator {
       cursor: pointer;
     }
+  }
+
+  @media only screen and ${devices.sm} {
+    font-size: 1.9rem;
   }
 `;
 

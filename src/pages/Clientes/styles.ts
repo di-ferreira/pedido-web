@@ -1,11 +1,15 @@
 import styled from 'styled-components';
+import { devices } from '../../Constants';
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  overflow: hidden auto;
+  overflow: hidden;
+  @media only screen and ${devices.sm} {
+    overflow: hidden auto;
+  }
 `;
 
 export const FilterContainer = styled.div`
@@ -17,6 +21,24 @@ export const FilterContainer = styled.div`
   min-height: 6rem;
   background-color: ${(props) => props.theme.colors.onSurface};
   border-bottom: solid 0.2rem ${(props) => props.theme.colors.surface};
+  & > div {
+    width: auto;
+  }
+
+  @media only screen and ${devices.sm} {
+    flex-direction: column;
+    min-height: 25rem;
+    align-items: center;
+    padding: 0rem 2rem;
+    justify-content: space-evenly;
+    & > div {
+      width: 100%;
+      order: 0;
+    }
+    & button {
+      order: 1;
+    }
+  }
 `;
 
 export const SwitchContainer = styled.div`

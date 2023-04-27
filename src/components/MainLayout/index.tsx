@@ -5,6 +5,7 @@ import { TabBar } from '../TabBar';
 import { Container, Main } from './styles';
 import { MenuBar } from '../MenuBar';
 import { isActiveLink } from '../../utils';
+import { isMobile } from 'react-device-detect';
 
 export const MainLayout: React.FC = () => {
   const verifyRoute = (): boolean => {
@@ -18,7 +19,7 @@ export const MainLayout: React.FC = () => {
     <Outlet />
   ) : (
     <Container>
-      <NavBar Open={true} />
+      <NavBar Open={!isMobile} />
       <Main>
         <MenuBar title='Império Diesel' />
         <TabBar />

@@ -1,4 +1,4 @@
-import { iColumnType } from '../../@types';
+import { iColumnType } from '../../@types/Table';
 import Button from '../Button';
 import { TableCell, ActionContainer } from './styles';
 import { get } from 'lodash';
@@ -15,14 +15,16 @@ export function TableRowCell<T>({
   const value = get(item, column.key);
   return (
     <>
-      {!column.isHideMobile && (
-        <TableCell>
+      {
+        <TableCell isHideMobile={column.isHideMobile} min_width={column.width}>
           {column.action ? (
             <ActionContainer>
               {column.action.map((button, i) => (
                 <Button
                   Icon={button.Icon}
                   onclick={() => button.onclick(item)}
+                  Height='3rem'
+                  Width='3rem'
                   Title={button.Title}
                   Rounded={button.Rounded}
                   Type={button.Type}
@@ -38,7 +40,7 @@ export function TableRowCell<T>({
             value
           )}
         </TableCell>
-      )}
+      }
     </>
   );
 }

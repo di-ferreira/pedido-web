@@ -7,9 +7,9 @@ import {
   ModalBody,
   CloseButton,
 } from './styles';
-import { iModal, iModalRender } from '../../@types';
 import { Icon } from '../../components/Icon';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { iModal, iModalRender } from '../../@types/Modal';
 
 const RenderLayout: React.FC<iModalRender> = ({ Title, OnClose, children }) => {
   return (
@@ -18,7 +18,9 @@ const RenderLayout: React.FC<iModalRender> = ({ Title, OnClose, children }) => {
         <CloseButton onClick={() => OnClose()}>
           <Icon Icon={faTimes} />
         </CloseButton>
-        <ModalHeader>{Title}</ModalHeader>
+        <ModalHeader>
+          <h1>{Title}</h1>
+        </ModalHeader>
         <ModalBody>{children}</ModalBody>
       </ModalContainer>
     </Backdrop>

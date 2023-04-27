@@ -6,7 +6,7 @@ import {
   SliderSwitch,
   TypeToColor,
 } from './styles';
-import { iSwitchType } from '../../@types';
+import { iSwitchType } from '../../@types/Button';
 
 interface iCustomSwitch {
   label?: string;

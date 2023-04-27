@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { HEXToRGB } from '../../utils';
 import { Black, Dark, DarkRed, Light } from '../../colors';
+import { devices } from '../../Constants';
 
 export const Container = styled.div`
   width: 100vw;
@@ -25,6 +26,13 @@ export const LoginContainer = styled.section`
       ${(props) => HEXToRGB(props.theme.colors.onBackground)},
       ${(props) => (props.theme.name === 'light' ? 0.4 : 0)}
     );
+
+  @media only screen and ${devices.sm} {
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0rem;
+  }
 `;
 
 export const LoginHeader = styled.header`
@@ -33,6 +41,10 @@ export const LoginHeader = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
+  @media only screen and ${devices.sm} {
+    height: 49%;
+    width: 100%;
+  }
 `;
 
 export const LoginTitle = styled.h1`
@@ -60,6 +72,12 @@ export const LoginForm = styled.form`
   align-items: center;
   justify-content: space-evenly;
   padding: 13% 0;
+  margin: 0 auto;
+  @media only screen and ${devices.sm} {
+    height: 49%;
+    width: 100%;
+    padding: 6% 1rem;
+  }
 `;
 
 export const ErrorLoginMsg = styled.span`
@@ -72,6 +90,7 @@ export const ErrorLoginMsg = styled.span`
 
 export const ContainerInput = styled.div`
   width: 90%;
+  margin: 0 0.5rem;
 `;
 
 export const LineDivisor = styled.div`
@@ -89,5 +108,23 @@ export const LineDivisor = styled.div`
       props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)
     }, 1) 100%
   )`};
+
+  @media only screen and ${devices.sm} {
+    width: 100%;
+    height: 1px;
+    margin: 4rem 0 0.5rem 0;
+    background: ${(props) => `linear-gradient(
+    90deg,
+    rgba(${
+      props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)
+    }, 1) 0%,
+    rgba(${
+      props.theme.name === 'light' ? HEXToRGB(Dark.text) : HEXToRGB(Light.main)
+    }, 1) 49%,
+    rgba(${
+      props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)
+    }, 1) 100%
+  )`};
+  }
 `;
 

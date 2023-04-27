@@ -11,6 +11,7 @@ import {
 } from '../../colors';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HEXToRGB } from '../../utils';
+import { devices } from '../../Constants';
 
 export const TypeToColor = {
   default: {
@@ -76,7 +77,16 @@ export const Container = styled.button<ContainerProps>`
   &[disabled],
   &:disabled {
     transition: background-color ease 0.2s;
-    background-color: ${(props) => `rgba(${HEXToRGB(props.hoverColor)},0.5)`};
+    background-color: ${(props) => `rgba(${HEXToRGB(props.hoverColor)},0.85)`};
+    cursor: not-allowed;
+  }
+
+  @media only screen and ${devices.sm} {
+    font-size: 1.9rem;
+    width: ${(props) =>
+      props.width ? props.width : props.rounded ? 'auto' : '100%'};
+    padding: ${(props) =>
+      props.rounded ? '.8rem' : '0.1rem 0.8rem 0.1rem 0.5rem'};
   }
 `;
 

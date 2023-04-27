@@ -7,10 +7,14 @@ export const Container = styled.div`
   flex-direction: column;
   align-items: start;
   justify-content: center;
+  width: 100%;
   height: auto;
   margin: 0 0.5rem;
   border-radius: 0.5rem;
   background-color: ${Light.main};
+  & > div {
+    width: 100%;
+  }
 `;
 
 export const Label = styled.label`

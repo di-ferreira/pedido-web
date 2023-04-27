@@ -42,8 +42,8 @@ export const NavButton: React.FC<iNavButton> = ({
   };
 
   return (
-    <Container Active={isActiveLink(Link)} onClick={() => Click(Link)}>
-      <NavButtonLink Active={isActiveLink(Link)} to={Link}>
+    <Container active={isActiveLink(Link)} onClick={() => Click(Link)}>
+      <NavButtonLink active={isActiveLink(Link)} to={Link}>
         <IconButton icon={Icon} />
         <span>{Text}</span>
       </NavButtonLink>

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { iTabData } from '../../@types';
+import { iTabData } from '../../@types/Table';
 
 type StateTab = {
   Tabs: iTabData[];

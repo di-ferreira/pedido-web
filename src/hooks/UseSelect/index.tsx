@@ -1,17 +1,22 @@
-import React from 'react';
-import Select, { SingleValue, ActionMeta } from 'react-select';
+import React, { Ref } from 'react';
+import Select, {
+  SingleValue,
+  ActionMeta,
+  MenuPlacement,
+  PropsValue,
+  GroupBase,
+} from 'react-select';
 import { Container, Label } from './styles';
-import { Black, Dark, DarkRed, Light, Primary, Secondary } from '../../colors';
+import { Black, Light, Secondary } from '../../colors';
 import { useTheme } from '../useTheme';
 import { HEXToRGB } from '../../utils';
+import { iOption } from '../../@types/Table';
 
-export interface iOption {
-  label: string;
-  value: string;
-}
 interface iCustomSelect {
   label?: string;
+  menuPosition?: MenuPlacement;
   options: iOption[];
+  value?: PropsValue<iOption>;
   onChange?: (
     newValue: SingleValue<iOption>,
     actionMeta: ActionMeta<iOption>
@@ -20,7 +25,9 @@ interface iCustomSelect {
 
 const RenderSelect: React.FC<iCustomSelect> = ({
   label,
+  menuPosition,
   options,
+  value,
   onChange,
 }) => {
   const { ThemeName } = useTheme();
@@ -31,6 +38,8 @@ const RenderSelect: React.FC<iCustomSelect> = ({
         onChange={onChange}
         options={options}
         defaultValue={options[0]}
+        value={value}
+        menuPlacement={menuPosition}
         styles={{
           control: (base, state) => ({
             ...base,
@@ -42,6 +51,7 @@ const RenderSelect: React.FC<iCustomSelect> = ({
               ? `${Secondary.light}`
               : `${ThemeName === 'light' ? Light.surface : Black.text}`,
             height: '100%',
+            width: '100%',
             boxShadow: state.isFocused
               ? `0px 0px 3px 1px rgba(${HEXToRGB(Secondary.main)}, 0.7);`
               : `0 0 0 1px transparent`,

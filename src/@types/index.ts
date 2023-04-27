@@ -1,137 +1,23 @@
-import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
-import { ReactNode } from 'react';
+import * as Table from './Table';
+import * as Button from './Button';
+import * as Filter from './Filter';
+import * as Login from './Login';
+import * as Modal from './Modal';
+import * as Empresa from './Empresa';
+import * as Cliente from './Cliente';
+import * as Orcamento from './Orcamento';
+import * as Produto from './Produto';
+import * as Vendedor from './Vendedor';
 
-export interface iButtonAction<T> {
-  Text?: string;
-  Title?: string;
-  Icon?: IconProp;
-  Size?: SizeProp;
-  Rounded?: boolean;
-  Type?: iButtonType;
-  onclick: (item: T) => void;
-}
-
-export interface iColumnType<T> {
-  key: string;
-  title: string;
-  width?: number;
-  isHideMobile?: boolean;
-  render?: (column: iColumnType<T>, item: T) => void;
-  action?: iButtonAction<T>[];
-}
-
-export interface iTableProps<T> {
-  data: T[];
-  columns: iColumnType<T>[];
-}
-
-export interface iModalRender {
-  Title: string;
-  OnClose: () => void;
-  children?: ReactNode;
-}
-export interface iModal {
-  Title: string;
-  children?: ReactNode;
-}
-export interface iButton {
-  Text?: string;
-  TypeButton?: 'button' | 'reset' | 'submit';
-  Title?: string;
-  Height?: string;
-  Width?: string;
-  Icon?: IconProp;
-  Size?: SizeProp;
-  Rounded?: boolean;
-  Type?: iButtonType;
-  background?: string;
-  textColor?: string;
-  disabled?: boolean;
-  AnimationSpin?: boolean;
-  AnimationPulse?: boolean;
-  onclick?: () => void;
-}
-
-export type iButtonType =
-  | 'default'
-  | 'success'
-  | 'warn'
-  | 'danger'
-  | 'primary'
-  | 'secondary';
-
-export type iIconType = iButtonType;
-
-export type iSwitchType = iButtonType;
-
-export type iTabData = {
-  Icon: IconProp;
-  TitleTab: string;
-  Link: string;
-  Closable?: boolean;
-  isActive: boolean;
+export {
+  Table,
+  Button,
+  Filter,
+  Login,
+  Modal,
+  Empresa,
+  Cliente,
+  Orcamento,
+  Produto,
+  Vendedor,
 };
-
-export interface iUserLogin {
-  username: string;
-  password: string;
-}
-
-export interface iCurrentUser {
-  username: string;
-  type: string;
-  level: number;
-  group?: string;
-}
-
-export interface iTokenPayload {
-  Chave: string;
-  Nivel: string;
-  Tipo: string;
-  Usuario: string;
-  Grupo?: string;
-  Validade: Date;
-  iss: string;
-}
-
-export interface iSolicitante {
-  ID: number;
-  NOME: string;
-  TELEFONES: string;
-  EMAIL: string;
-  SENHA: string;
-  EMPRESA: iEmpresa;
-}
-
-export interface iEmpresa {
-  ID: number;
-  RAZAO_SOCIAL: string;
-  NOME: string;
-  CNPJ: string;
-  TELEFONES: string;
-  BLOQUEADO: string | JSX.Element | null;
-  MOTIVO_BLOQUEADO: string;
-}
-
-export interface iCliente {
-  Cliente: number;
-  Nome: string;
-  Apelido: string;
-  Endereco: string;
-  Endereco_Num: string;
-  Endereco_Cpl: string;
-  Bairro: string;
-  Cidade: string;
-  UF: string;
-  Cep: string;
-  CIC: string;
-  Insc_Ident: string;
-  Identidade: string;
-  Inscricao_M: string;
-  DT_Cadastro: string;
-  DT_Nascimento: string;
-  Telefone: string;
-  Email: string;
-  Vendedor: number;
-  Vendedor_Interno: number;
-}
