@@ -10,10 +10,25 @@ import { LoginProvider } from '../hooks/useLogin';
 import PrivateRoute from './PrivateRoutes';
 import { Logout } from '../pages/Logout';
 import { NotFound } from '../pages/NotFound';
+import { useTheme } from '../hooks/useTheme';
+import { ToastContainer } from 'react-toastify';
 
 const RoutesPage: React.FC = () => {
+  const { ThemeName } = useTheme();
   return (
     <LoginProvider>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme={ThemeName}
+      />
       <Routes>
         <Route path='/' element={<MainLayout />}>
           <Route path='login' element={<Login />} />

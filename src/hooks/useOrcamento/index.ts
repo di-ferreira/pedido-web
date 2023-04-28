@@ -15,9 +15,13 @@ interface iDataOrcamento {
   value: iOrcamento[];
 }
 
+interface iDataCreateOrcamento {
+  value: string;
+}
+
 interface iUseOrcamento {
   CurrentOrcamento: iOrcamento;
-  SaveOrcamento: (orcamento: iOrcamento) => boolean;
+  SaveOrcamento: (orcamento: iOrcamento) => Promise<iDataCreateOrcamento>;
   // AddItemOrcamento: (item: iItensOrcamento) => void;
   // EditItemOrcamento: (item: iItensOrcamento) => void;
   // RemoveItemOrcamento: (item: iItensOrcamento) => void;
@@ -101,7 +105,9 @@ const GetOrcamento = (IdOrcamento: number): iOrcamento => {
   return Result;
 };
 
-const SaveOrcamento = (orcamento: iOrcamento): boolean => {
+const SaveOrcamento = (
+  orcamento: iOrcamento
+): Promise<iDataCreateOrcamento> => {
   let ItensOrcamento: iItemInserir[] = [];
 
   orcamento.ItensOrcamento?.map((item) => {
@@ -124,19 +130,7 @@ const SaveOrcamento = (orcamento: iOrcamento): boolean => {
     Itens: ItensOrcamento,
   };
 
-  let Result: boolean = false;
-  console.log(OrcamentoInsert);
-
-  api
-    .post(ROUTE_SAVE_ORCAMENTO, OrcamentoInsert)
-    .then((response) => {
-      console.log(response);
-      Result = true;
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  return Result;
+  return api.post(ROUTE_SAVE_ORCAMENTO, OrcamentoInsert);
 };
 
 const useOrcamento = create<iUseOrcamento>((set) => ({

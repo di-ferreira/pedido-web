@@ -21,6 +21,7 @@ import {
   faSave,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
 import Button from '../../../components/Button';
 import { MaskCnpjCpf } from '../../../utils';
 import Table from '../../../components/Table';
@@ -89,7 +90,11 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
   ];
 
   const SalvarOrcamento = () => {
-    SaveOrcamento(NewOrcamento);
+    toast.promise(SaveOrcamento(NewOrcamento), {
+      pending: `Salvando Orçamento do cliente ${NewOrcamento.CLIENTE.NOME}`,
+      success: 'Orçamento Salvo 👌',
+      error: 'Opps, ocorreu um erro 🤯',
+    });
   };
 
   return (

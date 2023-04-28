@@ -9,6 +9,7 @@ interface iDataCliente {
   Qtd_Registros: number;
   value: iCliente[];
 }
+
 interface iUseCliente {
   GetClientes: (filter?: iFilter<iCliente>) => Promise<iDataCliente>;
 }
@@ -51,10 +52,6 @@ const CreateFilter = (filter: iFilter<iCliente>): string => {
 
   let ResultRoute: string = `?${ResultFilter}${ResultTop}${ResultSkip}${ResultOrderBy}&$inlinecount=allpages`;
 
-  console.log(
-    '🚀 ~ file: index.ts:56 ~ CreateFilter ~ ResultRoute:',
-    ResultRoute
-  );
   return ResultRoute;
 };
 
@@ -74,7 +71,6 @@ const GetClientes = async (
     Qtd_Registros: response.data['@xdata.count'],
     value: response.data.value,
   };
-  console.log('🚀 ~ file: index.ts:79 ~ result:', result);
   return result;
 };
 

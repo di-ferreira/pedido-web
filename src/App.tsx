@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import RoutesPage from './router';
-import GlobalStyle from './GlobalStyle';
 import { AppThemeProvider } from './hooks/useTheme';
 import { QueryClientProvider, QueryClient } from 'react-query';
+import GlobalStyle from './GlobalStyle';
+import 'react-toastify/dist/ReactToastify.min.css';
 
 const queryClient = new QueryClient();
 
