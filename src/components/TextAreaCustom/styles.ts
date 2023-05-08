@@ -32,7 +32,7 @@ export const LabelInput = styled.label`
   }
 `;
 
-export const Input = styled.input`
+export const TextArea = styled.textarea`
   border: 1px solid ${(props) => props.theme.colors.onBackground};
   width: 100%;
   height: 100%;
@@ -57,15 +57,6 @@ export const Input = styled.input`
     box-shadow: 0px 0px 0px 0px transparent;
     border-color: ${(props) => props.theme.colors.onBackground};
     background: rgba(${(props) => HEXToRGB(props.theme.colors.onGray)}, 0.3);
-  }
-  &[type='password'] {
-    color: ${(props) => props.theme.colors.onBackground};
-  }
-  &[type='date'] {
-    color: ${(props) => props.theme.colors.onBackground};
-    &::-webkit-calendar-picker-indicator {
-      cursor: pointer;
-    }
   }
 
   @media only screen and ${devices.sm} {

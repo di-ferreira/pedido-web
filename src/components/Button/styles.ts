@@ -66,7 +66,7 @@ export const Container = styled.button<ContainerProps>`
   margin: 0 0.5rem;
   border: none;
   padding: ${(props) =>
-    props.rounded ? '0.25rem 0.3rem' : '0.1rem 0.8rem 0.1rem 0.5rem'};
+    props.rounded ? '10px 10px' : '0.1rem 0.8rem 0.1rem 0.5rem'};
   border-radius: ${(props) => (props.rounded ? '50%' : '0.4rem')};
   background-color: ${(props) => props.bgColor};
   transition: background-color ease 0.5s;

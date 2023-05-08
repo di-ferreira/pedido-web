@@ -7,10 +7,17 @@ interface iInputCustom {
   type?: 'text' | 'password' | 'date' | 'number';
   value?: any;
   name?: string;
+  ref?:
+    | ((instance: HTMLInputElement | null) => void)
+    | React.RefObject<HTMLInputElement>
+    | null
+    | undefined;
   placeholder?: string;
+  readOnly?: boolean;
   height?: string;
   widht?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onKeydown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 export const InputCustom: React.FC<iInputCustom> = ({
@@ -18,6 +25,9 @@ export const InputCustom: React.FC<iInputCustom> = ({
   type,
   label,
   placeholder,
+  onKeydown,
+  readOnly,
+  ref,
   name,
   value,
   height,
@@ -27,11 +37,14 @@ export const InputCustom: React.FC<iInputCustom> = ({
     <Container height={height} widht={widht}>
       {label && <LabelInput>{label}</LabelInput>}
       <Input
+        readOnly={readOnly ? readOnly : false}
         value={value}
         name={name}
+        ref={ref}
         type={type ? type : 'text'}
         placeholder={placeholder}
-        onChange={(e) => onChange(e)}
+        onKeyDown={(e) => onKeydown && onKeydown(e)}
+        onChange={(e) => onChange && onChange(e)}
       />
     </Container>
   );

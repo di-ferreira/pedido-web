@@ -7,12 +7,7 @@ import {
   FormEditOrcamentoRow,
   FormFooter,
 } from './styles';
-import {
-  iItemInserir,
-  iItensOrcamento,
-  iOrcamento,
-  iOrcamentoInserir,
-} from '../../../@types/Orcamento';
+import { iItensOrcamento, iOrcamento } from '../../../@types/Orcamento';
 import useModal from '../../../hooks/useModal';
 import { InputCustom } from '../../../components/InputCustom';
 import {
@@ -27,16 +22,19 @@ import { MaskCnpjCpf } from '../../../utils';
 import Table from '../../../components/Table';
 import { iColumnType } from '../../../@types/Table';
 import useOrcamento from '../../../hooks/useOrcamento';
+import { ModalItemOrcamento } from '../ItemOrcamento';
 
 interface iModalOrcamento {
   Orcamento: iOrcamento;
 }
 
 export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
+  const { SaveOrcamento, CurrentOrcamento } = useOrcamento();
   const [NewOrcamento, setOrcamento] = useState<iOrcamento>(Orcamento);
   const [ItensOrcamento, setItensOrcamento] = useState<iItensOrcamento[]>([]);
-
-  const { SaveOrcamento } = useOrcamento();
+  const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
+    null
+  );
 
   const { Modal, showModal } = useModal();
 
@@ -44,6 +42,10 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
     showModal();
     setOrcamento(Orcamento);
   }, [Orcamento]);
+
+  useEffect(() => {
+    setOrcamento(CurrentOrcamento);
+  }, [CurrentOrcamento]);
 
   const tableHeaders: iColumnType<iItensOrcamento>[] = [
     {
@@ -89,17 +91,28 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
     },
   ];
 
-  const SalvarOrcamento = () => {
-    toast.promise(SaveOrcamento(NewOrcamento), {
-      pending: `Salvando Orçamento do cliente ${NewOrcamento.CLIENTE.NOME}`,
-      success: 'Orçamento Salvo 👌',
-      error: 'Opps, ocorreu um erro 🤯',
+  const OpenModalItemOrcamento = () => {
+    setItemOrcamento({
+      ORCAMENTO: Orcamento,
+      QTD: 1,
+      SUBTOTAL: 0.0,
+      TOTAL: 0.0,
+      VALOR: 0.0,
+      PRODUTO: null,
     });
+  };
+
+  const SalvarOrcamento = () => {
+    // toast.promise(SaveOrcamento(NewOrcamento), {
+    //   pending: `Salvando Orçamento do cliente ${NewOrcamento.CLIENTE.NOME}`,
+    //   success: 'Orçamento Salvo 👌',
+    //   error: 'Opps, ocorreu um erro 🤯',
+    // });
   };
 
   return (
     <>
-      {Modal && NewOrcamento && (
+      {Modal && NewOrcamento && NewOrcamento.CLIENTE && (
         <Modal
           Title={
             NewOrcamento.ORCAMENTO > 0
@@ -212,6 +225,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
               <FormEditOrcamentoRow>
                 <h3>ITENS</h3>
                 <Button
+                  onclick={() => OpenModalItemOrcamento()}
                   Type='success'
                   Title='Adicionar Item'
                   Icon={faPlus}
@@ -243,6 +257,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
           </FormEditOrcamento>
         </Modal>
       )}
+      {ItemOrcamento && <ModalItemOrcamento Item={ItemOrcamento} />}
     </>
   );
 };

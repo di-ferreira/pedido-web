@@ -16,13 +16,13 @@ interface iDataOrcamento {
 }
 
 interface iDataCreateOrcamento {
-  value: string;
+  data: iOrcamento;
 }
 
 interface iUseOrcamento {
   CurrentOrcamento: iOrcamento;
   SaveOrcamento: (orcamento: iOrcamento) => Promise<iDataCreateOrcamento>;
-  // AddItemOrcamento: (item: iItensOrcamento) => void;
+  AddItemOrcamento: (item: iItensOrcamento) => void;
   // EditItemOrcamento: (item: iItensOrcamento) => void;
   // RemoveItemOrcamento: (item: iItensOrcamento) => void;
   GetOrcamento: (IdOrcamento: number) => iOrcamento;
@@ -138,7 +138,10 @@ const useOrcamento = create<iUseOrcamento>((set) => ({
   SaveOrcamento: (orcamento: iOrcamento) => {
     return SaveOrcamento(orcamento);
   },
-  // AddItemOrcamento: (item: iItensOrcamento) => void,
+  AddItemOrcamento: (item: iItensOrcamento) => {
+    let NewOrcamento: iOrcamento;
+    //TODO
+  },
   // EditItemOrcamento: (item: iItensOrcamento) => void,
   // RemoveItemOrcamento: (item: iItensOrcamento) => void,
   GetOrcamento: (IdOrcamento: number) => {

@@ -55,8 +55,8 @@ export interface iItensOrcamento {
   GORDURA?: number;
   P_DESC?: number;
   ID_VALE_CASCO?: number;
-  ORCAMENTO: number;
-  PRODUTO: iProduto;
+  ORCAMENTO: iOrcamento;
+  PRODUTO: iProduto | null;
 }
 
 export interface iOrcamentoInserir {

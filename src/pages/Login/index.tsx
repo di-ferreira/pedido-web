@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Container,
   LoginContainer,
@@ -25,12 +25,15 @@ export const Login: React.FC = () => {
   const { ThemeName } = useTheme();
   const { loginUser, isError, isLoading, isLogged, errorMsg } = useLogin();
 
+  const RefPassword = useRef(null);
+
   const [UserLogin, setUserLogin] = useState<iVendaLogin>({
     codigoVendedor: '',
     password: '',
   });
 
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
     const { value, name } = e.target;
     setUserLogin({
       ...UserLogin,
@@ -83,6 +86,7 @@ export const Login: React.FC = () => {
           </ContainerInput>
           <ContainerInput>
             <InputCustom
+              ref={RefPassword}
               name='password'
               value={UserLogin.password}
               onChange={OnChangeInput}
