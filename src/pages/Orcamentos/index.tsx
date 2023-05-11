@@ -12,12 +12,17 @@ import { iFilter } from '../../@types/Filter';
 import { iColumnType, iOption } from '../../@types/Table';
 import useSelect from '../../hooks/UseSelect';
 import { InputCustom } from '../../components/InputCustom';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faEdit,
+  faFileLines,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons';
 import { CustomSwitch } from '../../components/CustomSwitch';
 import { Loading } from '../../components/Loading';
 import Table from '../../components/Table';
 import Button from '../../components/Button';
 import dayjs from 'dayjs';
+import { ModalOrcamento } from '../Modals/Orcamento';
 
 export const Orcamentos: React.FC = () => {
   const { GetOrcamentos } = useOrcamento();
@@ -89,6 +94,10 @@ export const Orcamentos: React.FC = () => {
     }
   };
 
+  const onOpenModalOrcamento = async (value: iOrcamento) => {
+    setOrcamento(value);
+  };
+
   const headers: iColumnType<iOrcamento>[] = [
     {
       key: 'ORCAMENTO',
@@ -126,27 +135,27 @@ export const Orcamentos: React.FC = () => {
         });
       },
     },
-    // {
-    //   key: 'acoes',
-    //   title: 'AÇÕES',
-    //   width: '20rem',
-    //   action: [
-    //     {
-    //       onclick: () => {},
-    //       Icon: faFileLines,
-    //       Rounded: true,
-    //       Title: 'Novo Orçamento',
-    //       Type: 'success',
-    //     },
-    //     {
-    //       onclick: onOpenModalOrcamento,
-    //       Icon: faEdit,
-    //       Rounded: true,
-    //       Title: 'Editar',
-    //       Type: 'warn',
-    //     },
-    //   ],
-    // },
+    {
+      key: 'acoes',
+      title: 'AÇÕES',
+      width: '5rem',
+      action: [
+        // {
+        //   onclick: () => {},
+        //   Icon: faFileLines,
+        //   Rounded: true,
+        //   Title: 'Novo Orçamento',
+        //   Type: 'success',
+        // },
+        {
+          onclick: onOpenModalOrcamento,
+          Icon: faEdit,
+          Rounded: true,
+          Title: 'Editar',
+          Type: 'warn',
+        },
+      ],
+    },
   ];
 
   //  const MountQueryFilter = (
@@ -287,8 +296,8 @@ export const Orcamentos: React.FC = () => {
             }}
           />
         </SwitchContainer>
-      </FilterContainer>
-       {Orcamento && <ModalOrcamento Orcamento={Orcamento} />} */}
+      </FilterContainer>*/}
+      {Orcamento && <ModalOrcamento Orcamento={Orcamento} />}
 
       {IsLoading && <Loading />}
       {OrcamentoList && !IsLoading && (

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   FormEditOrcamento,
@@ -14,99 +14,53 @@ import Button from '../../../components/Button';
 import { iItensOrcamento } from '../../../@types/Orcamento';
 import { TextAreaCustom } from '../../../components/TextAreaCustom';
 import { iProduto } from '../../../@types/Produto';
-import { ModalProduto } from '../Produto';
 
-interface iModalItemOrcamento {
-  Item: iItensOrcamento;
-  callback: (item: iItensOrcamento) => void;
+interface iModalProduto {
+  produtos: iProduto[];
+  callback: (prodtuto: iProduto) => void;
 }
 
-export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
-  Item,
+export const ModalProduto: React.FC<iModalProduto> = ({
+  produtos,
   callback,
 }) => {
   const { Modal, showModal } = useModal();
-  const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento>(
-    {} as iItensOrcamento
-  );
-
-  const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
-  const [Produtos, setProdutos] = useState<iProduto[]>([]);
+  const [newProdutos, setProdutos] = useState<iProduto[]>({} as iProduto[]);
+  const [Produto, setProduto] = useState<iProduto>({} as iProduto);
 
   useEffect(() => {
+    setProdutos(produtos);
     showModal();
-    setItemOrcamento(Item);
-  }, [Item]);
-  console.log('oi');
+  }, [produtos]);
 
-  const OnChangeInput = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
-      const { value, name } = e.target;
-      setItemOrcamento({
-        ...ItemOrcamento,
-        [name]: value,
-      });
-    },
-    [ItemOrcamento]
-  );
+  const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    const { value, name } = e.target;
+  };
 
-  const OnChangeTextArea = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      e.preventDefault();
-      const { value, name } = e.target;
-      setItemOrcamento({
-        ...ItemOrcamento,
-        [name]: value,
-      });
-    },
-    [ItemOrcamento]
-  );
-
-  const OnProdutoPalavras = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log(e.target.value);
-      setProdutoPalavras(e.target.value);
-    },
-    [ProdutoPalavras]
-  );
-
-  // const OnSearchProduto = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  //   e.preventDefault();
-  //   if (e.key === 'Enter') {
-  //     console.log(e.currentTarget.value);
-  //     setProdutoPalavras(e.currentTarget.value);
-  //   }
-  // };
-
-  const ProdutoToItem = (produto: iProduto) => {
-    setItemOrcamento({
-      ...ItemOrcamento,
-      PRODUTO: produto,
-    });
+  const OnChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    e.preventDefault();
+    const { value, name } = e.target;
   };
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    callback(ItemOrcamento);
+    callback(Produto);
   };
 
   return (
     <>
       {Modal && (
-        <Modal
-          Title={`NOVO ITEM AO ORÇAMENTO Nº ${ItemOrcamento?.ORCAMENTO.ORCAMENTO}`}
-        >
-          <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
+        <Modal Title={`Buscar Produto`}>
+          {/* <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
             <FormEditOrcamentoColumn>
               <FormEditOrcamentoRow>
                 <FormEditOrcamentoInputContainer width='25%'>
                   <InputCustom
-                    onChange={OnProdutoPalavras}
-                    // onKeydown={OnSearchProduto}
-                    value={ProdutoPalavras}
-                    name='ProdutoPalavras'
+                    onChange={OnChangeInput}
                     label='PRODUTO'
+                    name='PRODUTO'
+                    value={ItemOrcamento.PRODUTO}
                   />
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='25%'>
@@ -120,6 +74,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='20%'>
                   <InputCustom
+                    onChange={OnChangeInput}
                     label='FABRICANTE'
                     readOnly={true}
                     name='FABRICANTE'
@@ -128,6 +83,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='20%'>
                   <InputCustom
+                    onChange={OnChangeInput}
                     label='LOCALIZAÇÃO'
                     readOnly={true}
                     name='LOCALIZACAO'
@@ -194,12 +150,9 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 Height='3.5rem'
               />
             </FormFooter>
-          </FormEditOrcamento>
+          </FormEditOrcamento> */}
         </Modal>
       )}
-      {/* {ProdutoPalavras !== '' && (
-        <ModalProduto callback={ProdutoToItem} produtos={Produtos} />
-      )} */}
     </>
   );
 };

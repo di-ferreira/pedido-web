@@ -29,8 +29,7 @@ interface iModalOrcamento {
 }
 
 export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
-  const { SaveOrcamento, CurrentOrcamento } = useOrcamento();
-  const [NewOrcamento, setOrcamento] = useState<iOrcamento>(Orcamento);
+  let NewOrcamento: iOrcamento = Orcamento;
   const [ItensOrcamento, setItensOrcamento] = useState<iItensOrcamento[]>([]);
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
     null
@@ -40,12 +39,8 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
 
   useEffect(() => {
     showModal();
-    setOrcamento(Orcamento);
+    NewOrcamento = Orcamento;
   }, [Orcamento]);
-
-  useEffect(() => {
-    setOrcamento(CurrentOrcamento);
-  }, [CurrentOrcamento]);
 
   const tableHeaders: iColumnType<iItensOrcamento>[] = [
     {
@@ -100,6 +95,12 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
       VALOR: 0.0,
       PRODUTO: null,
     });
+  };
+
+  const AddItemOrcamento = (item: iItensOrcamento) => {
+    let NewItensOrcamento: iItensOrcamento[] = ItensOrcamento;
+    NewItensOrcamento.push(item);
+    NewOrcamento = { ...NewOrcamento, ItensOrcamento: NewItensOrcamento };
   };
 
   const SalvarOrcamento = () => {
@@ -257,7 +258,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
           </FormEditOrcamento>
         </Modal>
       )}
-      {ItemOrcamento && <ModalItemOrcamento Item={ItemOrcamento} />}
+      {ItemOrcamento && (
+        <ModalItemOrcamento callback={AddItemOrcamento} Item={ItemOrcamento} />
+      )}
     </>
   );
 };

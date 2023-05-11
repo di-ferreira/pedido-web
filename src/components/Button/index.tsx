@@ -40,6 +40,7 @@ const Button: React.FC<iButton> = ({
           size={Size}
           spin={AnimationSpin}
           spinPulse={AnimationPulse}
+          onClick={() => onclick && onclick()}
         />
       )}
       {Text && <span>{Text}</span>}

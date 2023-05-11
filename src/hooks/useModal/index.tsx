@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import {
   ModalContainer,
@@ -38,9 +38,15 @@ const useModal = () => {
       document.body
     );
 
+  const ResultModal = useMemo(() => {
+    return isVisible ? Modal : null;
+  }, [isVisible]);
+
+  const ShowModal = useCallback(() => setIsVisible(!isVisible), [isVisible]);
+
   return {
-    Modal: isVisible ? Modal : null,
-    showModal: () => setIsVisible(!isVisible),
+    Modal: ResultModal,
+    showModal: () => ShowModal(),
   };
 };
 

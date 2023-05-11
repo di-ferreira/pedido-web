@@ -13,6 +13,9 @@ export const TabBar: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    Tabs.forEach((tab) => {
+      removeTab(tab);
+    });
     openTab({
       Icon: faHouseChimney,
       Link: 'home',
