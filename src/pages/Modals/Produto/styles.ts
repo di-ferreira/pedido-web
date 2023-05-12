@@ -23,6 +23,7 @@ export const FormEditOrcamentoRow = styled.div<iRow>`
   height: ${(props) => (props.height ? props.height : 'auto')};
   margin: 1rem 0;
   display: flex;
+  align-items: center;
   flex-direction: row;
   flex-wrap: wrap;
 
@@ -72,7 +73,7 @@ export const FormEditOrcamentoSwitchContainer = styled.div<iInputContainer>`
 `;
 
 export const FormFooter = styled.footer`
-  margin-top: 1.5rem;
+  // margin-top: 0.5rem;
   width: 100%;
   display: flex;
 `;

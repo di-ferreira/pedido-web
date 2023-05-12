@@ -7,29 +7,35 @@ import {
   FormEditOrcamentoRow,
   FormFooter,
 } from './styles';
-import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { InputCustom } from '../../../components/InputCustom';
 import useModal from '../../../hooks/useModal';
 import Button from '../../../components/Button';
 import { iItensOrcamento } from '../../../@types/Orcamento';
 import { TextAreaCustom } from '../../../components/TextAreaCustom';
 import { iProduto } from '../../../@types/Produto';
+import Table from '../../../components/Table';
+import { iColumnType } from '../../../@types/Table';
 
 interface iModalProduto {
   produtos: iProduto[];
+  produtoPalavras: string;
   callback: (prodtuto: iProduto) => void;
 }
 
 export const ModalProduto: React.FC<iModalProduto> = ({
+  produtoPalavras,
   produtos,
   callback,
 }) => {
-  const { Modal, showModal } = useModal();
+  const { Modal, showModal, OnCloseModal } = useModal();
   const [newProdutos, setProdutos] = useState<iProduto[]>({} as iProduto[]);
   const [Produto, setProduto] = useState<iProduto>({} as iProduto);
+  const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
 
   useEffect(() => {
     setProdutos(produtos);
+    setProdutoPalavras(produtoPalavras);
     showModal();
   }, [produtos]);
 
@@ -38,119 +44,98 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     const { value, name } = e.target;
   };
 
-  const OnChangeTextArea = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
-    const { value, name } = e.target;
+  const AddProduto = (produto: iProduto) => {
+    callback(produto);
+    OnCloseModal();
   };
 
-  const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    callback(Produto);
-  };
+  const tableHeaders: iColumnType<iProduto>[] = [
+    {
+      key: 'acoes',
+      title: 'AÇÕES',
+      width: '5%',
+      action: [
+        {
+          onclick: AddProduto,
+          Icon: faPlus,
+          Title: 'Adicionar',
+          Type: 'success',
+          Rounded: true,
+        },
+      ],
+    },
+    {
+      key: 'PRODUTO',
+      title: 'CÓDIGO',
+      width: '10%',
+    },
+    {
+      key: 'NOME',
+      title: 'NOME',
+      width: '25%',
+      isHideMobile: true,
+    },
+    {
+      key: 'QTDATUAL',
+      title: 'QTD',
+      width: '5%',
+    },
+    {
+      key: 'PRECO',
+      title: 'VALOR',
+      width: '5%',
+      isHideMobile: true,
+      render: (_, item) => {
+        return item.PRECO.toLocaleString('pt-br', {
+          style: 'currency',
+          currency: 'BRL',
+        });
+      },
+    },
+  ];
 
   return (
     <>
       {Modal && (
         <Modal Title={`Buscar Produto`}>
-          {/* <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
+          <FormEditOrcamento>
             <FormEditOrcamentoColumn>
               <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='25%'>
+                <FormEditOrcamentoInputContainer width='85%'>
                   <InputCustom
                     onChange={OnChangeInput}
-                    label='PRODUTO'
-                    name='PRODUTO'
-                    value={ItemOrcamento.PRODUTO}
+                    label='BUSCAR PRODUTO'
+                    name='SEARCH'
+                    value={ProdutoPalavras}
                   />
                 </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='25%'>
-                  <InputCustom
-                    onChange={OnChangeInput}
-                    label='REFERÊNCIA'
-                    readOnly={true}
-                    name='REFERENCIA'
-                    value={'teste'}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='20%'>
-                  <InputCustom
-                    onChange={OnChangeInput}
-                    label='FABRICANTE'
-                    readOnly={true}
-                    name='FABRICANTE'
-                    // value={}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='20%'>
-                  <InputCustom
-                    onChange={OnChangeInput}
-                    label='LOCALIZAÇÃO'
-                    readOnly={true}
-                    name='LOCALIZACAO'
-                    // value={}
-                  />
-                </FormEditOrcamentoInputContainer>
+                <Button
+                  Icon={faSearch}
+                  Text='BUSCAR'
+                  Height='3.5rem'
+                  Type='primary'
+                  style={{ marginTop: '0.5rem' }}
+                />
               </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='95%'>
-                  <InputCustom
-                    onChange={OnChangeInput}
-                    label='NOME DO PRODUTO'
-                    readOnly={true}
-                    name='PRODUTO.NOME'
-                    // value={}
+              <FormEditOrcamentoRow height='45rem'>
+                {newProdutos.length > 0 && (
+                  <Table
+                    messageNoData={'Esse orçamento não possuí itens!'}
+                    columns={tableHeaders}
+                    data={newProdutos}
                   />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='95%'>
-                  <TextAreaCustom
-                    onChange={OnChangeTextArea}
-                    label='APLICAÇÃO PRODUTO'
-                    readOnly={true}
-                    name='APLICACAO'
-                    // value={}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='95%'>
-                  <TextAreaCustom
-                    onChange={OnChangeTextArea}
-                    label='INFORMACOES'
-                    readOnly={true}
-                    name='INFORMACOES.PRODUTO'
-                    // value={}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
-            <FormEditOrcamentoColumn>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='45%'>
-                  <InputCustom
-                    onChange={OnChangeInput}
-                    label='ESTOQUE'
-                    name='OBS1'
-                    // value={}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='45%'>
-                  <InputCustom
-                    onChange={OnChangeInput}
-                    label='OBSERVAÇÃO 2'
-                    name='OBS2'
-                    // value={}
-                  />
-                </FormEditOrcamentoInputContainer>
+                )}
               </FormEditOrcamentoRow>
             </FormEditOrcamentoColumn>
             <FormFooter>
               <Button
                 Text='SALVAR'
                 Type='success'
-                TypeButton='submit'
                 Icon={faSave}
                 Height='3.5rem'
               />
             </FormFooter>
-          </FormEditOrcamento> */}
+          </FormEditOrcamento>
         </Modal>
       )}
     </>

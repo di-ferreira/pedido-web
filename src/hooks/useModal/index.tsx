@@ -47,6 +47,7 @@ const useModal = () => {
   return {
     Modal: ResultModal,
     showModal: () => ShowModal(),
+    OnCloseModal: OnClose,
   };
 };
 

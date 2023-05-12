@@ -6,6 +6,7 @@ export interface iButton {
   Width?: string;
   Icon?: IconProp;
   Size?: SizeProp;
+  style?: React.CSSProperties | undefined;
   Rounded?: boolean;
   Type?: iButtonType;
   background?: string;

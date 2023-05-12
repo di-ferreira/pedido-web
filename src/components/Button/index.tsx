@@ -7,6 +7,7 @@ const Button: React.FC<iButton> = ({
   TypeButton,
   Icon,
   Text,
+  style,
   Size,
   Rounded,
   Title,
@@ -23,6 +24,7 @@ const Button: React.FC<iButton> = ({
 
   return (
     <Container
+      style={style}
       type={TypeButton ? TypeButton : 'button'}
       height={Height}
       width={Width}
