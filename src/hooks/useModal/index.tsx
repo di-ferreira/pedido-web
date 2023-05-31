@@ -11,11 +11,20 @@ import { Icon } from '../../components/Icon';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { iModal, iModalRender } from '../../@types/Modal';
 
-const RenderLayout: React.FC<iModalRender> = ({ Title, OnClose, children }) => {
+const RenderLayout: React.FC<iModalRender> = ({
+  Title,
+  OnClose,
+  OnCloseButtonClick,
+  children,
+}) => {
+  const BtnClose = () => {
+    OnClose();
+    OnCloseButtonClick && OnCloseButtonClick();
+  };
   return (
     <Backdrop>
       <ModalContainer>
-        <CloseButton onClick={() => OnClose()}>
+        <CloseButton onClick={BtnClose}>
           <Icon Icon={faTimes} />
         </CloseButton>
         <ModalHeader>
@@ -31,10 +40,9 @@ const useModal = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const OnClose = () => setIsVisible(false);
-
-  const Modal: React.FC<iModal> = ({ Title, children }) =>
+  const Modal: React.FC<iModal> = ({ Title, children, OnCloseButtonClick }) =>
     ReactDOM.createPortal(
-      RenderLayout({ Title, children, OnClose }),
+      RenderLayout({ Title, children, OnClose, OnCloseButtonClick }),
       document.body
     );
 

@@ -366,8 +366,9 @@ export const Clientes: React.FC = () => {
 
     await SaveOrcamento(NewOrcamento)
       .then((result) => {
-        const { ORCAMENTO } = result.data;
-        NewOrcamento = { ...NewOrcamento, ORCAMENTO };
+        console.log('🚀 ~ file: index.tsx:369 ~ .then ~ result:', result);
+        const { Data } = result.data;
+        NewOrcamento = { ...NewOrcamento, ...Data };
         setOrcamento(NewOrcamento);
         console.log('new orcamento', NewOrcamento);
       })

@@ -13,11 +13,13 @@ import useModal from '../../../hooks/useModal';
 import Button from '../../../components/Button';
 import { iItensOrcamento } from '../../../@types/Orcamento';
 import { TextAreaCustom } from '../../../components/TextAreaCustom';
-import { iProduto } from '../../../@types/Produto';
+import { iListaChave, iProduto } from '../../../@types/Produto';
 import { ModalProduto } from '../Produto';
 import api from '../../../services';
 import { toast } from 'react-toastify';
 import { useTheme } from '../../../hooks/useTheme';
+import Table from '../../../components/Table';
+import { iColumnType } from '../../../@types/Table';
 
 interface iModalItemOrcamento {
   Item: iItensOrcamento;
@@ -45,13 +47,14 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   }, [Item]);
 
   const fetchProdutoList = async (busca: string) => {
-    const response = await api.get(
-      `/Produto?$filter=NOME like '% ${busca} %'&$top=20`
-    );
+    const response = await api.post(`/ServiceProdutos/SuperBusca`, {
+      Palavras: busca,
+      QuantidadeRegistros: 15,
+    });
 
     const { data } = response;
 
-    let ProdutosList: iProduto[] = data.value;
+    let ProdutosList: iProduto[] = data.Data;
 
     if (ProdutosList.length > 1) {
       setProdutos(ProdutosList);
@@ -74,11 +77,19 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   const OnChangeInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
+
       const { value, name } = e.target;
-      setItemOrcamento({
-        ...ItemOrcamento,
-        [name]: value,
-      });
+      if (name === 'QTD') {
+        setItemOrcamento({
+          ...ItemOrcamento,
+          QTD: parseInt(value),
+        });
+      } else {
+        setItemOrcamento({
+          ...ItemOrcamento,
+          [name]: value,
+        });
+      }
     },
     [ItemOrcamento]
   );
@@ -107,12 +118,26 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setItemOrcamento({ ...ItemOrcamento, TABELA: 'SISTEMA' });
     callback(ItemOrcamento);
     setProdutoPalavras('');
     setProdutos([]);
     setItemOrcamento({} as iItensOrcamento);
     OnCloseModal();
   };
+
+  const tableChavesHeaders: iColumnType<iListaChave>[] = [
+    {
+      key: 'DATA_ATUALIZACAO',
+      title: 'DATA',
+      width: '10%',
+    },
+    {
+      key: 'CNA',
+      title: 'DOC',
+      width: '10%',
+    },
+  ];
 
   return (
     <>
@@ -183,6 +208,18 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   />
                 </FormEditOrcamentoInputContainer>
               </FormEditOrcamentoRow>
+              <FormEditOrcamentoColumn>
+                <FormEditOrcamentoRow>
+                  {ItemOrcamento.PRODUTO &&
+                    ItemOrcamento.PRODUTO.ListaChaves && (
+                      <Table
+                        messageNoData={'Essa busca não retornou itens!'}
+                        columns={tableChavesHeaders}
+                        data={ItemOrcamento.PRODUTO.ListaChaves}
+                      />
+                    )}
+                </FormEditOrcamentoRow>
+              </FormEditOrcamentoColumn>
             </FormEditOrcamentoColumn>
             <FormEditOrcamentoColumn>
               <FormEditOrcamentoRow>

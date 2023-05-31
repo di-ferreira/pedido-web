@@ -9,6 +9,7 @@ import {
 } from '../../@types/Orcamento';
 import { iVendedor } from '../../@types/Vendedor';
 import { VENDEDOR_STORE } from '../../Constants';
+import { iDataResult } from '../../@types';
 
 interface iDataOrcamento {
   Qtd_Registros: number;
@@ -16,13 +17,13 @@ interface iDataOrcamento {
 }
 
 interface iDataCreateOrcamento {
-  data: iOrcamento;
+  data: iDataResult<iOrcamento>;
 }
 
 interface iUseOrcamento {
   CurrentOrcamento: iOrcamento;
   SaveOrcamento: (orcamento: iOrcamento) => Promise<iDataCreateOrcamento>;
-  AddItemOrcamento: (item: iItensOrcamento) => void;
+  AddItemOrcamento: (item: iItensOrcamento) => Promise<iItensOrcamento>;
   // EditItemOrcamento: (item: iItensOrcamento) => void;
   // RemoveItemOrcamento: (item: iItensOrcamento) => void;
   GetOrcamento: (IdOrcamento: number) => iOrcamento;
@@ -32,6 +33,7 @@ interface iUseOrcamento {
 const ROUTE_GET_ALL_ORCAMENTO = '/Orcamento';
 
 const ROUTE_SAVE_ORCAMENTO = '/ServiceVendas/NovoOrcamento';
+const ROUTE_SAVE_ITEM_ORCAMENTO = '/OrcamentoItem';
 
 const CreateFilter = (filter: iFilter<iOrcamento>): string => {
   let VendedorLocal: iVendedor = JSON.parse(
@@ -80,7 +82,7 @@ const GetOrcamentos = async (
 
   const FILTER = filter
     ? CreateFilter(filter)
-    : `?$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}&$top=15&$inlinecount=allpages&$orderby=DATA desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento`;
+    : `?$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}&$top=15&$inlinecount=allpages&$orderby=DATA desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento,ItensOrcamento/PRODUTO`;
 
   const response = await api.get(`${ROUTE_GET_ALL_ORCAMENTO}${FILTER}`);
 
@@ -112,7 +114,7 @@ const SaveOrcamento = (
 
   orcamento.ItensOrcamento?.map((item) => {
     let ItemInsert: iItemInserir = {
-      CodigoProduto: item.PRODUTO.PRODUTO,
+      CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
       Qtd: item.QTD,
       SubTotal: item.SUBTOTAL,
       Tabela: item.TABELA ? item.TABELA : 'SISTEMA',
@@ -133,14 +135,26 @@ const SaveOrcamento = (
   return api.post(ROUTE_SAVE_ORCAMENTO, OrcamentoInsert);
 };
 
+const SaveItemOrcamento = (item: iItensOrcamento): Promise<iItensOrcamento> => {
+  let ItemInsert: iItensOrcamento = {
+    ...item,
+    TABELA: item.TABELA ? item.TABELA : 'SISTEMA',
+  };
+  console.log(
+    '🚀 ~ file: index.ts:143 ~ SaveItemOrcamento ~ item:',
+    ItemInsert
+  );
+
+  return api.post(ROUTE_SAVE_ITEM_ORCAMENTO, ItemInsert);
+};
+
 const useOrcamento = create<iUseOrcamento>((set) => ({
   CurrentOrcamento: {} as iOrcamento,
   SaveOrcamento: (orcamento: iOrcamento) => {
     return SaveOrcamento(orcamento);
   },
   AddItemOrcamento: (item: iItensOrcamento) => {
-    let NewOrcamento: iOrcamento;
-    //TODO
+    return SaveItemOrcamento(item);
   },
   // EditItemOrcamento: (item: iItensOrcamento) => void,
   // RemoveItemOrcamento: (item: iItensOrcamento) => void,

@@ -9,6 +9,13 @@ import * as Orcamento from './Orcamento';
 import * as Produto from './Produto';
 import * as Vendedor from './Vendedor';
 
+export interface iDataResult<T> {
+  Data: T;
+  RecordCount: number;
+  StatusCode: number;
+  StatusMessage: string;
+}
+
 export {
   Table,
   Button,

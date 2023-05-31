@@ -26,20 +26,28 @@ import { ModalItemOrcamento } from '../ItemOrcamento';
 
 interface iModalOrcamento {
   Orcamento: iOrcamento;
+  callback?: () => void;
 }
 
-export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
+export const ModalOrcamento: React.FC<iModalOrcamento> = ({
+  Orcamento,
+  callback,
+}) => {
   let NewOrcamento: iOrcamento = Orcamento;
   const [ItensOrcamento, setItensOrcamento] = useState<iItensOrcamento[]>([]);
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
     null
   );
 
-  const { Modal, showModal } = useModal();
+  const { Modal, showModal, OnCloseModal } = useModal();
+
+  const { AddItemOrcamento } = useOrcamento();
 
   useEffect(() => {
     showModal();
     NewOrcamento = Orcamento;
+    console.log('🚀 ~ file: index.tsx:49 ~ useEffect ~ Orcamento:', Orcamento);
+    setItensOrcamento([]);
   }, [Orcamento]);
 
   const tableHeaders: iColumnType<iItensOrcamento>[] = [
@@ -97,10 +105,13 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
     });
   };
 
-  const AddItemOrcamento = (item: iItensOrcamento) => {
-    let NewItensOrcamento: iItensOrcamento[] = ItensOrcamento;
-    NewItensOrcamento.push(item);
-    NewOrcamento = { ...NewOrcamento, ItensOrcamento: NewItensOrcamento };
+  const AddItem = async (item: iItensOrcamento) => {
+    let newItem: iItensOrcamento = item;
+    const { TABELA } = await AddItemOrcamento(item);
+    newItem = { ...newItem, TABELA };
+    console.log('🚀 ~ file: index.tsx:111 ~ AddItem ~ newItem:', newItem);
+
+    setItensOrcamento((old) => [...old, newItem]);
   };
 
   const SalvarOrcamento = () => {
@@ -109,6 +120,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
     //   success: 'Orçamento Salvo 👌',
     //   error: 'Opps, ocorreu um erro 🤯',
     // });
+    OnCloseModal();
   };
 
   return (
@@ -120,6 +132,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
               ? `ORÇAMENTO Nº ${NewOrcamento.ORCAMENTO.toString()}`
               : 'NOVO ORÇAMENTO'
           }
+          OnCloseButtonClick={callback}
         >
           <FormEditOrcamento>
             <FormEditOrcamentoColumn>
@@ -259,7 +272,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento }) => {
         </Modal>
       )}
       {ItemOrcamento && (
-        <ModalItemOrcamento callback={AddItemOrcamento} Item={ItemOrcamento} />
+        <ModalItemOrcamento callback={AddItem} Item={ItemOrcamento} />
       )}
     </>
   );

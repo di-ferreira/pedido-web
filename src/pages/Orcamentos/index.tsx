@@ -98,6 +98,10 @@ export const Orcamentos: React.FC = () => {
     setOrcamento(value);
   };
 
+  const onCloseModalOrcamento = async () => {
+    setOrcamento(null);
+  };
+
   const headers: iColumnType<iOrcamento>[] = [
     {
       key: 'ORCAMENTO',
@@ -297,7 +301,12 @@ export const Orcamentos: React.FC = () => {
           />
         </SwitchContainer>
       </FilterContainer>*/}
-      {Orcamento && <ModalOrcamento Orcamento={Orcamento} />}
+      {Orcamento && (
+        <ModalOrcamento
+          Orcamento={Orcamento}
+          callback={onCloseModalOrcamento}
+        />
+      )}
 
       {IsLoading && <Loading />}
       {OrcamentoList && !IsLoading && (
