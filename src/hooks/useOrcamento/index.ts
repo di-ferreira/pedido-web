@@ -3,6 +3,7 @@ import api from '../../services/index';
 import { iFilter } from '../../@types/Filter';
 import {
   iItemInserir,
+  iItemRemove,
   iItensOrcamento,
   iOrcamento,
   iOrcamentoInserir,
@@ -20,20 +21,23 @@ interface iDataCreateOrcamento {
   data: iDataResult<iOrcamento>;
 }
 
+interface iResultOrcamento {
+  data: iOrcamento;
+}
+
 interface iUseOrcamento {
   CurrentOrcamento: iOrcamento;
   SaveOrcamento: (orcamento: iOrcamento) => Promise<iDataCreateOrcamento>;
-  AddItemOrcamento: (item: iItensOrcamento) => Promise<iItensOrcamento>;
-  // EditItemOrcamento: (item: iItensOrcamento) => void;
-  // RemoveItemOrcamento: (item: iItensOrcamento) => void;
-  GetOrcamento: (IdOrcamento: number) => iOrcamento;
+  AddItemOrcamento: (item: iItemInserir) => Promise<iDataResult<iOrcamento>>;
+  RemoveItemOrcamento: (item: iItemRemove) => Promise<iDataResult<iOrcamento>>;
+  GetOrcamento: (IdOrcamento: number) => Promise<iResultOrcamento>;
   GetOrcamentos: (filter?: iFilter<iOrcamento>) => Promise<iDataOrcamento>;
 }
 
 const ROUTE_GET_ALL_ORCAMENTO = '/Orcamento';
-
 const ROUTE_SAVE_ORCAMENTO = '/ServiceVendas/NovoOrcamento';
-const ROUTE_SAVE_ITEM_ORCAMENTO = '/OrcamentoItem';
+const ROUTE_REMOVE_ITEM_ORCAMENTO = '/ServiceVendas/ExcluirItemOrcamento';
+const ROUTE_SAVE_ITEM_ORCAMENTO = '/ServiceVendas/NovoItemOrcamento';
 
 const CreateFilter = (filter: iFilter<iOrcamento>): string => {
   let VendedorLocal: iVendedor = JSON.parse(
@@ -94,17 +98,10 @@ const GetOrcamentos = async (
   return result;
 };
 
-const GetOrcamento = (IdOrcamento: number): iOrcamento => {
-  let Result: iOrcamento = {} as iOrcamento;
-  api
-    .get(
-      `${ROUTE_GET_ALL_ORCAMENTO}(${IdOrcamento})?$expand=VENDEDOR,CLIENTE,ItensOrcamento`
-    )
-    .then((response) => {
-      Result = response.data;
-    });
-
-  return Result;
+const GetOrcamento = (IdOrcamento: number): Promise<iResultOrcamento> => {
+  return api.get(
+    `${ROUTE_GET_ALL_ORCAMENTO}(${IdOrcamento})?$expand=VENDEDOR,CLIENTE,ItensOrcamento,ItensOrcamento/PRODUTO`
+  );
 };
 
 const SaveOrcamento = (
@@ -114,12 +111,17 @@ const SaveOrcamento = (
 
   orcamento.ItensOrcamento?.map((item) => {
     let ItemInsert: iItemInserir = {
-      CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
-      Qtd: item.QTD,
-      SubTotal: item.SUBTOTAL,
-      Tabela: item.TABELA ? item.TABELA : 'SISTEMA',
-      Total: item.TOTAL,
-      Valor: item.VALOR,
+      pIdOrcamento: 0,
+      pItemOrcamento: {
+        CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+        Qtd: item.QTD,
+        SubTotal: item.SUBTOTAL,
+        Tabela: item.TABELA ? item.TABELA : 'SISTEMA',
+        Total: item.TOTAL,
+        Valor: item.VALOR,
+        Frete: 0,
+        Desconto: 0,
+      },
     };
     ItensOrcamento.push(ItemInsert);
   });
@@ -135,17 +137,26 @@ const SaveOrcamento = (
   return api.post(ROUTE_SAVE_ORCAMENTO, OrcamentoInsert);
 };
 
-const SaveItemOrcamento = (item: iItensOrcamento): Promise<iItensOrcamento> => {
-  let ItemInsert: iItensOrcamento = {
-    ...item,
-    TABELA: item.TABELA ? item.TABELA : 'SISTEMA',
-  };
-  console.log(
-    '🚀 ~ file: index.ts:143 ~ SaveItemOrcamento ~ item:',
-    ItemInsert
+const SaveItemOrcamento = (
+  item: iItemInserir
+): Promise<iDataResult<iOrcamento>> => {
+  const result: Promise<iDataResult<iOrcamento>> = api.post(
+    ROUTE_SAVE_ITEM_ORCAMENTO,
+    item
   );
 
-  return api.post(ROUTE_SAVE_ITEM_ORCAMENTO, ItemInsert);
+  return result;
+};
+
+const RemoveItemOrcamento = (
+  item: iItemRemove
+): Promise<iDataResult<iOrcamento>> => {
+  const result: Promise<iDataResult<iOrcamento>> = api.post(
+    ROUTE_REMOVE_ITEM_ORCAMENTO,
+    item
+  );
+
+  return result;
 };
 
 const useOrcamento = create<iUseOrcamento>((set) => ({
@@ -153,17 +164,14 @@ const useOrcamento = create<iUseOrcamento>((set) => ({
   SaveOrcamento: (orcamento: iOrcamento) => {
     return SaveOrcamento(orcamento);
   },
-  AddItemOrcamento: (item: iItensOrcamento) => {
+  AddItemOrcamento: (item: iItemInserir) => {
     return SaveItemOrcamento(item);
   },
-  // EditItemOrcamento: (item: iItensOrcamento) => void,
-  // RemoveItemOrcamento: (item: iItensOrcamento) => void,
+  RemoveItemOrcamento: (item: iItemRemove) => {
+    return RemoveItemOrcamento(item);
+  },
   GetOrcamento: (IdOrcamento: number) => {
-    let result: iOrcamento = GetOrcamento(IdOrcamento);
-    set((state) => ({
-      CurrentOrcamento: result,
-    }));
-    return result;
+    return GetOrcamento(IdOrcamento);
   },
   GetOrcamentos: (filter) => GetOrcamentos(filter),
 }));

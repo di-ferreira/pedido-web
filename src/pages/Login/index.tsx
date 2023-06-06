@@ -25,8 +25,6 @@ export const Login: React.FC = () => {
   const { ThemeName } = useTheme();
   const { loginUser, isError, isLoading, isLogged, errorMsg } = useLogin();
 
-  const RefPassword = useRef(null);
-
   const [UserLogin, setUserLogin] = useState<iVendaLogin>({
     codigoVendedor: '',
     password: '',
@@ -86,7 +84,6 @@ export const Login: React.FC = () => {
           </ContainerInput>
           <ContainerInput>
             <InputCustom
-              ref={RefPassword}
               name='password'
               value={UserLogin.password}
               onChange={OnChangeInput}

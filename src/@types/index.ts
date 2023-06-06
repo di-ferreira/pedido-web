@@ -10,10 +10,12 @@ import * as Produto from './Produto';
 import * as Vendedor from './Vendedor';
 
 export interface iDataResult<T> {
-  Data: T;
-  RecordCount: number;
-  StatusCode: number;
-  StatusMessage: string;
+  data: {
+    Data: T;
+    RecordCount: number;
+    StatusCode: number;
+    StatusMessage: string;
+  };
 }
 
 export {

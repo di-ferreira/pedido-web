@@ -7,7 +7,12 @@ import {
   FormEditOrcamentoRow,
   FormFooter,
 } from './styles';
-import { iItensOrcamento, iOrcamento } from '../../../@types/Orcamento';
+import {
+  iItemInserir,
+  iItemRemove,
+  iItensOrcamento,
+  iOrcamento,
+} from '../../../@types/Orcamento';
 import useModal from '../../../hooks/useModal';
 import { InputCustom } from '../../../components/InputCustom';
 import {
@@ -23,6 +28,8 @@ import Table from '../../../components/Table';
 import { iColumnType } from '../../../@types/Table';
 import useOrcamento from '../../../hooks/useOrcamento';
 import { ModalItemOrcamento } from '../ItemOrcamento';
+import { iDataResult } from '../../../@types';
+import { useTheme } from '../../../hooks/useTheme';
 
 interface iModalOrcamento {
   Orcamento: iOrcamento;
@@ -33,7 +40,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   Orcamento,
   callback,
 }) => {
-  let NewOrcamento: iOrcamento = Orcamento;
+  const { ThemeName } = useTheme();
+
+  const [NewOrcamento, setOrcamento] = useState<iOrcamento>(Orcamento);
   const [ItensOrcamento, setItensOrcamento] = useState<iItensOrcamento[]>([]);
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
     null
@@ -41,14 +50,109 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   const { Modal, showModal, OnCloseModal } = useModal();
 
-  const { AddItemOrcamento } = useOrcamento();
+  const { AddItemOrcamento, GetOrcamento, RemoveItemOrcamento } =
+    useOrcamento();
 
   useEffect(() => {
     showModal();
-    NewOrcamento = Orcamento;
-    console.log('🚀 ~ file: index.tsx:49 ~ useEffect ~ Orcamento:', Orcamento);
-    setItensOrcamento([]);
+    setOrcamento(Orcamento);
+    setItensOrcamento(Orcamento.ItensOrcamento);
   }, [Orcamento]);
+
+  const OpenModalItemOrcamento = () => {
+    setItemOrcamento({
+      ORCAMENTO: Orcamento,
+      QTD: 1,
+      SUBTOTAL: 0.0,
+      TOTAL: 0.0,
+      VALOR: 0.0,
+      PRODUTO: null,
+      TABELA: '',
+    });
+  };
+
+  const SaveOrUpdate = async (item: iItensOrcamento) => {
+    await DeleteItem(item);
+    await AddItem(item);
+  };
+
+  const AddItem = async (item: iItensOrcamento) => {
+    console.log('🚀 ~ file: index.tsx:80 ~ AddItem ~ item:', item);
+    let saveItem: iItemInserir = {
+      pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
+      pItemOrcamento: {
+        CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+        Desconto: item.DESCONTO ? item.DESCONTO : 0,
+        Frete: 0,
+        Qtd: item.QTD,
+        Tabela: item.TABELA,
+        Total: item.TOTAL,
+        SubTotal: item.SUBTOTAL,
+        Valor: item.VALOR,
+      },
+    };
+
+    AddItemOrcamento(saveItem).then(async (res) => {
+      const { StatusCode, Data, StatusMessage } = res.data;
+      console.log('🚀 ~ file: index.tsx:96 ~ AddItemOrcamento ~ Data:', Data);
+
+      if (StatusCode !== 200) {
+        toast.error(`Opps, ${StatusMessage} 🤯`, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: ThemeName,
+        });
+      } else {
+        const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
+        setItensOrcamento(orc.ItensOrcamento);
+      }
+    });
+  };
+
+  const DeleteItem = async (item: iItensOrcamento) => {
+    let removeItem: iItemRemove = {
+      pIdOrcamento: NewOrcamento.ORCAMENTO,
+      pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+    };
+    RemoveItemOrcamento(removeItem).then(async (res) => {
+      const { StatusCode, Data, StatusMessage } = res.data;
+
+      if (StatusCode !== 200) {
+        toast.error(`Opps, ${StatusMessage} 🤯`, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: ThemeName,
+        });
+      } else {
+        const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
+        setItensOrcamento(orc.ItensOrcamento);
+      }
+    });
+  };
+
+  const UpdateItem = async (item: iItensOrcamento) => {
+    setItemOrcamento({ ...item, ORCAMENTO: NewOrcamento });
+  };
+
+  const SalvarOrcamento = () => {
+    // toast.promise(SaveOrcamento(NewOrcamento), {
+    //   pending: `Salvando Orçamento do cliente ${NewOrcamento.CLIENTE.NOME}`,
+    //   success: 'Orçamento Salvo 👌',
+    //   error: 'Opps, ocorreu um erro 🤯',
+    // });
+    OnCloseModal();
+    callback && callback();
+  };
 
   const tableHeaders: iColumnType<iItensOrcamento>[] = [
     {
@@ -57,13 +161,13 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       width: '20%',
       action: [
         {
-          onclick: () => {},
+          onclick: UpdateItem,
           Icon: faEdit,
           Title: 'Editar',
           Type: 'warn',
         },
         {
-          onclick: () => {},
+          onclick: DeleteItem,
           Icon: faTrashAlt,
           Title: 'Excluir',
           Type: 'danger',
@@ -93,35 +197,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       },
     },
   ];
-
-  const OpenModalItemOrcamento = () => {
-    setItemOrcamento({
-      ORCAMENTO: Orcamento,
-      QTD: 1,
-      SUBTOTAL: 0.0,
-      TOTAL: 0.0,
-      VALOR: 0.0,
-      PRODUTO: null,
-    });
-  };
-
-  const AddItem = async (item: iItensOrcamento) => {
-    let newItem: iItensOrcamento = item;
-    const { TABELA } = await AddItemOrcamento(item);
-    newItem = { ...newItem, TABELA };
-    console.log('🚀 ~ file: index.tsx:111 ~ AddItem ~ newItem:', newItem);
-
-    setItensOrcamento((old) => [...old, newItem]);
-  };
-
-  const SalvarOrcamento = () => {
-    // toast.promise(SaveOrcamento(NewOrcamento), {
-    //   pending: `Salvando Orçamento do cliente ${NewOrcamento.CLIENTE.NOME}`,
-    //   success: 'Orçamento Salvo 👌',
-    //   error: 'Opps, ocorreu um erro 🤯',
-    // });
-    OnCloseModal();
-  };
 
   return (
     <>
@@ -249,14 +324,13 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 />
               </FormEditOrcamentoRow>
               <FormEditOrcamentoRow height='10rem'>
-                {NewOrcamento.ItensOrcamento &&
-                  NewOrcamento.ItensOrcamento?.length > 0 && (
-                    <Table
-                      messageNoData={'Esse orçamento não possuí itens!'}
-                      columns={tableHeaders}
-                      data={NewOrcamento.ItensOrcamento}
-                    />
-                  )}
+                {ItensOrcamento?.length > 0 && (
+                  <Table
+                    messageNoData={'Esse orçamento não possuí itens!'}
+                    columns={tableHeaders}
+                    data={ItensOrcamento}
+                  />
+                )}
               </FormEditOrcamentoRow>
             </FormEditOrcamentoColumn>
             <FormFooter>
@@ -272,7 +346,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         </Modal>
       )}
       {ItemOrcamento && (
-        <ModalItemOrcamento callback={AddItem} Item={ItemOrcamento} />
+        <ModalItemOrcamento callback={SaveOrUpdate} Item={ItemOrcamento} />
       )}
     </>
   );

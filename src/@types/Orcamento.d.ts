@@ -37,7 +37,7 @@ export interface iOrcamento {
   VENDEDOR: iVendedor;
   CLIENTE: iCliente;
   VENDEDOR2?: iVendedor;
-  ItensOrcamento?: iItensOrcamento[];
+  ItensOrcamento: iItensOrcamento[];
 }
 
 export interface iItensOrcamento {
@@ -46,7 +46,7 @@ export interface iItensOrcamento {
   TOTAL: number;
   SUBTOTAL: number;
   DESCONTO?: number;
-  TABELA?: string;
+  TABELA: string;
   OBS?: string;
   MD5?: string;
   ITEM?: number;
@@ -80,13 +80,23 @@ export interface iOrcamentoInserir {
   Itens?: iItemInserir[];
 }
 
-export interface iItemInserir {
+export interface iItemOrcamentoInserir {
   CodigoProduto: string;
   Qtd: number;
   Valor: number;
   SubTotal: number;
-  Frete?: number;
-  Desconto?: number;
+  Frete: number;
+  Desconto: number;
   Total: number;
   Tabela: string;
+}
+
+export interface iItemInserir {
+  pIdOrcamento: number;
+  pItemOrcamento: iItemOrcamentoInserir;
+}
+
+export interface iItemRemove {
+  pIdOrcamento: number;
+  pProduto: string;
 }

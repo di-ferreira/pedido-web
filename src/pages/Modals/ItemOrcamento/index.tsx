@@ -38,11 +38,13 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
   const [Produtos, setProdutos] = useState<iProduto[]>([]);
+  const [TotalPrice, setTotalPrice] = useState<number>(0.0);
 
   useEffect(() => {
     showModal();
     setItemOrcamento(Item);
-    setProdutoPalavras('');
+    setTotalPrice(Item.PRODUTO ? Item.PRODUTO.PRECO * Item.QTD : 0);
+    setProdutoPalavras(Item.PRODUTO ? Item.PRODUTO.PRODUTO : '');
     setProdutos([]);
   }, [Item]);
 
@@ -79,7 +81,21 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       e.preventDefault();
 
       const { value, name } = e.target;
+
       if (name === 'QTD') {
+        setItemOrcamento({
+          ...ItemOrcamento,
+          TOTAL: ItemOrcamento.PRODUTO
+            ? ItemOrcamento.PRODUTO.PRECO * parseInt(value)
+            : 0,
+        });
+
+        setTotalPrice(
+          ItemOrcamento.PRODUTO
+            ? ItemOrcamento.PRODUTO.PRECO * parseInt(value)
+            : 0
+        );
+
         setItemOrcamento({
           ...ItemOrcamento,
           QTD: parseInt(value),
@@ -119,7 +135,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setItemOrcamento({ ...ItemOrcamento, TABELA: 'SISTEMA' });
-    callback(ItemOrcamento);
+    callback({ ...ItemOrcamento, TABELA: 'SISTEMA' });
     setProdutoPalavras('');
     setProdutos([]);
     setItemOrcamento({} as iItensOrcamento);
@@ -143,7 +159,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     <>
       {Modal && (
         <Modal
-          Title={`NOVO ITEM AO ORÇAMENTO Nº ${ItemOrcamento?.ORCAMENTO.ORCAMENTO}`}
+          Title={`ADD ITEM AO ORÇAMENTO Nº ${ItemOrcamento?.ORCAMENTO.ORCAMENTO}`}
         >
           <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
             <FormEditOrcamentoColumn>
@@ -241,12 +257,27 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                     value={ItemOrcamento.QTD}
                   />
                 </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='45%'>
+                <FormEditOrcamentoInputContainer width='10%'>
                   <InputCustom
-                    onChange={OnChangeInput}
-                    label='OBSERVAÇÃO 2'
-                    name='OBS2'
-                    value={ItemOrcamento.OBS}
+                    label='VALOR'
+                    name='VALOR'
+                    value={ItemOrcamento.PRODUTO?.PRECO.toLocaleString(
+                      'pt-br',
+                      {
+                        style: 'currency',
+                        currency: 'BRL',
+                      }
+                    )}
+                  />
+                </FormEditOrcamentoInputContainer>
+                <FormEditOrcamentoInputContainer width='15%'>
+                  <InputCustom
+                    label='TOTAL'
+                    name='TOTAL'
+                    value={TotalPrice.toLocaleString('pt-br', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })}
                   />
                 </FormEditOrcamentoInputContainer>
               </FormEditOrcamentoRow>
