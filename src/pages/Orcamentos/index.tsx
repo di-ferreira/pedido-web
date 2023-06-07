@@ -25,7 +25,7 @@ import dayjs from 'dayjs';
 import { ModalOrcamento } from '../Modals/Orcamento';
 
 export const Orcamentos: React.FC = () => {
-  const { GetOrcamentos } = useOrcamento();
+  const { GetOrcamentos, GetOrcamento } = useOrcamento();
 
   const OptionsSelect: iOption[] = [
     { label: 'NOME', value: 'NOME' },
@@ -95,7 +95,9 @@ export const Orcamentos: React.FC = () => {
   };
 
   const onOpenModalOrcamento = async (value: iOrcamento) => {
-    setOrcamento(value);
+    const orc: iOrcamento = (await GetOrcamento(value.ORCAMENTO)).data;
+    console.log('🚀 ~ file: index.tsx:99 ~ onOpenModalOrcamento ~ orc:', orc);
+    setOrcamento(orc);
   };
 
   const onCloseModalOrcamento = async () => {
@@ -152,7 +154,7 @@ export const Orcamentos: React.FC = () => {
         //   Type: 'success',
         // },
         {
-          onclick: onOpenModalOrcamento,
+          onclick: (value: iOrcamento) => onOpenModalOrcamento(value),
           Icon: faEdit,
           Rounded: true,
           Title: 'Editar',

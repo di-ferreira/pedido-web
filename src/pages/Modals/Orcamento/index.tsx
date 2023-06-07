@@ -54,9 +54,12 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     useOrcamento();
 
   useEffect(() => {
-    showModal();
-    setOrcamento(Orcamento);
-    setItensOrcamento(Orcamento.ItensOrcamento);
+    const OpenModal = () => {
+      showModal();
+      setOrcamento(Orcamento);
+      setItensOrcamento(Orcamento.ItensOrcamento);
+    };
+    return () => OpenModal();
   }, [Orcamento]);
 
   const OpenModalItemOrcamento = () => {
@@ -77,7 +80,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const AddItem = async (item: iItensOrcamento) => {
-    console.log('🚀 ~ file: index.tsx:80 ~ AddItem ~ item:', item);
     let saveItem: iItemInserir = {
       pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
       pItemOrcamento: {
@@ -86,15 +88,15 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         Frete: 0,
         Qtd: item.QTD,
         Tabela: item.TABELA,
-        Total: item.TOTAL,
+        Total: item.PRODUTO ? item.PRODUTO.PRECO * item.QTD : 0,
         SubTotal: item.SUBTOTAL,
-        Valor: item.VALOR,
+        Valor: item.PRODUTO ? item.PRODUTO.PRECO : 0,
       },
     };
+    console.log('🚀 ~ file: index.tsx:93 ~ AddItem ~ saveItem:', saveItem);
 
     AddItemOrcamento(saveItem).then(async (res) => {
       const { StatusCode, Data, StatusMessage } = res.data;
-      console.log('🚀 ~ file: index.tsx:96 ~ AddItemOrcamento ~ Data:', Data);
 
       if (StatusCode !== 200) {
         toast.error(`Opps, ${StatusMessage} 🤯`, {
@@ -324,13 +326,11 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 />
               </FormEditOrcamentoRow>
               <FormEditOrcamentoRow height='10rem'>
-                {ItensOrcamento?.length > 0 && (
-                  <Table
-                    messageNoData={'Esse orçamento não possuí itens!'}
-                    columns={tableHeaders}
-                    data={ItensOrcamento}
-                  />
-                )}
+                <Table
+                  messageNoData={'Esse orçamento não possuí itens!'}
+                  columns={tableHeaders}
+                  data={ItensOrcamento}
+                />
               </FormEditOrcamentoRow>
             </FormEditOrcamentoColumn>
             <FormFooter>

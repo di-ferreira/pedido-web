@@ -27,7 +27,7 @@ interface iResultOrcamento {
 
 interface iUseOrcamento {
   CurrentOrcamento: iOrcamento;
-  SaveOrcamento: (orcamento: iOrcamento) => Promise<iDataCreateOrcamento>;
+  SaveOrcamento: (orcamento: iOrcamento) => Promise<iDataResult<iOrcamento>>;
   AddItemOrcamento: (item: iItemInserir) => Promise<iDataResult<iOrcamento>>;
   RemoveItemOrcamento: (item: iItemRemove) => Promise<iDataResult<iOrcamento>>;
   GetOrcamento: (IdOrcamento: number) => Promise<iResultOrcamento>;
@@ -106,7 +106,7 @@ const GetOrcamento = (IdOrcamento: number): Promise<iResultOrcamento> => {
 
 const SaveOrcamento = (
   orcamento: iOrcamento
-): Promise<iDataCreateOrcamento> => {
+): Promise<iDataResult<iOrcamento>> => {
   let ItensOrcamento: iItemInserir[] = [];
 
   orcamento.ItensOrcamento?.map((item) => {
@@ -161,19 +161,11 @@ const RemoveItemOrcamento = (
 
 const useOrcamento = create<iUseOrcamento>((set) => ({
   CurrentOrcamento: {} as iOrcamento,
-  SaveOrcamento: (orcamento: iOrcamento) => {
-    return SaveOrcamento(orcamento);
-  },
-  AddItemOrcamento: (item: iItemInserir) => {
-    return SaveItemOrcamento(item);
-  },
-  RemoveItemOrcamento: (item: iItemRemove) => {
-    return RemoveItemOrcamento(item);
-  },
-  GetOrcamento: (IdOrcamento: number) => {
-    return GetOrcamento(IdOrcamento);
-  },
+  SaveOrcamento: (orcamento: iOrcamento) => SaveOrcamento(orcamento),
+  GetOrcamento: (IdOrcamento: number) => GetOrcamento(IdOrcamento),
   GetOrcamentos: (filter) => GetOrcamentos(filter),
+  AddItemOrcamento: (item: iItemInserir) => SaveItemOrcamento(item),
+  RemoveItemOrcamento: (item: iItemRemove) => RemoveItemOrcamento(item),
 }));
 
 export default useOrcamento;

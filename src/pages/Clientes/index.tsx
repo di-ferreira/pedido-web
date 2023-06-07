@@ -235,7 +235,7 @@ export const Clientes: React.FC = () => {
 
     await SaveOrcamento(NewOrcamento)
       .then((result) => {
-        const { Data } = result.data.data;
+        const { Data } = result.data;
         NewOrcamento = { ...NewOrcamento, ...Data };
         setOrcamento(NewOrcamento);
       })

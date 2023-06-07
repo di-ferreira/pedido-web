@@ -42,7 +42,11 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
   useEffect(() => {
     showModal();
-    setItemOrcamento(Item);
+    setItemOrcamento({
+      ...Item,
+      PRODUTO: Item.PRODUTO,
+      TOTAL: Item.PRODUTO ? Item.PRODUTO.PRECO * 1 : 0,
+    });
     setTotalPrice(Item.PRODUTO ? Item.PRODUTO.PRECO * Item.QTD : 0);
     setProdutoPalavras(Item.PRODUTO ? Item.PRODUTO.PRODUTO : '');
     setProdutos([]);
@@ -52,6 +56,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     const response = await api.post(`/ServiceProdutos/SuperBusca`, {
       Palavras: busca,
       QuantidadeRegistros: 15,
+      PularRegistros: 0,
     });
 
     const { data } = response;
@@ -85,6 +90,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       if (name === 'QTD') {
         setItemOrcamento({
           ...ItemOrcamento,
+          QTD: parseInt(value),
           TOTAL: ItemOrcamento.PRODUTO
             ? ItemOrcamento.PRODUTO.PRECO * parseInt(value)
             : 0,
@@ -95,11 +101,6 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
             ? ItemOrcamento.PRODUTO.PRECO * parseInt(value)
             : 0
         );
-
-        setItemOrcamento({
-          ...ItemOrcamento,
-          QTD: parseInt(value),
-        });
       } else {
         setItemOrcamento({
           ...ItemOrcamento,
@@ -129,7 +130,9 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     setItemOrcamento({
       ...ItemOrcamento,
       PRODUTO: produto,
+      TOTAL: produto.PRECO * 1,
     });
+    setTotalPrice(produto.PRECO * 1);
   };
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
@@ -274,7 +277,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   <InputCustom
                     label='TOTAL'
                     name='TOTAL'
-                    value={TotalPrice.toLocaleString('pt-br', {
+                    value={ItemOrcamento.TOTAL.toLocaleString('pt-br', {
                       style: 'currency',
                       currency: 'BRL',
                     })}
