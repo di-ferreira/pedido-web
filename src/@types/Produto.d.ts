@@ -43,7 +43,7 @@ export interface iProduto {
   LOCAL3: string | null;
   Atualizar: string;
   PESO: number | null;
-  FAB_BRUTO: number | null;
+  FAB_BRUTO: number;
   FAB_DESC: number | null;
   FAB_IPI: number | null;
   FAB_LIQUIDO1: number | null;
@@ -336,4 +336,10 @@ export interface iFabricanteChave {
   IA: number;
   LINHA: string;
   COTACAO: string;
+}
+
+export interface iTabelaVenda {
+  TABELA: string;
+  NOVO_PRECO: number;
+  BLOQUEADO: string;
 }

@@ -1,11 +1,19 @@
 import styled from 'styled-components';
+import { devices } from '../../Constants';
 import { Gray } from '../../colors';
 import { HEXToRGB } from '../../utils';
-import { devices } from '../../Constants';
 
 interface iContainer {
   height?: string;
   widht?: string;
+}
+
+interface iLabelInput {
+  align?: string;
+}
+
+interface iInput {
+  align?: string;
 }
 
 export const Container = styled.div<iContainer>`
@@ -20,23 +28,25 @@ export const Container = styled.div<iContainer>`
   }
 `;
 
-export const LabelInput = styled.label`
+export const LabelInput = styled.label<iLabelInput>`
   margin: -0.5rem 0 -0.2rem 0;
   color: ${(props) => props.theme.colors.onSurface};
   font-variant: small-caps;
   text-transform: lowercase;
   padding: 0 0.2rem;
   width: 100%;
+  text-align: ${(props) => (props.align ? props.align : 'left')};
   @media only screen and ${devices.sm} {
     font-size: 1.9rem;
   }
 `;
 
-export const Input = styled.input`
+export const Input = styled.input<iInput>`
   border: 1px solid ${(props) => props.theme.colors.onBackground};
   width: 100%;
   height: 100%;
   min-height: 2.5rem;
+  text-align: ${(props) => (props.align ? props.align : 'left')};
   padding: 0 0.5rem;
   border-radius: 0.4rem;
   color: ${(props) => props.theme.colors.onBackground};

@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
+import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-toastify';
+import { iProduto } from '../../../@types/Produto';
+import { iColumnType } from '../../../@types/Table';
+import Button from '../../../components/Button';
+import { InputCustom } from '../../../components/InputCustom';
+import Table from '../../../components/Table';
+import useModal from '../../../hooks/useModal';
+import useProduto from '../../../hooks/useProduto';
+import { useTheme } from '../../../hooks/useTheme';
 import {
   FormEditOrcamento,
   FormEditOrcamentoColumn,
@@ -7,18 +17,6 @@ import {
   FormEditOrcamentoRow,
   FormFooter,
 } from './styles';
-import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { InputCustom } from '../../../components/InputCustom';
-import useModal from '../../../hooks/useModal';
-import Button from '../../../components/Button';
-import { iItensOrcamento } from '../../../@types/Orcamento';
-import { TextAreaCustom } from '../../../components/TextAreaCustom';
-import { iProduto } from '../../../@types/Produto';
-import Table from '../../../components/Table';
-import { iColumnType } from '../../../@types/Table';
-import api from '../../../services';
-import { toast } from 'react-toastify';
-import { useTheme } from '../../../hooks/useTheme';
 
 interface iModalProduto {
   produtos: iProduto[];
@@ -32,6 +30,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   callback,
 }) => {
   const { ThemeName } = useTheme();
+  const { GetProdutosSuperBusca, GetProduto } = useProduto();
   const { Modal, showModal, OnCloseModal } = useModal();
   const [newProdutos, setProdutos] = useState<iProduto[]>({} as iProduto[]);
   const [Produto, setProduto] = useState<iProduto>({} as iProduto);
@@ -44,20 +43,31 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   }, [produtos]);
 
   const fetchProdutoList = async (busca: string) => {
-    const response = await api.post(`/ServiceProdutos/SuperBusca`, {
-      Palavras: busca,
-      QuantidadeRegistros: 15,
-    });
+    const resultSuperBusca = await GetProdutosSuperBusca({ Palavras: busca });
 
-    const { data } = response;
+    const { data } = resultSuperBusca;
 
     let ProdutosList: iProduto[] = data.Data;
+
+    if (data.StatusCode !== 200)
+      toast.error(`Opps, ${data.StatusMessage} 🤯`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: ThemeName,
+      });
 
     if (ProdutosList.length > 1) {
       setProdutos(ProdutosList);
     } else if (ProdutosList[0]) {
       setProdutoPalavras(ProdutosList[0].PRODUTO);
-    } else {
+      AddProduto(ProdutosList[0]);
+    }
+
+    if (data.StatusCode === 200 && ProdutosList.length < 1) {
       toast.error('Opps, Não encontrou nenhum PRODUTO 🤯', {
         position: 'bottom-right',
         autoClose: 5000,
@@ -83,8 +93,9 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     }
   };
 
-  const AddProduto = (produto: iProduto) => {
-    callback(produto);
+  const AddProduto = async (produto: iProduto) => {
+    const prod = await GetProduto(produto.PRODUTO);
+    callback(prod.data);
     OnCloseModal();
   };
 

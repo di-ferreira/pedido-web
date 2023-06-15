@@ -1,16 +1,15 @@
-import React, { Ref } from 'react';
+import React from 'react';
 import Select, {
-  SingleValue,
   ActionMeta,
   MenuPlacement,
   PropsValue,
-  GroupBase,
+  SingleValue,
 } from 'react-select';
-import { Container, Label } from './styles';
-import { Black, Light, Secondary } from '../../colors';
-import { useTheme } from '../useTheme';
-import { HEXToRGB } from '../../utils';
 import { iOption } from '../../@types/Table';
+import { Black, Light, Secondary } from '../../colors';
+import { HEXToRGB } from '../../utils';
+import { useTheme } from '../useTheme';
+import { Container, Label } from './styles';
 
 interface iCustomSelect {
   label?: string;

@@ -1,28 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
-import {
-  Container,
-  ContainerInput,
-  FilterContainer,
-  SwitchContainer,
-} from './styles';
-import useOrcamento from '../../hooks/useOrcamento';
-import { iOrcamento } from '../../@types/Orcamento';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import dayjs from 'dayjs';
 import { iFilter } from '../../@types/Filter';
+import { iOrcamento } from '../../@types/Orcamento';
 import { iColumnType, iOption } from '../../@types/Table';
-import useSelect from '../../hooks/UseSelect';
-import { InputCustom } from '../../components/InputCustom';
-import {
-  faEdit,
-  faFileLines,
-  faSearch,
-} from '@fortawesome/free-solid-svg-icons';
-import { CustomSwitch } from '../../components/CustomSwitch';
 import { Loading } from '../../components/Loading';
 import Table from '../../components/Table';
-import Button from '../../components/Button';
-import dayjs from 'dayjs';
+import useSelect from '../../hooks/UseSelect';
+import useOrcamento from '../../hooks/useOrcamento';
 import { ModalOrcamento } from '../Modals/Orcamento';
+import { Container } from './styles';
 
 export const Orcamentos: React.FC = () => {
   const { GetOrcamentos, GetOrcamento } = useOrcamento();
@@ -96,11 +84,19 @@ export const Orcamentos: React.FC = () => {
 
   const onOpenModalOrcamento = async (value: iOrcamento) => {
     const orc: iOrcamento = (await GetOrcamento(value.ORCAMENTO)).data;
-    console.log('🚀 ~ file: index.tsx:99 ~ onOpenModalOrcamento ~ orc:', orc);
     setOrcamento(orc);
   };
 
-  const onCloseModalOrcamento = async () => {
+  const onCloseModalOrcamento = async (value: iOrcamento) => {
+    const newListOrcamento: iOrcamento[] = OrcamentoList.map(
+      (orc: iOrcamento) => {
+        if (orc.ORCAMENTO === value.ORCAMENTO) {
+          orc = value;
+          return orc;
+        } else return orc;
+      }
+    );
+    setOrcamentoList(newListOrcamento);
     setOrcamento(null);
   };
 

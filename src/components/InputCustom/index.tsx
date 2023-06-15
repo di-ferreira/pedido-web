@@ -4,6 +4,8 @@ import { Container, Input, LabelInput } from './styles';
 
 interface iInputCustom {
   label?: string;
+  labelAlign?: 'left' | 'right' | 'center';
+  textAlign?: 'left' | 'right' | 'center';
   type?: 'text' | 'password' | 'date' | 'number';
   value?: any;
   name?: string;
@@ -23,6 +25,8 @@ interface iInputCustom {
 export const InputCustom: React.FC<iInputCustom> = ({
   onChange,
   type,
+  labelAlign,
+  textAlign,
   label,
   placeholder,
   onKeydown,
@@ -35,8 +39,9 @@ export const InputCustom: React.FC<iInputCustom> = ({
 }) => {
   return (
     <Container height={height} widht={widht}>
-      {label && <LabelInput>{label}</LabelInput>}
+      {label && <LabelInput align={labelAlign}>{label}</LabelInput>}
       <Input
+        align={textAlign}
         readOnly={readOnly ? readOnly : false}
         value={value}
         name={name}

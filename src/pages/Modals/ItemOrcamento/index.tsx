@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 import {
   FormEditOrcamento,
   FormEditOrcamentoColumn,
@@ -7,29 +8,38 @@ import {
   FormEditOrcamentoRow,
   FormFooter,
 } from './styles';
-import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
-import { InputCustom } from '../../../components/InputCustom';
-import useModal from '../../../hooks/useModal';
-import Button from '../../../components/Button';
-import { iItensOrcamento } from '../../../@types/Orcamento';
-import { TextAreaCustom } from '../../../components/TextAreaCustom';
-import { iListaChave, iProduto } from '../../../@types/Produto';
-import { ModalProduto } from '../Produto';
-import api from '../../../services';
+
 import { toast } from 'react-toastify';
-import { useTheme } from '../../../hooks/useTheme';
+import { iItensOrcamento } from '../../../@types/Orcamento';
+import { iListaChave, iProduto, iTabelaVenda } from '../../../@types/Produto';
+import { iColumnType, iOption } from '../../../@types/Table';
+import Button from '../../../components/Button';
+import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
-import { iColumnType } from '../../../@types/Table';
+import { TextAreaCustom } from '../../../components/TextAreaCustom';
+import useSelect from '../../../hooks/UseSelect';
+import useModal from '../../../hooks/useModal';
+import useProduto from '../../../hooks/useProduto';
+import { useTheme } from '../../../hooks/useTheme';
+import api from '../../../services';
+import { ModalProduto } from '../Produto';
+
+export interface callback {
+  orcamento: iItensOrcamento;
+  saveorupdate: boolean;
+}
 
 interface iModalItemOrcamento {
   Item: iItensOrcamento;
-  callback: (item: iItensOrcamento) => void;
+  callback: (item: callback) => void;
 }
 
 export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   Item,
   callback,
 }) => {
+  const { GetTabelasFromProduto } = useProduto();
+  const { Select } = useSelect();
   const { Modal, showModal, OnCloseModal } = useModal();
   const { ThemeName } = useTheme();
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento>(
@@ -39,6 +49,9 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
   const [Produtos, setProdutos] = useState<iProduto[]>([]);
   const [TotalPrice, setTotalPrice] = useState<number>(0.0);
+  const [QTDProduto, setQTDProduto] = useState<number>(1);
+  const [SaveOrUpdateItem, setSaveOrUpdateItem] = useState<boolean>(false);
+  const [Tabelas, setTabelas] = useState<iOption[]>([]);
 
   useEffect(() => {
     showModal();
@@ -47,7 +60,10 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       PRODUTO: Item.PRODUTO,
       TOTAL: Item.PRODUTO ? Item.PRODUTO.PRECO * 1 : 0,
     });
+    Item.PRODUTO && GetTabelas(Item.PRODUTO);
+    setSaveOrUpdateItem(Item.PRODUTO ? true : false);
     setTotalPrice(Item.PRODUTO ? Item.PRODUTO.PRECO * Item.QTD : 0);
+    setQTDProduto(Item.QTD);
     setProdutoPalavras(Item.PRODUTO ? Item.PRODUTO.PRODUTO : '');
     setProdutos([]);
   }, [Item]);
@@ -81,34 +97,44 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     }
   };
 
-  const OnChangeInput = useCallback(
+  const OnChangeInputQTD = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
 
-      const { value, name } = e.target;
+      const { value } = e.target;
 
-      if (name === 'QTD') {
-        setItemOrcamento({
-          ...ItemOrcamento,
-          QTD: parseInt(value),
-          TOTAL: ItemOrcamento.PRODUTO
-            ? ItemOrcamento.PRODUTO.PRECO * parseInt(value)
-            : 0,
-        });
+      let newQTD: number = parseInt(value) <= 0 ? 1 : parseInt(value);
 
-        setTotalPrice(
-          ItemOrcamento.PRODUTO
-            ? ItemOrcamento.PRODUTO.PRECO * parseInt(value)
-            : 0
-        );
-      } else {
-        setItemOrcamento({
-          ...ItemOrcamento,
-          [name]: value,
-        });
-      }
+      setQTDProduto(newQTD);
+
+      setItemOrcamento({
+        ...ItemOrcamento,
+        QTD: newQTD,
+        TOTAL: ItemOrcamento.PRODUTO ? ItemOrcamento.PRODUTO.PRECO * newQTD : 0,
+      });
+
+      setTotalPrice(
+        ItemOrcamento.PRODUTO ? ItemOrcamento.PRODUTO.PRECO * newQTD : 0
+      );
     },
-    [ItemOrcamento]
+    [QTDProduto, ItemOrcamento]
+  );
+
+  const CalcTabela = useCallback(
+    (value: iOption) => {
+      setItemOrcamento({
+        ...ItemOrcamento,
+
+        TOTAL: ItemOrcamento.PRODUTO
+          ? ItemOrcamento.PRODUTO.PRECO * QTDProduto
+          : 0,
+      });
+
+      setTotalPrice(
+        ItemOrcamento.PRODUTO ? ItemOrcamento.PRODUTO.PRECO * QTDProduto : 0
+      );
+    },
+    [Tabelas, ItemOrcamento]
   );
 
   const OnProdutoPalavras = useCallback(
@@ -125,8 +151,24 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     }
   };
 
-  const ProdutoToItem = (produto: iProduto) => {
+  const GetTabelas = async (produto: iProduto) => {
+    let tabelas: iTabelaVenda[] = [];
+    await GetTabelasFromProduto(produto).then((tabs) => {
+      tabelas = [...tabs];
+      let tabOptions: iOption[] = [];
+      tabelas.map((tab) =>
+        tabOptions.push({ label: tab.TABELA, value: tab.NOVO_PRECO })
+      );
+
+      setTabelas(tabOptions);
+    });
+  };
+
+  const ProdutoToItem = async (produto: iProduto) => {
     setProdutoPalavras(produto.PRODUTO);
+
+    await GetTabelas(produto);
+
     setItemOrcamento({
       ...ItemOrcamento,
       PRODUTO: produto,
@@ -137,8 +179,12 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setItemOrcamento({ ...ItemOrcamento, TABELA: 'SISTEMA' });
-    callback({ ...ItemOrcamento, TABELA: 'SISTEMA' });
+    let result: callback = {
+      orcamento: { ...ItemOrcamento, TABELA: 'SISTEMA' },
+      saveorupdate: SaveOrUpdateItem,
+    };
+    setItemOrcamento(result.orcamento);
+    callback(result);
     setProdutoPalavras('');
     setProdutos([]);
     setItemOrcamento({} as iItensOrcamento);
@@ -189,7 +235,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                     label='FABRICANTE'
                     readOnly={true}
                     name='FABRICANTE'
-                    value={ItemOrcamento.PRODUTO?.FABRICANTE}
+                    value={ItemOrcamento.PRODUTO?.FABRICANTE?.NOME}
                   />
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='20%'>
@@ -242,28 +288,48 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
             </FormEditOrcamentoColumn>
             <FormEditOrcamentoColumn>
               <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='10%'>
+                <FormEditOrcamentoInputContainer width='7%'>
                   <InputCustom
                     readOnly={true}
                     label='ESTOQUE'
                     name='ESTOQUE'
                     type='number'
+                    textAlign='right'
                     value={ItemOrcamento.PRODUTO?.QTDATUAL}
                   />
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='5%'>
                   <InputCustom
-                    onChange={OnChangeInput}
+                    onChange={OnChangeInputQTD}
                     label='QTD'
                     name='QTD'
                     type='number'
-                    value={ItemOrcamento.QTD}
+                    value={QTDProduto}
+                  />
+                </FormEditOrcamentoInputContainer>
+                <FormEditOrcamentoInputContainer width='25%'>
+                  <Select
+                    options={Tabelas}
+                    onChange={(SingleValue) =>
+                      console.log(
+                        '🚀 ~ file: index.tsx:302 ~ SingleValue:',
+                        SingleValue
+                      )
+                    }
+                    // onChange={(SingleValue) =>
+                    //   SingleValue &&
+                    //   setSearchCliente({
+                    //     ...SearchCliente,
+                    //     filterBy: String(SingleValue.value),
+                    //   })
+                    // }
                   />
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='10%'>
                   <InputCustom
                     label='VALOR'
                     name='VALOR'
+                    textAlign='right'
                     value={ItemOrcamento.PRODUTO?.PRECO.toLocaleString(
                       'pt-br',
                       {
@@ -277,6 +343,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   <InputCustom
                     label='TOTAL'
                     name='TOTAL'
+                    textAlign='right'
                     value={ItemOrcamento.TOTAL.toLocaleString('pt-br', {
                       style: 'currency',
                       currency: 'BRL',
