@@ -340,6 +340,6 @@ export interface iFabricanteChave {
 
 export interface iTabelaVenda {
   TABELA: string;
-  NOVO_PRECO: number;
+  PRECO: number;
   BLOQUEADO: string;
 }

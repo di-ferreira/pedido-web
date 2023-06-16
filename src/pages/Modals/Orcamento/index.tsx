@@ -74,6 +74,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const SaveOrUpdate = async (item: callback) => {
+    console.log('🚀 ~ file: index.tsx:77 ~ SaveOrUpdate ~ item:', item);
     if (item.saveorupdate) {
       let removeItem: iItemRemove = {
         pIdOrcamento: NewOrcamento.ORCAMENTO,

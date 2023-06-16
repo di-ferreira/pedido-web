@@ -9,6 +9,7 @@ import {
   FormFooter,
 } from './styles';
 
+import { SingleValue } from 'react-select';
 import { toast } from 'react-toastify';
 import { iItensOrcamento } from '../../../@types/Orcamento';
 import { iListaChave, iProduto, iTabelaVenda } from '../../../@types/Produto';
@@ -48,23 +49,37 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
   const [Produtos, setProdutos] = useState<iProduto[]>([]);
-  const [TotalPrice, setTotalPrice] = useState<number>(0.0);
+  const [Price, setPrice] = useState<number>(0.0);
+  const [Total, setTotal] = useState<number>(0.0);
   const [QTDProduto, setQTDProduto] = useState<number>(1);
   const [SaveOrUpdateItem, setSaveOrUpdateItem] = useState<boolean>(false);
   const [Tabelas, setTabelas] = useState<iOption[]>([]);
+  const [TabelaSelected, setTabelaSelected] = useState<iOption>({} as iOption);
 
   useEffect(() => {
+    console.log('ItemOrcamento ~ Item ', Item);
     showModal();
+    setSaveOrUpdateItem(false);
+
     setItemOrcamento({
       ...Item,
       PRODUTO: Item.PRODUTO,
-      TOTAL: Item.PRODUTO ? Item.PRODUTO.PRECO * 1 : 0,
+      TOTAL: Item.TOTAL,
     });
-    Item.PRODUTO && GetTabelas(Item.PRODUTO);
-    setSaveOrUpdateItem(Item.PRODUTO ? true : false);
-    setTotalPrice(Item.PRODUTO ? Item.PRODUTO.PRECO * Item.QTD : 0);
+
+    if (Item.PRODUTO) {
+      GetTabelas(Item.PRODUTO);
+      setSaveOrUpdateItem(true);
+      setProdutoPalavras(Item.PRODUTO.PRODUTO);
+    }
+    console.log(
+      '🚀 ~ file: index.tsx:76 ~ useEffect ~ Item.TABELA:',
+      Item.TABELA
+    );
+    setTabelaSelected({ label: Item.TABELA, value: Item.VALOR });
+    setPrice(Item.VALOR);
+    setTotal(Item.TOTAL);
     setQTDProduto(Item.QTD);
-    setProdutoPalavras(Item.PRODUTO ? Item.PRODUTO.PRODUTO : '');
     setProdutos([]);
   }, [Item]);
 
@@ -110,31 +125,39 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       setItemOrcamento({
         ...ItemOrcamento,
         QTD: newQTD,
-        TOTAL: ItemOrcamento.PRODUTO ? ItemOrcamento.PRODUTO.PRECO * newQTD : 0,
+        VALOR: Number(TabelaSelected?.value),
+        TOTAL: Number(TabelaSelected?.value) * newQTD,
       });
 
-      setTotalPrice(
-        ItemOrcamento.PRODUTO ? ItemOrcamento.PRODUTO.PRECO * newQTD : 0
-      );
+      setPrice(Number(TabelaSelected?.value));
+      setTotal(Number(TabelaSelected?.value) * newQTD);
     },
-    [QTDProduto, ItemOrcamento]
+    [QTDProduto, ItemOrcamento, Price, Total]
   );
 
   const CalcTabela = useCallback(
-    (value: iOption) => {
-      setItemOrcamento({
-        ...ItemOrcamento,
-
-        TOTAL: ItemOrcamento.PRODUTO
-          ? ItemOrcamento.PRODUTO.PRECO * QTDProduto
-          : 0,
+    (value: SingleValue<iOption>) => {
+      console.log('hi');
+      setTabelaSelected({
+        label: String(value?.label),
+        value: Number(value?.value),
       });
 
-      setTotalPrice(
-        ItemOrcamento.PRODUTO ? ItemOrcamento.PRODUTO.PRECO * QTDProduto : 0
-      );
+      console.log('🚀 ~ file: index.tsx:158 ~ CalcTabela', {
+        label: String(value?.label),
+        value: Number(value?.value),
+      });
+
+      setItemOrcamento({
+        ...ItemOrcamento,
+        VALOR: Number(value?.value),
+        TOTAL: Number(value?.value) * QTDProduto,
+      });
+
+      setPrice(Number(value?.value));
+      setTotal(Number(value?.value) * QTDProduto);
     },
-    [Tabelas, ItemOrcamento]
+    [Tabelas, ItemOrcamento, Price, Total]
   );
 
   const OnProdutoPalavras = useCallback(
@@ -157,9 +180,8 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       tabelas = [...tabs];
       let tabOptions: iOption[] = [];
       tabelas.map((tab) =>
-        tabOptions.push({ label: tab.TABELA, value: tab.NOVO_PRECO })
+        tabOptions.push({ label: tab.TABELA, value: tab.PRECO })
       );
-
       setTabelas(tabOptions);
     });
   };
@@ -172,17 +194,21 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     setItemOrcamento({
       ...ItemOrcamento,
       PRODUTO: produto,
-      TOTAL: produto.PRECO * 1,
+      SUBTOTAL: Number(TabelaSelected?.value) * QTDProduto,
+      TOTAL: Number(TabelaSelected?.value) * QTDProduto,
+      VALOR: Number(TabelaSelected?.value),
     });
-    setTotalPrice(produto.PRECO * 1);
+    setTotal(Number(TabelaSelected?.value) * QTDProduto);
+    setPrice(Number(TabelaSelected?.value));
   };
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let result: callback = {
-      orcamento: { ...ItemOrcamento, TABELA: 'SISTEMA' },
+      orcamento: { ...ItemOrcamento, TABELA: TabelaSelected.label },
       saveorupdate: SaveOrUpdateItem,
     };
+    console.log('🚀 ~ file: index.tsx:180 ~ onSubmitForm ~ result:', result);
     setItemOrcamento(result.orcamento);
     callback(result);
     setProdutoPalavras('');
@@ -310,19 +336,9 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 <FormEditOrcamentoInputContainer width='25%'>
                   <Select
                     options={Tabelas}
-                    onChange={(SingleValue) =>
-                      console.log(
-                        '🚀 ~ file: index.tsx:302 ~ SingleValue:',
-                        SingleValue
-                      )
-                    }
-                    // onChange={(SingleValue) =>
-                    //   SingleValue &&
-                    //   setSearchCliente({
-                    //     ...SearchCliente,
-                    //     filterBy: String(SingleValue.value),
-                    //   })
-                    // }
+                    menuPosition='top'
+                    value={TabelaSelected}
+                    onChange={(SingleValue) => CalcTabela(SingleValue)}
                   />
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='10%'>
@@ -330,13 +346,10 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                     label='VALOR'
                     name='VALOR'
                     textAlign='right'
-                    value={ItemOrcamento.PRODUTO?.PRECO.toLocaleString(
-                      'pt-br',
-                      {
-                        style: 'currency',
-                        currency: 'BRL',
-                      }
-                    )}
+                    value={Price.toLocaleString('pt-br', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })}
                   />
                 </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='15%'>
@@ -344,7 +357,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                     label='TOTAL'
                     name='TOTAL'
                     textAlign='right'
-                    value={ItemOrcamento.TOTAL.toLocaleString('pt-br', {
+                    value={Total.toLocaleString('pt-br', {
                       style: 'currency',
                       currency: 'BRL',
                     })}
