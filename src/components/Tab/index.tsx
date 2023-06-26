@@ -1,8 +1,8 @@
-import React from 'react';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
 import { isActiveLink } from '../../utils';
-import { Container, IconMain, IconClose, TabLink, TabTitle } from './styles';
+import { Container, IconClose, IconMain, TabLink, TabTitle } from './styles';
 
 interface iTab {
   Icon: IconProp;
@@ -20,7 +20,7 @@ export const Tab: React.FC<iTab> = ({
   onClose,
 }) => {
   return (
-    <Container active={isActiveLink(Link)}>
+    <Container active={isActiveLink(Link)} title={TitleTab}>
       <TabLink to={Link}>
         <IconMain icon={Icon} />
         {Closable ? <IconClose onClick={onClose} icon={faTimes} /> : ''}

@@ -1,9 +1,9 @@
 import { create } from 'zustand';
-import api from '../../services/index';
 import { iCliente } from '../../@types/Cliente';
 import { iFilter } from '../../@types/Filter';
 import { iVendedor } from '../../@types/Vendedor';
 import { VENDEDOR_STORE } from '../../Constants';
+import api from '../../services/index';
 
 interface iDataCliente {
   Qtd_Registros: number;
@@ -27,19 +27,27 @@ const CreateFilter = (filter: iFilter<iCliente>): string => {
     ResultFilter = `$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}`;
     let andStr = ' AND ';
     filter.filter.map((itemFilter) => {
-      if (itemFilter.typeSearch)
+      console.log(
+        '🚀 ~ file: index.ts:31 ~ filter.filter.map ~ ResultFilter:',
+        ResultFilter
+      );
+      if (itemFilter.typeSearch) {
         itemFilter.typeSearch === 'like'
           ? (ResultFilter = `${ResultFilter}${andStr}${
               itemFilter.key
             } like '% ${String(itemFilter.value).toUpperCase()} %'${andStr}`)
           : itemFilter.typeSearch === 'eq' &&
             (ResultFilter = `${ResultFilter}${andStr}${itemFilter.key} eq '${itemFilter.value}'${andStr}`);
-      else
+      } else
         ResultFilter = `${ResultFilter}${andStr}${
           itemFilter.key
         } like '% ${String(itemFilter.value).toUpperCase()} %'${andStr}`;
+      ResultFilter = ResultFilter.slice(0, -andStr.length);
     });
-    ResultFilter = ResultFilter.slice(0, -andStr.length);
+    console.log(
+      '🚀 ~ file: index.ts:43 ~ CreateFilter ~ ResultFilter:',
+      ResultFilter
+    );
   }
 
   let ResultOrderBy = filter.orderBy ? `&$orderby=${filter.orderBy}` : '';

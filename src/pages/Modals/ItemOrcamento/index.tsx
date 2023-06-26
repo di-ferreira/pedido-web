@@ -77,7 +77,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       Item.TABELA
     );
     setTabelaSelected({ label: Item.TABELA, value: Item.VALOR });
-    setPrice(Item.VALOR);
+    setPrice(Item.TOTAL / Item.QTD);
     setTotal(Item.TOTAL);
     setQTDProduto(Item.QTD);
     setProdutos([]);
@@ -205,7 +205,11 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let result: callback = {
-      orcamento: { ...ItemOrcamento, TABELA: TabelaSelected.label },
+      orcamento: {
+        ...ItemOrcamento,
+        TABELA: TabelaSelected.label,
+        VALOR: Number(TabelaSelected.value),
+      },
       saveorupdate: SaveOrUpdateItem,
     };
     console.log('🚀 ~ file: index.tsx:180 ~ onSubmitForm ~ result:', result);

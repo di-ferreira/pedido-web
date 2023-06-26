@@ -21,6 +21,8 @@ export interface iUniqueResult<T> {
   data: T;
 }
 
+export type typeSimNao = 'S' | 'N';
+
 type SQLType =
   | 'ftUnknown'
   | 'ftString'

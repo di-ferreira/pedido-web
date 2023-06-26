@@ -15,10 +15,12 @@ import {
 } from '../../../@types/Orcamento';
 import { iColumnType } from '../../../@types/Table';
 import Button from '../../../components/Button';
+import { DetailContainer } from '../../../components/DetailContainer';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
 import useModal from '../../../hooks/useModal';
 import useOrcamento from '../../../hooks/useOrcamento';
+import usePreVenda from '../../../hooks/usePreVenda';
 import { useTheme } from '../../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../../utils';
 import { ModalItemOrcamento, callback } from '../ItemOrcamento';
@@ -51,6 +53,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   const { AddItemOrcamento, GetOrcamento, RemoveItemOrcamento } =
     useOrcamento();
+  const { SavePreVenda } = usePreVenda();
 
   useEffect(() => {
     const OpenModal = () => {
@@ -74,7 +77,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const SaveOrUpdate = async (item: callback) => {
-    console.log('🚀 ~ file: index.tsx:77 ~ SaveOrUpdate ~ item:', item);
     if (item.saveorupdate) {
       let removeItem: iItemRemove = {
         pIdOrcamento: NewOrcamento.ORCAMENTO,
@@ -109,7 +111,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 ? item.orcamento.PRODUTO.PRECO * item.orcamento.QTD
                 : 0,
               SubTotal: item.orcamento.SUBTOTAL,
-              Valor: item.orcamento.PRODUTO ? item.orcamento.PRODUTO.PRECO : 0,
+              Valor: item.orcamento.VALOR,
             },
           };
 
@@ -149,7 +151,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         Tabela: item.TABELA,
         Total: item.PRODUTO ? item.PRODUTO.PRECO * item.QTD : 0,
         SubTotal: item.SUBTOTAL,
-        Valor: item.PRODUTO ? item.PRODUTO.PRECO : 0,
+        Valor: item.VALOR,
       },
     };
 
@@ -214,6 +216,11 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     // });
     OnCloseModal();
     callback && callback(NewOrcamento);
+  };
+
+  const GerarPreVenda = (orc: iOrcamento) => {
+    const result = SavePreVenda(orc);
+    console.log('🚀 ~ file: index.tsx:223 ~ GerarPreVenda ~ result:', result);
   };
 
   const tableHeaders: iColumnType<iItensOrcamento>[] = [
@@ -299,79 +306,83 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     value={MaskCnpjCpf(NewOrcamento.CLIENTE.CIC)}
                   />
                 </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='45%'>
-                  <InputCustom
-                    label='TELEFONE'
-                    onChange={() => {}}
-                    name='TELEFONE'
-                    value={NewOrcamento.DATA}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='40%'>
-                  <InputCustom
-                    onChange={() => {}}
-                    label='ENDEREÇO'
-                    name='CLIENTE.ENDERECO'
-                    value={NewOrcamento.CLIENTE.ENDERECO}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='15%'>
-                  <InputCustom
-                    onChange={() => {}}
-                    label='BAIRRO'
-                    name='CLIENTE.BAIRRO'
-                    value={NewOrcamento.CLIENTE.BAIRRO}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='20%'>
-                  <InputCustom
-                    onChange={() => {}}
-                    label='CIDADE'
-                    name='CLIENTE.CIDADE'
-                    value={NewOrcamento.CLIENTE.CIDADE}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='5%'>
-                  <InputCustom
-                    onChange={() => {}}
-                    label='UF'
-                    name='CLIENTE.UF'
-                    value={NewOrcamento.CLIENTE.UF}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='10%'>
-                  <InputCustom
-                    onChange={() => {}}
-                    label='CEP'
-                    name='CLIENTE.CEP'
-                    value={NewOrcamento.CLIENTE.CEP}
-                  />
-                </FormEditOrcamentoInputContainer>
               </FormEditOrcamentoRow>
             </FormEditOrcamentoColumn>
-            <FormEditOrcamentoColumn>
-              <h3>ORÇAMENTO</h3>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='45%'>
-                  <InputCustom
-                    label='OBSERVAÇÃO 1'
-                    onChange={() => {}}
-                    name='OBS1'
-                    value={NewOrcamento.OBS1}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='45%'>
-                  <InputCustom
-                    label='OBSERVAÇÃO 2'
-                    onChange={() => {}}
-                    name='OBS2'
-                    value={NewOrcamento.OBS2}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
+            <DetailContainer summary={'DETALHES'}>
+              <FormEditOrcamentoColumn>
+                <FormEditOrcamentoRow>
+                  <FormEditOrcamentoInputContainer width='45%'>
+                    <InputCustom
+                      label='TELEFONE'
+                      onChange={() => {}}
+                      name='TELEFONE'
+                      value={NewOrcamento.DATA}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                  <FormEditOrcamentoInputContainer width='40%'>
+                    <InputCustom
+                      onChange={() => {}}
+                      label='ENDEREÇO'
+                      name='CLIENTE.ENDERECO'
+                      value={NewOrcamento.CLIENTE.ENDERECO}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                  <FormEditOrcamentoInputContainer width='15%'>
+                    <InputCustom
+                      onChange={() => {}}
+                      label='BAIRRO'
+                      name='CLIENTE.BAIRRO'
+                      value={NewOrcamento.CLIENTE.BAIRRO}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                  <FormEditOrcamentoInputContainer width='20%'>
+                    <InputCustom
+                      onChange={() => {}}
+                      label='CIDADE'
+                      name='CLIENTE.CIDADE'
+                      value={NewOrcamento.CLIENTE.CIDADE}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                  <FormEditOrcamentoInputContainer width='5%'>
+                    <InputCustom
+                      onChange={() => {}}
+                      label='UF'
+                      name='CLIENTE.UF'
+                      value={NewOrcamento.CLIENTE.UF}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                  <FormEditOrcamentoInputContainer width='10%'>
+                    <InputCustom
+                      onChange={() => {}}
+                      label='CEP'
+                      name='CLIENTE.CEP'
+                      value={NewOrcamento.CLIENTE.CEP}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                </FormEditOrcamentoRow>
+              </FormEditOrcamentoColumn>
+              <FormEditOrcamentoColumn>
+                <h3>ORÇAMENTO</h3>
+                <FormEditOrcamentoRow>
+                  <FormEditOrcamentoInputContainer width='45%'>
+                    <InputCustom
+                      label='OBSERVAÇÃO 1'
+                      onChange={() => {}}
+                      name='OBS1'
+                      value={NewOrcamento.OBS1}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                  <FormEditOrcamentoInputContainer width='45%'>
+                    <InputCustom
+                      label='OBSERVAÇÃO 2'
+                      onChange={() => {}}
+                      name='OBS2'
+                      value={NewOrcamento.OBS2}
+                    />
+                  </FormEditOrcamentoInputContainer>
+                </FormEditOrcamentoRow>
+              </FormEditOrcamentoColumn>
+            </DetailContainer>
             <FormEditOrcamentoColumn>
               <FormEditOrcamentoRow>
                 <h3>ITENS</h3>
@@ -385,7 +396,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   Rounded
                 />
               </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow height='10rem'>
+              <FormEditOrcamentoRow height='30rem'>
                 <Table
                   messageNoData={'Esse orçamento não possuí itens!'}
                   columns={tableHeaders}
@@ -394,10 +405,19 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
               </FormEditOrcamentoRow>
             </FormEditOrcamentoColumn>
             <FormFooter>
-              <FormEditOrcamentoInputContainer width='75%'>
+              <FormEditOrcamentoInputContainer width='15%'>
                 <Button
                   onclick={() => SalvarOrcamento()}
                   Text='SALVAR'
+                  Type='success'
+                  Icon={faSave}
+                  Height='3.5rem'
+                />
+              </FormEditOrcamentoInputContainer>
+              <FormEditOrcamentoInputContainer width='60%'>
+                <Button
+                  onclick={() => GerarPreVenda(NewOrcamento)}
+                  Text='GERAR PRÉ-VENDA'
                   Type='success'
                   Icon={faSave}
                   Height='3.5rem'

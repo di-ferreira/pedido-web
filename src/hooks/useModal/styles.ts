@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { Black, DarkRed, Light, Primary } from '../../colors';
+import { devices } from '../../Constants';
+import { Black, DarkRed, Light } from '../../colors';
 import { HEXToRGB } from '../../utils';
 
 export const Backdrop = styled.div`
@@ -52,6 +53,14 @@ export const ModalHeader = styled.header`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    text-align: left;
+  }
+  @media screen and ${devices.sm} {
+    & > h1 {
+      white-space: normal;
+      text-align: center;
+    }
+    height: auto;
   }
 `;
 

@@ -1,16 +1,15 @@
 import { create } from 'zustand';
-import api from '../../services/index';
+import { iDataResult } from '../../@types';
 import { iFilter } from '../../@types/Filter';
 import {
   iItemInserir,
   iItemRemove,
-  iItensOrcamento,
   iOrcamento,
   iOrcamentoInserir,
 } from '../../@types/Orcamento';
 import { iVendedor } from '../../@types/Vendedor';
 import { VENDEDOR_STORE } from '../../Constants';
-import { iDataResult } from '../../@types';
+import api from '../../services/index';
 
 interface iDataOrcamento {
   Qtd_Registros: number;
@@ -140,6 +139,7 @@ const SaveOrcamento = (
 const SaveItemOrcamento = (
   item: iItemInserir
 ): Promise<iDataResult<iOrcamento>> => {
+  console.log('🚀 ~ file: index.ts:143 ~ item:', item);
   const result: Promise<iDataResult<iOrcamento>> = api.post(
     ROUTE_SAVE_ITEM_ORCAMENTO,
     item

@@ -117,13 +117,13 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     {
       key: 'PRODUTO',
       title: 'CÓDIGO',
-      width: '10%',
+      width: '5%',
+      isHideMobile: true,
     },
     {
       key: 'NOME',
       title: 'NOME',
-      width: '25%',
-      isHideMobile: true,
+      width: '35%',
     },
     {
       key: 'QTDATUAL',
