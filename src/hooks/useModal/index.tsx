@@ -1,29 +1,50 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import ReactDOM from 'react-dom';
-import {
-  ModalContainer,
-  Backdrop,
-  ModalHeader,
-  ModalBody,
-  CloseButton,
-} from './styles';
-import { Icon } from '../../components/Icon';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { iModal, iModalRender } from '../../@types/Modal';
+import { Icon } from '../../components/Icon';
+import {
+  Backdrop,
+  CloseButton,
+  ModalBody,
+  ModalContainer,
+  ModalHeader,
+} from './styles';
 
 const RenderLayout: React.FC<iModalRender> = ({
   Title,
   OnClose,
   OnCloseButtonClick,
   children,
+  height,
+  width,
 }) => {
   const BtnClose = () => {
     OnClose();
     OnCloseButtonClick && OnCloseButtonClick();
   };
+
+  const OnEscKeyClose = (fn: () => void) => {
+    const handleEscKey = useCallback(
+      (e: { key: string }) => {
+        if (e.key === 'Escape') {
+          fn();
+        }
+      },
+      [fn]
+    );
+
+    useEffect(() => {
+      document.addEventListener('keydown', handleEscKey, false);
+      return () => document.removeEventListener('keydown', handleEscKey, false);
+    }, [handleEscKey]);
+  };
+
+  OnEscKeyClose(OnClose);
+
   return (
     <Backdrop>
-      <ModalContainer>
+      <ModalContainer width={width} height={height}>
         <CloseButton onClick={BtnClose}>
           <Icon Icon={faTimes} />
         </CloseButton>
@@ -40,9 +61,22 @@ const useModal = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const OnClose = () => setIsVisible(false);
-  const Modal: React.FC<iModal> = ({ Title, children, OnCloseButtonClick }) =>
+  const Modal: React.FC<iModal> = ({
+    Title,
+    children,
+    OnCloseButtonClick,
+    height,
+    width,
+  }) =>
     ReactDOM.createPortal(
-      RenderLayout({ Title, children, OnClose, OnCloseButtonClick }),
+      RenderLayout({
+        Title,
+        children,
+        OnClose,
+        OnCloseButtonClick,
+        height,
+        width,
+      }),
       document.body
     );
 

@@ -1,6 +1,6 @@
 import React from 'react';
+import { iColumnType } from '../../../@types/Table';
 import { TableHeaderCell, TableHeaderRow } from './styles';
-import { iColumnType } from '../../@types/Table';
 
 interface iHeaderProps<T> {
   columns: iColumnType<T>[];

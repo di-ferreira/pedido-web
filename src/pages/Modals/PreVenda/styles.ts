@@ -3,6 +3,7 @@ import { devices } from '../../../Constants';
 
 interface iInputContainer {
   width?: string;
+  height?: string;
   align?: 'center' | 'left';
 }
 
@@ -14,12 +15,11 @@ interface iRow {
 export const FormEditOrcamento = styled.form`
   position: relative;
   width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
-
 export const FormEditOrcamentoRow = styled.div<iRow>`
   width: ${(props) => (props.width ? props.width : '100%')};
   height: ${(props) => (props.height ? props.height : 'auto')};
@@ -39,13 +39,14 @@ export const FormEditOrcamentoRow = styled.div<iRow>`
     margin: 0.5rem 0;
   }
 `;
-export const FormEditOrcamentoColumn = styled.div`
-  width: 100%;
+
+export const FormEditOrcamentoColumn = styled.div<iRow>`
+  width: ${(props) => (props.width ? props.width : '100%')};
+  height: ${(props) => (props.height ? props.height : '1rem')};
   margin: 0.5rem 0;
   display: flex;
   flex-direction: column;
 `;
-
 export const FormEditOrcamentoInputContainer = styled.div<iInputContainer>`
   width: ${(props) => (props.width ? props.width : '100%')};
   margin: 0.5rem;
@@ -61,9 +62,9 @@ export const FormEditOrcamentoInputContainer = styled.div<iInputContainer>`
     }
   }
 `;
-
 export const FormEditOrcamentoSwitchContainer = styled.div<iInputContainer>`
   width: ${(props) => (props.width ? props.width : '100%')};
+  height: ${(props) => (props.height ? props.height : '1rem')};
   display: flex;
   align-items: center;
   margin: 0 0.5rem;
@@ -72,7 +73,6 @@ export const FormEditOrcamentoSwitchContainer = styled.div<iInputContainer>`
     color: ${(props) => props.theme.colors.onSurface};
   }
 `;
-
 export const FormFooter = styled.footer`
   background-color: ${(props) => props.theme.colors.background};
   position: absolute;

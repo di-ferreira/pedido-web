@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Light, Primary } from '../../colors';
+import { Light } from '../../colors';
 
 export const Container = styled.div`
   position: relative;
@@ -19,12 +19,12 @@ export const Container = styled.div`
 
 export const Label = styled.label`
   position: absolute;
-  color: ${Primary.main};
+  color: ${(props) => props.theme.colors.onSurface};
   font-weight: 500;
   font-variant: small-caps;
   text-transform: lowercase;
   font-size: 1.8rem;
-  top: -2.2rem;
+  top: -2.5rem;
   left: 0.5rem;
   z-index: 500;
 `;

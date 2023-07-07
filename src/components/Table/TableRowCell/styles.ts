@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { devices } from '../../Constants';
+import { devices } from '../../../Constants';
 
 interface iTableCell {
   isHideMobile?: boolean;

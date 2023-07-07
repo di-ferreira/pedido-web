@@ -139,7 +139,6 @@ const SaveOrcamento = (
 const SaveItemOrcamento = (
   item: iItemInserir
 ): Promise<iDataResult<iOrcamento>> => {
-  console.log('🚀 ~ file: index.ts:143 ~ item:', item);
   const result: Promise<iDataResult<iOrcamento>> = api.post(
     ROUTE_SAVE_ITEM_ORCAMENTO,
     item

@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
 
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faFileLines } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import { iFilter } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
+import { iMovimento } from '../../@types/PreVenda';
 import { iColumnType, iOption } from '../../@types/Table';
 import { Loading } from '../../components/Loading';
 import Table from '../../components/Table';
 import useSelect from '../../hooks/UseSelect';
 import useOrcamento from '../../hooks/useOrcamento';
 import { ModalOrcamento } from '../Modals/Orcamento';
+import { ModalPreVenda } from '../Modals/PreVenda';
 import { Container } from './styles';
 
 export const Orcamentos: React.FC = () => {
@@ -25,6 +27,7 @@ export const Orcamentos: React.FC = () => {
 
   const [OrcamentoList, setOrcamentoList] = useState<iOrcamento[]>([]);
   const [Orcamento, setOrcamento] = useState<iOrcamento | null>(null);
+  const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
   /* PAGINAÇÃO */
   const [RegistersPerPage, setRegistersPerPage] = useState<number>(15);
@@ -65,6 +68,21 @@ export const Orcamentos: React.FC = () => {
   useEffect(() => {
     ListOrcamentos();
   }, []);
+
+  const onOpenModalPreVenda = async (value: iOrcamento) => {
+    setNewPreVenda(value);
+  };
+
+  const onCloseModalPreVenda = async (value: iMovimento) => {
+    // const newListPreVenda: iMovimento[] = PreVendaList.map((pv: iMovimento) => {
+    //   if (pv.MOVIMENTO === value.MOVIMENTO) {
+    //     pv = value;
+    //     return pv;
+    //   } else return pv;
+    // });
+    // setPreVendaList(newListPreVenda);
+    setNewPreVenda(null);
+  };
 
   const ListOrcamentos = async (filter?: iFilter<iOrcamento>) => {
     setErrorMessage('');
@@ -142,13 +160,13 @@ export const Orcamentos: React.FC = () => {
       title: 'AÇÕES',
       width: '5rem',
       action: [
-        // {
-        //   onclick: () => {},
-        //   Icon: faFileLines,
-        //   Rounded: true,
-        //   Title: 'Novo Orçamento',
-        //   Type: 'success',
-        // },
+        {
+          onclick: (value: iOrcamento) => onOpenModalPreVenda(value),
+          Icon: faFileLines,
+          Rounded: true,
+          Title: 'Nova Pré-Venda',
+          Type: 'success',
+        },
         {
           onclick: (value: iOrcamento) => onOpenModalOrcamento(value),
           Icon: faEdit,
@@ -251,61 +269,18 @@ export const Orcamentos: React.FC = () => {
 
   return (
     <Container>
-      {/* <FilterContainer>
-         <Select
-          options={OptionsSelect}
-          onChange={(SingleValue) => {
-            SingleValue &&
-            setSearchOrcamento({
-              ...SearchOrcamento,
-              filterBy: String(SingleValue.value),
-            })
-          }}
-        /> 
-        <ContainerInput>
-          <InputCustom
-            height='4rem'
-            widht='31rem'
-            onChange={(e) => {
-              // setSearchOrcamento({
-              //   ...SearchOrcamento,
-              //   value: e.target.value,
-              // })
-            }}
-            placeholder='Digite sua busca'
-          />
-        </ContainerInput>
-
-        <Button
-          Icon={faSearch}
-          // onclick={() => SearchForFilter()}
-          Text='Buscar'
-          Type='secondary'
-          Title='Buscar'
-          Height={'40px'}
-        />
-        <SwitchContainer>
-          <CustomSwitch
-            label='Ativos'
-            checked={checkedSwitchFilter}
-            style='secondary'
-            onClick={() => {
-              // setCheckedSwitchFilter(!checkedSwitchFilter);
-              // setSearchOrcamento({
-              //   ...SearchOrcamento,
-              //   actives: !checkedSwitchFilter,
-              // });
-            }}
-          />
-        </SwitchContainer>
-      </FilterContainer>*/}
       {Orcamento && (
         <ModalOrcamento
           Orcamento={Orcamento}
           callback={onCloseModalOrcamento}
         />
+      )}{' '}
+      {NewPreVenda && (
+        <ModalPreVenda
+          Orcamento={NewPreVenda}
+          callback={onCloseModalPreVenda}
+        />
       )}
-
       {IsLoading && <Loading />}
       {OrcamentoList && !IsLoading && (
         <Table

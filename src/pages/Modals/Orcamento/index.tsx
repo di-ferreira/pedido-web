@@ -13,6 +13,7 @@ import {
   iItensOrcamento,
   iOrcamento,
 } from '../../../@types/Orcamento';
+import { iProduto } from '../../../@types/Produto';
 import { iColumnType } from '../../../@types/Table';
 import Button from '../../../components/Button';
 import { DetailContainer } from '../../../components/DetailContainer';
@@ -24,6 +25,7 @@ import usePreVenda from '../../../hooks/usePreVenda';
 import { useTheme } from '../../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../../utils';
 import { ModalItemOrcamento, callback } from '../ItemOrcamento';
+import { ModalPreVenda } from '../PreVenda';
 import {
   FormEditOrcamento,
   FormEditOrcamentoColumn,
@@ -48,6 +50,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
     null
   );
+  const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
   const { Modal, showModal, OnCloseModal } = useModal();
 
@@ -64,6 +67,17 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     return () => OpenModal();
   }, [Orcamento]);
 
+  const onCloseModalPreVenda = async (value: iOrcamento) => {
+    // const newListPreVenda: iMovimento[] = PreVendaList.map((pv: iMovimento) => {
+    //   if (pv.MOVIMENTO === value.MOVIMENTO) {
+    //     pv = value;
+    //     return pv;
+    //   } else return pv;
+    // });
+    // setPreVendaList(newListPreVenda);
+    setNewPreVenda(null);
+  };
+
   const OpenModalItemOrcamento = () => {
     setItemOrcamento({
       ORCAMENTO: Orcamento,
@@ -71,8 +85,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       SUBTOTAL: 0.0,
       TOTAL: 0.0,
       VALOR: 0.0,
-      PRODUTO: null,
+      PRODUTO: {} as iProduto,
       TABELA: '',
+      DESCONTO: 0,
     });
   };
 
@@ -219,8 +234,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const GerarPreVenda = (orc: iOrcamento) => {
-    const result = SavePreVenda(orc);
-    console.log('🚀 ~ file: index.tsx:223 ~ GerarPreVenda ~ result:', result);
+    setNewPreVenda(orc);
   };
 
   const tableHeaders: iColumnType<iItensOrcamento>[] = [
@@ -284,7 +298,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
               <FormEditOrcamentoRow>
                 <FormEditOrcamentoInputContainer width='8%'>
                   <InputCustom
-                    onChange={() => {}}
+                    labelPosition='top'
                     label='CÓDIGO'
                     name='CLIENTE.CLIENTE'
                     value={NewOrcamento.CLIENTE.CLIENTE}
@@ -293,7 +307,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 <FormEditOrcamentoInputContainer width='50%'>
                   <InputCustom
                     label='NOME'
-                    onChange={() => {}}
                     name='CLIENTE.NOME'
                     value={NewOrcamento.CLIENTE.NOME}
                   />
@@ -301,7 +314,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 <FormEditOrcamentoInputContainer width='35%'>
                   <InputCustom
                     label='CPF/CNPJ'
-                    onChange={() => {}}
                     name='CLIENTE.CIC'
                     value={MaskCnpjCpf(NewOrcamento.CLIENTE.CIC)}
                   />
@@ -314,14 +326,12 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FormEditOrcamentoInputContainer width='45%'>
                     <InputCustom
                       label='TELEFONE'
-                      onChange={() => {}}
                       name='TELEFONE'
                       value={NewOrcamento.DATA}
                     />
                   </FormEditOrcamentoInputContainer>
                   <FormEditOrcamentoInputContainer width='40%'>
                     <InputCustom
-                      onChange={() => {}}
                       label='ENDEREÇO'
                       name='CLIENTE.ENDERECO'
                       value={NewOrcamento.CLIENTE.ENDERECO}
@@ -329,7 +339,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   </FormEditOrcamentoInputContainer>
                   <FormEditOrcamentoInputContainer width='15%'>
                     <InputCustom
-                      onChange={() => {}}
                       label='BAIRRO'
                       name='CLIENTE.BAIRRO'
                       value={NewOrcamento.CLIENTE.BAIRRO}
@@ -337,7 +346,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   </FormEditOrcamentoInputContainer>
                   <FormEditOrcamentoInputContainer width='20%'>
                     <InputCustom
-                      onChange={() => {}}
                       label='CIDADE'
                       name='CLIENTE.CIDADE'
                       value={NewOrcamento.CLIENTE.CIDADE}
@@ -345,7 +353,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   </FormEditOrcamentoInputContainer>
                   <FormEditOrcamentoInputContainer width='5%'>
                     <InputCustom
-                      onChange={() => {}}
                       label='UF'
                       name='CLIENTE.UF'
                       value={NewOrcamento.CLIENTE.UF}
@@ -353,7 +360,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   </FormEditOrcamentoInputContainer>
                   <FormEditOrcamentoInputContainer width='10%'>
                     <InputCustom
-                      onChange={() => {}}
                       label='CEP'
                       name='CLIENTE.CEP'
                       value={NewOrcamento.CLIENTE.CEP}
@@ -367,7 +373,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FormEditOrcamentoInputContainer width='45%'>
                     <InputCustom
                       label='OBSERVAÇÃO 1'
-                      onChange={() => {}}
                       name='OBS1'
                       value={NewOrcamento.OBS1}
                     />
@@ -375,7 +380,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FormEditOrcamentoInputContainer width='45%'>
                     <InputCustom
                       label='OBSERVAÇÃO 2'
-                      onChange={() => {}}
                       name='OBS2'
                       value={NewOrcamento.OBS2}
                     />
@@ -426,7 +430,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
               <FormEditOrcamentoInputContainer width='20%'>
                 <InputCustom
                   label='TOTAL ORCAMENTO'
-                  onChange={() => {}}
                   name='TOTAL'
                   readOnly={true}
                   textAlign='right'
@@ -442,6 +445,12 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       )}
       {ItemOrcamento && (
         <ModalItemOrcamento callback={SaveOrUpdate} Item={ItemOrcamento} />
+      )}
+      {NewPreVenda && (
+        <ModalPreVenda
+          Orcamento={NewPreVenda}
+          callback={onCloseModalPreVenda}
+        />
       )}
     </>
   );

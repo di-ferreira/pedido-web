@@ -1,16 +1,28 @@
 import React, { useEffect, useState } from 'react';
 
-import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
-import { iItemPreVenda, iMovimento } from '../../../@types/PreVenda';
-import { iColumnType } from '../../../@types/Table';
+import { faBan, faSave } from '@fortawesome/free-solid-svg-icons';
+import dayjs from 'dayjs';
+import { SingleValue } from 'react-select';
+import { toast } from 'react-toastify';
+import { iOrcamento } from '../../../@types/Orcamento';
+import {
+  iCondicaoPgto,
+  iFormaPgto,
+  iItemPreVenda,
+  iPreVenda,
+  iTransportadora,
+} from '../../../@types/PreVenda';
+import { iColumnType, iOption } from '../../../@types/Table';
+import { Secondary } from '../../../colors';
 import Button from '../../../components/Button';
-import { DetailContainer } from '../../../components/DetailContainer';
+import { CustomSwitch } from '../../../components/CustomSwitch';
+import { FieldSet } from '../../../components/FieldSet';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
+import useSelect from '../../../hooks/UseSelect';
 import useModal from '../../../hooks/useModal';
 import usePreVenda from '../../../hooks/usePreVenda';
 import { useTheme } from '../../../hooks/useTheme';
-import { MaskCnpjCpf } from '../../../utils';
 import {
   FormEditOrcamento,
   FormEditOrcamentoColumn,
@@ -20,229 +32,198 @@ import {
 } from './styles';
 
 interface iModalPreVenda {
-  PreVenda: iMovimento;
-  callback?: (value: iMovimento) => void;
+  Orcamento: iOrcamento;
+  callback?: (value: iOrcamento) => void;
+}
+interface iParcelasPgto {
+  DIAS: number;
+  VENCIMENTO: string;
+  VALOR: number;
 }
 
 export const ModalPreVenda: React.FC<iModalPreVenda> = ({
-  PreVenda,
+  Orcamento,
   callback,
 }) => {
+  const { GetCondicaoPgto, GetFormaPgto, GetTransportadora, SavePreVenda } =
+    usePreVenda();
   const { ThemeName } = useTheme();
+  const { Select } = useSelect();
 
-  const [NewPreVenda, setNewPreVenda] = useState<iMovimento>(PreVenda);
-  const [ItensPreVenda, setItensPreVenda] = useState<iItemPreVenda[]>([]);
-  const [ItemPreVenda, setItemPreVenda] = useState<iItemPreVenda | null>(null);
+  const [SwitchEntrega, setSwitchEntrega] = useState('N');
+
+  const [NewPreVenda, setNewPreVenda] = useState<iOrcamento>(Orcamento);
+  const [ListaParcelas, setListaParcelas] = useState<iParcelasPgto[]>([]);
+  const [IdCondicaoPgto, setIdCondicaoPgto] = useState<number>(0);
+  const [IdTransp, setIdTransp] = useState<number>(0);
+  const [OptCondicaoPgto, setOptCondicaoPgto] = useState<iOption[]>([]);
+  const [OptFormasPgto, setOptFormasPgto] = useState<iOption[]>([]);
+  const [OptTransportadoras, setOptTransportadoras] = useState<iOption[]>([]);
+
+  const [valueSubTotal, setvalueSubTotal] = useState(0);
+  const [valueTotal, setvalueTotal] = useState(0);
+  const [valueFrete, setvalueFrete] = useState<string>('');
+  const [valueObsPedido1, setvalueObsPedido1] = useState('');
+  const [valueObsNotaFiscal, setvalueObsNotaFiscal] = useState('');
+  const [valueNumeroOrdemCompraCliente, setvalueNumeroOrdemCompraCliente] =
+    useState('');
+  const [FretePorConta, setFretePorConta] = useState<number>(0);
+
+  const [OptFormasPgtoSelected, setOptFormasPgtoSelected] = useState<iOption>();
+  const [OptTransportadorasSelected, setOptTransportadorasSelected] =
+    useState<iOption>();
+  const [OptCondicaoPgtoSelected, setOptCondicaoPgtoSelected] =
+    useState<iOption>();
+  const [CondicoesPgto, setCondicoesPgto] = useState<iCondicaoPgto[]>([]);
+  const [OptVeiculos, _] = useState<iOption[]>([
+    { label: 'CARRO', value: 'CARRO' },
+    { label: 'MOTO', value: 'MOTO' },
+  ]);
+  const [OptVeiculo, setOptVeiculo] = useState<iOption>(OptVeiculos[0]);
 
   const { Modal, showModal, OnCloseModal } = useModal();
-
-  const { GetPreVenda } = usePreVenda();
 
   useEffect(() => {
     const OpenModal = () => {
       showModal();
-      setNewPreVenda(PreVenda);
-      setItensPreVenda(PreVenda.Itens_List);
+      setNewPreVenda(Orcamento);
+      ListarCondicaoPgto();
+      ListarFormaPgto();
+      ListarTransportadoras();
+      setvalueSubTotal(Orcamento.TOTAL);
+      setvalueTotal(Orcamento.TOTAL);
     };
-    console.log('🚀 ~ file: index.tsx:47 ~ OpenModal ~ PreVenda:', PreVenda);
     return () => OpenModal();
-  }, [PreVenda]);
+  }, [Orcamento]);
 
-  // const OpenModalItemOrcamento = () => {
-  //   setItemPreVenda({
+  const OnChangeTransp = (newValue: SingleValue<iOption>) => {
+    if (newValue) {
+      setIdTransp(Number(newValue.value));
+    }
+  };
 
-  //     ORCAMENTO: PreVenda,
-  //     QTD: 1,
-  //     SUBTOTAL: 0.0,
-  //     TOTAL: 0.0,
-  //     VALOR: 0.0,
-  //     PRODUTO: null,
-  //     TABELA: '',
-  //   });
-  // };
+  const SelectVeic = (newValue: SingleValue<iOption>) => {
+    if (newValue) {
+      setOptVeiculo(newValue);
+    }
+  };
 
-  // const SaveOrUpdate = async (item: callback) => {
-  //   if (item.saveorupdate) {
-  //     let removeItem: iItemRemove = {
-  //       pIdOrcamento: NewPreVenda.ORCAMENTO,
-  //       pProduto: item.orcamento.PRODUTO ? item.orcamento.PRODUTO.PRODUTO : '',
-  //     };
-  //     RemoveItemOrcamento(removeItem).then(async (res) => {
-  //       const { StatusCode, Data, StatusMessage } = res.data;
+  const OnChangeFrete = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setvalueFrete(e.target.value);
+  };
 
-  //       if (StatusCode !== 200) {
-  //         toast.error(`Opps, ${StatusMessage} 🤯`, {
-  //           position: 'bottom-right',
-  //           autoClose: 5000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //           theme: ThemeName,
-  //         });
-  //       } else {
-  //         let saveItem: iItemInserir = {
-  //           pIdOrcamento: item.orcamento.ORCAMENTO.ORCAMENTO,
-  //           pItemOrcamento: {
-  //             CodigoProduto: item.orcamento.PRODUTO
-  //               ? item.orcamento.PRODUTO.PRODUTO
-  //               : '',
-  //             Desconto: item.orcamento.DESCONTO ? item.orcamento.DESCONTO : 0,
-  //             Frete: 0,
-  //             Qtd: item.orcamento.QTD,
-  //             Tabela: item.orcamento.TABELA,
-  //             Total: item.orcamento.PRODUTO
-  //               ? item.orcamento.PRODUTO.PRECO * item.orcamento.QTD
-  //               : 0,
-  //             SubTotal: item.orcamento.SUBTOTAL,
-  //             Valor: item.orcamento.VALOR,
-  //           },
-  //         };
+  const OnChangeCondicaoPgto = (newValue: SingleValue<iOption>) => {
+    if (newValue) {
+      setIdCondicaoPgto(Number(newValue.value));
+      setOptCondicaoPgtoSelected({
+        label: newValue ? newValue.label : '',
+        value: newValue ? newValue.value : 0,
+      });
 
-  //         AddItemOrcamento(saveItem).then(async (res) => {
-  //           const { StatusCode, Data, StatusMessage } = res.data;
+      let Condicao: iCondicaoPgto = CondicoesPgto.filter(
+        (Condicao) => Condicao.ID === newValue.value
+      )[0];
+      ListarParcelas(Condicao);
+    }
+  };
 
-  //           if (StatusCode !== 200) {
-  //             toast.error(`Opps, ${StatusMessage} 🤯`, {
-  //               position: 'bottom-right',
-  //               autoClose: 5000,
-  //               hideProgressBar: false,
-  //               closeOnClick: true,
-  //               pauseOnHover: true,
-  //               draggable: true,
-  //               progress: undefined,
-  //               theme: ThemeName,
-  //             });
-  //           } else {
-  //             const orc: iMovimento = (await GetOrcamento(Data.ORCAMENTO)).data;
-  //             setNewPreVenda(orc);
-  //             setItensPreVenda(orc.ItensPreVenda);
-  //           }
-  //         });
-  //       }
-  //     });
-  //   } else await AddItem(item.orcamento);
-  // };
+  const ListarParcelas = (condicao: iCondicaoPgto) => {
+    let parcelas: iParcelasPgto[] = [];
+    let DataVencimento = dayjs();
+    type KeyCondicao = keyof typeof condicao;
 
-  // const AddItem = async (item: iItensOrcamento) => {
-  //   let saveItem: iItemInserir = {
-  //     pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
-  //     pItemOrcamento: {
-  //       CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
-  //       Desconto: item.DESCONTO ? item.DESCONTO : 0,
-  //       Frete: 0,
-  //       Qtd: item.QTD,
-  //       Tabela: item.TABELA,
-  //       Total: item.PRODUTO ? item.PRODUTO.PRECO * item.QTD : 0,
-  //       SubTotal: item.SUBTOTAL,
-  //       Valor: item.VALOR,
-  //     },
-  //   };
+    for (let i = 0; i < condicao.PARCELAS; i++) {
+      let ParcelaNameKey: KeyCondicao = ('PZ0' + String(i + 1)) as KeyCondicao;
+      const DiaParcela: number = Number(condicao[ParcelaNameKey]);
 
-  //   AddItemOrcamento(saveItem).then(async (res) => {
-  //     const { StatusCode, Data, StatusMessage } = res.data;
+      parcelas.push({
+        DIAS: DiaParcela,
+        VALOR: Orcamento.TOTAL / condicao.PARCELAS,
+        VENCIMENTO: DataVencimento.add(DiaParcela, 'day').format('DD/MM/YYYY'),
+      });
+    }
 
-  //     if (StatusCode !== 200) {
-  //       toast.error(`Opps, ${StatusMessage} 🤯`, {
-  //         position: 'bottom-right',
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: ThemeName,
-  //       });
-  //     } else {
-  //       const orc: iMovimento = (await GetOrcamento(Data.ORCAMENTO)).data;
-  //       setNewPreVenda(orc);
-  //       setItensPreVenda(orc.ItensPreVenda);
-  //     }
-  //   });
-  // };
+    setListaParcelas(parcelas);
+  };
 
-  // const DeleteItem = async (item: iItensOrcamento) => {
-  //   let removeItem: iItemRemove = {
-  //     pIdOrcamento: NewPreVenda.ORCAMENTO,
-  //     pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
-  //   };
-  //   RemoveItemOrcamento(removeItem).then(async (res) => {
-  //     const { StatusCode, Data, StatusMessage } = res.data;
+  const ListarCondicaoPgto = async () => {
+    let opt: iOption[] = [];
+    const { data } = await GetCondicaoPgto(Orcamento.TOTAL);
 
-  //     if (StatusCode !== 200) {
-  //       toast.error(`Opps, ${StatusMessage} 🤯`, {
-  //         position: 'bottom-right',
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: ThemeName,
-  //       });
-  //     } else {
-  //       const orc: iMovimento = (await GetOrcamento(Data.ORCAMENTO)).data;
-  //       setNewPreVenda(orc);
-  //       setItensPreVenda(orc.ItensPreVenda);
-  //     }
-  //   });
-  // };
+    let Condicoes: iCondicaoPgto[] = data.Data;
 
-  // const UpdateItem = async (item: iItensOrcamento) => {
-  //   setItemPreVenda({ ...item, ORCAMENTO: NewPreVenda });
-  // };
+    for (let i = 0; i < Condicoes.length; i++) {
+      opt.push({ label: Condicoes[i].NOME, value: Condicoes[i].ID });
+    }
+    setIdCondicaoPgto(Condicoes[0].ID);
+    setCondicoesPgto(Condicoes);
+    setOptCondicaoPgtoSelected({
+      label: Condicoes[0].NOME,
+      value: Condicoes[0].ID,
+    });
 
-  // const SalvarOrcamento = () => {
-  //   // toast.promise(SaveOrcamento(NewPreVenda), {
-  //   //   pending: `Salvando Orçamento do cliente ${NewPreVenda.CLIENTE.NOME}`,
-  //   //   success: 'Orçamento Salvo 👌',
-  //   //   error: 'Opps, ocorreu um erro 🤯',
-  //   // });
-  //   OnCloseModal();
-  //   callback && callback(NewPreVenda);
-  // };
+    ListarParcelas(Condicoes[0]);
 
-  const tableHeaders: iColumnType<iItemPreVenda>[] = [
-    // {
-    //   key: 'acoes',
-    //   title: 'AÇÕES',
-    //   width: '20%',
-    //   action: [
-    //     {
-    //       onclick: UpdateItem,
-    //       Icon: faEdit,
-    //       Title: 'Editar',
-    //       Type: 'warn',
-    //     },
-    //     {
-    //       onclick: DeleteItem,
-    //       Icon: faTrashAlt,
-    //       Title: 'Excluir',
-    //       Type: 'danger',
-    //     },
-    //   ],
-    // },
+    setOptCondicaoPgto(opt);
+  };
+
+  const ListarFormaPgto = async () => {
+    let opt: iOption[] = [];
+    const { data } = await GetFormaPgto();
+
+    let FormasPgto: iFormaPgto[] = data.Data;
+
+    for (let i = 0; i < FormasPgto.length; i++) {
+      opt.push({ label: FormasPgto[i].CARTAO, value: FormasPgto[i].CARTAO });
+    }
+    setOptFormasPgtoSelected(opt[0]);
+    setOptFormasPgto(opt);
+  };
+
+  const ListarTransportadoras = async () => {
+    let opt: iOption[] = [];
+    const { data } = await GetTransportadora();
+
+    let Transp: iTransportadora[] = data.Data;
+
+    for (let i = 0; i < Transp.length; i++) {
+      opt.push({ label: Transp[i].NOME, value: Transp[i].FORNECEDOR });
+    }
+
+    let optSelected: iOption = opt.filter(
+      (o) => o.value === Orcamento.CLIENTE.TRANSPORTADORA
+    )[0];
+
+    if (!optSelected) {
+      optSelected = opt[0];
+    }
+
+    setOptTransportadorasSelected(optSelected);
+    setIdTransp(Number(optSelected.value));
+
+    setOptTransportadoras(opt);
+  };
+
+  const tableHeaders: iColumnType<iParcelasPgto>[] = [
     {
-      key: 'CodigoProduto',
-      title: 'COD. PRODUTO',
+      key: 'DIAS',
+      title: 'DIAS',
       width: '10%',
     },
     {
-      key: 'Qtd',
-      title: 'QTD',
+      key: 'VENCIMENTO',
+      title: 'VENCIMENTO',
       width: '10%',
     },
     {
-      key: 'Total',
-      title: 'TOTAL',
+      key: 'VALOR',
+      title: 'VALOR',
       width: '20%',
-      isHideMobile: true,
       render: (_, item) => {
         let TotalPV: number = 0.0;
 
-        if (item.Total) {
-          TotalPV = item.Total;
+        if (item.VALOR) {
+          TotalPV = item.VALOR;
         }
 
         return TotalPV.toLocaleString('pt-br', {
@@ -253,148 +234,272 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
     },
   ];
 
+  const GerarPV = async () => {
+    let ItensPV: iItemPreVenda[] = [];
+
+    for (let item in Orcamento.ItensOrcamento) {
+      ItensPV.push({
+        CodigoProduto: Orcamento.ItensOrcamento[item].PRODUTO.PRODUTO,
+        Qtd: Orcamento.ItensOrcamento[item].QTD,
+        Desconto: Orcamento.ItensOrcamento[item].DESCONTO
+          ? Orcamento.ItensOrcamento[item].DESCONTO
+          : 0,
+        SubTotal: Orcamento.ItensOrcamento[item].SUBTOTAL,
+        Tabela: Orcamento.ItensOrcamento[item].TABELA,
+        Valor: Orcamento.ItensOrcamento[item].VALOR,
+        Total: Orcamento.ItensOrcamento[item].TOTAL,
+        Frete: 0,
+      });
+    }
+
+    const PV: iPreVenda = {
+      CodigoCliente: Orcamento.CLIENTE.CLIENTE,
+      CodigoCondicaoPagamento: IdCondicaoPgto,
+      CodigoVendedor1: Orcamento.VENDEDOR.VENDEDOR,
+      DataPedido: dayjs().format('YYYY-MM-DD').toString(),
+      ModeloNota: '55',
+      Itens: ItensPV,
+      SubTotal: valueSubTotal,
+      Total: valueSubTotal + Number(valueFrete),
+      ObsPedido1: valueObsPedido1,
+      ObsPedido2: '',
+      ObsNotaFiscal: valueObsNotaFiscal,
+      Entrega: SwitchEntrega,
+      NumeroOrdemCompraCliente: valueNumeroOrdemCompraCliente,
+      CodigoVendedor2: 0,
+      Desconto: 0,
+      Origem: '',
+      PedidoEcommerce: '',
+      TipoEntrega: OptVeiculo ? OptVeiculo.label : '',
+      ValorFrete: parseFloat(valueFrete),
+    };
+
+    await SavePreVenda(PV)
+      .then((result) => {
+        const { Data } = result.data;
+
+        callback && callback(Orcamento);
+
+        OnCloseModal();
+      })
+      .catch((error) => {
+        toast.error(`Opps, ${error.message} 🤯`, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: ThemeName,
+        });
+      });
+  };
+
   return (
     <>
-      {Modal && NewPreVenda && NewPreVenda.CLIENTE && (
+      {Modal && Orcamento && (
         <Modal
-          Title={
-            NewPreVenda.MOVIMENTO > 0
-              ? `ORÇAMENTO Nº ${NewPreVenda.MOVIMENTO.toString()}`
-              : 'NOVO ORÇAMENTO'
-          }
-          OnCloseButtonClick={() => callback && callback(NewPreVenda)}
+          Title={'FECHAMENTO DE PRÉ-VENDA'}
+          OnCloseButtonClick={() => callback && callback(Orcamento)}
+          width='85vw'
+          height='100%'
         >
           <FormEditOrcamento>
             <FormEditOrcamentoColumn>
-              <h3>CLIENTE</h3>
               <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='8%'>
-                  <InputCustom
-                    onChange={() => {}}
-                    label='CÓDIGO'
-                    name='CLIENTE.CLIENTE'
-                    value={NewPreVenda.CLIENTE.CLIENTE}
+                <FormEditOrcamentoColumn width='69%'>
+                  <h4>CONDIÇÃO DE PAGAMENTO</h4>
+                  <FormEditOrcamentoRow>
+                    <FormEditOrcamentoInputContainer width='10%'>
+                      <InputCustom
+                        name='ID_CONDICAO'
+                        value={IdCondicaoPgto}
+                        height='3.5rem'
+                      />
+                    </FormEditOrcamentoInputContainer>
+                    <FormEditOrcamentoInputContainer width='45%'>
+                      <Select
+                        options={OptCondicaoPgto}
+                        menuPosition='bottom'
+                        value={OptCondicaoPgtoSelected}
+                        onChange={OnChangeCondicaoPgto}
+                      />
+                    </FormEditOrcamentoInputContainer>
+                    <FormEditOrcamentoInputContainer width='40%'>
+                      <Select
+                        label='FORMAS DE PGTº'
+                        options={OptFormasPgto}
+                        menuPosition='bottom'
+                        value={OptFormasPgtoSelected}
+                        onChange={(SingleValue) => console.log(SingleValue)}
+                      />
+                    </FormEditOrcamentoInputContainer>
+                  </FormEditOrcamentoRow>
+                  <FormEditOrcamentoRow>
+                    <FormEditOrcamentoInputContainer width='100%'>
+                      <InputCustom
+                        onChange={(e) => setvalueObsPedido1(e.target.value)}
+                        label='OBS PEDIDO'
+                        labelPosition='top'
+                        name='OBS_PEDIDO'
+                        value={valueObsPedido1}
+                        height='3.5rem'
+                      />
+                    </FormEditOrcamentoInputContainer>
+                  </FormEditOrcamentoRow>
+                  <FormEditOrcamentoRow>
+                    <h4>TRANSPORTADORA</h4>
+                    <FormEditOrcamentoRow>
+                      <FormEditOrcamentoInputContainer width='7%'>
+                        <InputCustom
+                          textAlign='right'
+                          name='ID_TRANSPORTADORA'
+                          value={IdTransp}
+                          height='3.5rem'
+                        />
+                      </FormEditOrcamentoInputContainer>
+                      <FormEditOrcamentoInputContainer width='90%'>
+                        <Select
+                          options={OptTransportadoras}
+                          menuPosition='bottom'
+                          value={OptTransportadorasSelected}
+                          onChange={(SingleValue) =>
+                            OnChangeTransp(SingleValue)
+                          }
+                        />
+                      </FormEditOrcamentoInputContainer>
+                    </FormEditOrcamentoRow>
+                  </FormEditOrcamentoRow>
+                  <FormEditOrcamentoRow>
+                    <FormEditOrcamentoInputContainer width='100%'>
+                      <FormEditOrcamentoRow>
+                        <FormEditOrcamentoInputContainer width='7%'>
+                          <CustomSwitch
+                            labelColor='#fff'
+                            label='ENTREGAR'
+                            checkedOnColor={Secondary.main}
+                            checked={SwitchEntrega === 'S' ? true : false}
+                            onClick={() =>
+                              SwitchEntrega === 'S'
+                                ? setSwitchEntrega('N')
+                                : setSwitchEntrega('S')
+                            }
+                          />
+                        </FormEditOrcamentoInputContainer>
+                        <FormEditOrcamentoInputContainer width='90%'>
+                          <Select
+                            options={OptVeiculos}
+                            menuPosition='bottom'
+                            onChange={(SingleValue) => SelectVeic(SingleValue)}
+                          />
+                        </FormEditOrcamentoInputContainer>
+                      </FormEditOrcamentoRow>
+                      <FormEditOrcamentoInputContainer width='99%'>
+                        <InputCustom
+                          onChange={(e) =>
+                            setvalueObsNotaFiscal(e.target.value)
+                          }
+                          label='OBS NOTA FISCAL'
+                          labelPosition='top'
+                          name='OBS_NF'
+                          value={valueObsNotaFiscal}
+                          height='3.5rem'
+                        />
+                      </FormEditOrcamentoInputContainer>
+                    </FormEditOrcamentoInputContainer>
+                  </FormEditOrcamentoRow>
+                  <FormEditOrcamentoRow>
+                    <FieldSet legend='FRETE POR CONTA'>
+                      <InputCustom
+                        onChange={() => setFretePorConta(0)}
+                        label='EMITENTE'
+                        labelPosition='left'
+                        name='FRETE_POR'
+                        value='0'
+                        type='radio'
+                        defaultChecked={true}
+                      />
+                      <InputCustom
+                        onChange={() => setFretePorConta(1)}
+                        label='DESTINATARIO'
+                        labelPosition='left'
+                        name='FRETE_POR'
+                        value='1'
+                        type='radio'
+                      />
+                    </FieldSet>
+                  </FormEditOrcamentoRow>
+                  <FormEditOrcamentoRow>
+                    <FormEditOrcamentoInputContainer width='18.6%'>
+                      <InputCustom
+                        onChange={() => {}}
+                        label='SUBTOTAL'
+                        textAlign='right'
+                        name='SUBTOTAL'
+                        value={valueSubTotal.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
+                        height='3.5rem'
+                      />
+                    </FormEditOrcamentoInputContainer>
+                    <FormEditOrcamentoInputContainer width='18.6%'>
+                      <InputCustom
+                        onChange={(e) => OnChangeFrete(e)}
+                        label='FRETE'
+                        textAlign='right'
+                        name='FRETE'
+                        value={parseFloat(valueFrete)}
+                        height='3.5rem'
+                      />
+                    </FormEditOrcamentoInputContainer>
+                    {/* <FormEditOrcamentoInputContainer width='18.6%'>
+                      <InputCustom
+                        label='ACRÉCIMO'
+                        textAlign='right'
+                        name='ACRECIMO'
+                        value={0}
+                        height='3.5rem'
+                      />
+                    </FormEditOrcamentoInputContainer>
+                    <FormEditOrcamentoInputContainer width='18.6%'>
+                      <InputCustom
+                        label='DESCONTO'
+                        textAlign='right'
+                        name='DESCONTO'
+                        value={0}
+                        height='3.5rem'
+                      />
+                    </FormEditOrcamentoInputContainer> */}
+                    <FormEditOrcamentoInputContainer width='18.6%'>
+                      <InputCustom
+                        label='TOTAL'
+                        textAlign='right'
+                        name='TOTAL'
+                        value={valueTotal.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })}
+                        height='3.5rem'
+                      />
+                    </FormEditOrcamentoInputContainer>
+                  </FormEditOrcamentoRow>
+                </FormEditOrcamentoColumn>
+                <FormEditOrcamentoColumn width='31%' height='100vh'>
+                  <Table
+                    messageNoData={'Sem condição de pagamento'}
+                    columns={tableHeaders}
+                    data={ListaParcelas}
                   />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='50%'>
-                  <InputCustom
-                    label='NOME'
-                    onChange={() => {}}
-                    name='CLIENTE.NOME'
-                    value={NewPreVenda.CLIENTE.NOME}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='35%'>
-                  <InputCustom
-                    label='CPF/CNPJ'
-                    onChange={() => {}}
-                    name='CLIENTE.CIC'
-                    value={MaskCnpjCpf(NewPreVenda.CLIENTE.CIC)}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
-            <DetailContainer summary={'DETALHES'}>
-              <FormEditOrcamentoColumn>
-                <FormEditOrcamentoRow>
-                  <FormEditOrcamentoInputContainer width='45%'>
-                    <InputCustom
-                      label='TELEFONE'
-                      onChange={() => {}}
-                      name='TELEFONE'
-                      value={NewPreVenda.DATA}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='40%'>
-                    <InputCustom
-                      onChange={() => {}}
-                      label='ENDEREÇO'
-                      name='CLIENTE.ENDERECO'
-                      value={NewPreVenda.CLIENTE.ENDERECO}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='15%'>
-                    <InputCustom
-                      onChange={() => {}}
-                      label='BAIRRO'
-                      name='CLIENTE.BAIRRO'
-                      value={NewPreVenda.CLIENTE.BAIRRO}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='20%'>
-                    <InputCustom
-                      onChange={() => {}}
-                      label='CIDADE'
-                      name='CLIENTE.CIDADE'
-                      value={NewPreVenda.CLIENTE.CIDADE}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='5%'>
-                    <InputCustom
-                      onChange={() => {}}
-                      label='UF'
-                      name='CLIENTE.UF'
-                      value={NewPreVenda.CLIENTE.UF}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='10%'>
-                    <InputCustom
-                      onChange={() => {}}
-                      label='CEP'
-                      name='CLIENTE.CEP'
-                      value={NewPreVenda.CLIENTE.CEP}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                </FormEditOrcamentoRow>
-              </FormEditOrcamentoColumn>
-              <FormEditOrcamentoColumn>
-                <h3>ORÇAMENTO</h3>
-                <FormEditOrcamentoRow>
-                  <FormEditOrcamentoInputContainer width='45%'>
-                    <InputCustom
-                      label='OBSERVAÇÃO 1'
-                      onChange={() => {}}
-                      name='OBS1'
-                      value={NewPreVenda.OBS1}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='45%'>
-                    <InputCustom
-                      label='OBSERVAÇÃO 2'
-                      onChange={() => {}}
-                      name='OBS2'
-                      value={NewPreVenda.OBS2}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                </FormEditOrcamentoRow>
-              </FormEditOrcamentoColumn>
-            </DetailContainer>
-            <FormEditOrcamentoColumn>
-              <FormEditOrcamentoRow>
-                <h3>ITENS</h3>
-                <Button
-                  // onclick={() => OpenModalItemOrcamento()}
-                  Type='success'
-                  Title='Adicionar Item'
-                  Icon={faPlus}
-                  Height='2.5rem'
-                  Width='2.5rem'
-                  Rounded
-                />
-              </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow height='30rem'>
-                <Table
-                  messageNoData={'Esse orçamento não possuí itens!'}
-                  columns={tableHeaders}
-                  data={ItensPreVenda}
-                />
+                </FormEditOrcamentoColumn>
               </FormEditOrcamentoRow>
             </FormEditOrcamentoColumn>
             <FormFooter>
-              <FormEditOrcamentoInputContainer width='15%'>
+              <FormEditOrcamentoInputContainer width='16%'>
                 <Button
-                  // onclick={() => SalvarOrcamento()}
-                  Text='SALVAR'
+                  onclick={GerarPV}
+                  Text='GERAR PRÉ-VENDA'
                   Type='success'
                   Icon={faSave}
                   Height='3.5rem'
@@ -402,32 +507,17 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
               </FormEditOrcamentoInputContainer>
               <FormEditOrcamentoInputContainer width='60%'>
                 <Button
-                  Text='GERAR PRÉ-VENDA'
-                  Type='success'
-                  Icon={faSave}
+                  Text='CANCELAR'
+                  onclick={() => OnCloseModal()}
+                  Type='danger'
+                  Icon={faBan}
                   Height='3.5rem'
-                />
-              </FormEditOrcamentoInputContainer>
-              <FormEditOrcamentoInputContainer width='20%'>
-                <InputCustom
-                  label='TOTAL ORCAMENTO'
-                  onChange={() => {}}
-                  name='TOTAL'
-                  readOnly={true}
-                  textAlign='right'
-                  value={NewPreVenda.TOTAL.toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
                 />
               </FormEditOrcamentoInputContainer>
             </FormFooter>
           </FormEditOrcamento>
         </Modal>
       )}
-      {/* {ItemPreVenda && (
-        <ModalItemOrcamento callback={SaveOrUpdate} Item={ItemPreVenda} />
-      )} */}
     </>
   );
 };

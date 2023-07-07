@@ -6,10 +6,14 @@ import { HEXToRGB } from '../../utils';
 interface iContainer {
   height?: string;
   widht?: string;
+  label?: string;
+  type?: 'text' | 'password' | 'date' | 'number' | 'radio';
+  labelPosition?: 'left' | 'right' | 'top';
 }
 
 interface iLabelInput {
   align?: string;
+  labelPosition?: 'left' | 'right' | 'top';
 }
 
 interface iInput {
@@ -18,10 +22,18 @@ interface iInput {
 
 export const Container = styled.div<iContainer>`
   display: flex;
-  flex-direction: column;
-  width: ${(props) => (props.widht ? props.widht : '100%')};
-  margin-top: -0.5rem;
+  flex-direction: ${(props) =>
+    props.labelPosition !== 'top' ? 'row' : 'column'};
+  width: ${(props) =>
+    props.widht
+      ? props.widht
+      : props.type === 'radio'
+      ? 'fit-content'
+      : '100%'};
+  margin: ${(props) =>
+    props.label ? '-0.5rem 0.5rem 0rem 0.5rem' : '0rem 0.5rem'};
   height: ${(props) => (props.height ? props.height : 'auto')};
+  ${(props) => (props.labelPosition !== 'top' ? 'align-items: center' : '')};
 
   @media only screen and ${devices.sm} {
     width: 100%;
@@ -72,6 +84,16 @@ export const Input = styled.input<iInput>`
     color: ${(props) => props.theme.colors.onBackground};
   }
   &[type='date'] {
+    cursor: pointer;
+    color: ${(props) => props.theme.colors.onBackground};
+    &::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+    }
+  }
+  &[type='radio'] {
+    box-shadow: 0px 0px 0px 0px transparent;
+    cursor: pointer;
+    width: fit-content;
     color: ${(props) => props.theme.colors.onBackground};
     &::-webkit-calendar-picker-indicator {
       cursor: pointer;

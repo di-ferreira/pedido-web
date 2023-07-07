@@ -57,7 +57,6 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   const [TabelaSelected, setTabelaSelected] = useState<iOption>({} as iOption);
 
   useEffect(() => {
-    console.log('ItemOrcamento ~ Item ', Item);
     showModal();
     setSaveOrUpdateItem(false);
 
@@ -72,10 +71,6 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       setSaveOrUpdateItem(true);
       setProdutoPalavras(Item.PRODUTO.PRODUTO);
     }
-    console.log(
-      '🚀 ~ file: index.tsx:76 ~ useEffect ~ Item.TABELA:',
-      Item.TABELA
-    );
     setTabelaSelected({ label: Item.TABELA, value: Item.VALOR });
     setPrice(Item.TOTAL / Item.QTD);
     setTotal(Item.TOTAL);
@@ -137,13 +132,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
   const CalcTabela = useCallback(
     (value: SingleValue<iOption>) => {
-      console.log('hi');
       setTabelaSelected({
-        label: String(value?.label),
-        value: Number(value?.value),
-      });
-
-      console.log('🚀 ~ file: index.tsx:158 ~ CalcTabela', {
         label: String(value?.label),
         value: Number(value?.value),
       });
@@ -212,7 +201,6 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       },
       saveorupdate: SaveOrUpdateItem,
     };
-    console.log('🚀 ~ file: index.tsx:180 ~ onSubmitForm ~ result:', result);
     setItemOrcamento(result.orcamento);
     callback(result);
     setProdutoPalavras('');

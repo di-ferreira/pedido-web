@@ -1,11 +1,3 @@
-import React, { useEffect, useState } from 'react';
-import Table from '../../components/Table';
-import {
-  Container,
-  ContainerInput,
-  FilterContainer,
-  SwitchContainer,
-} from './styles';
 import {
   faBan,
   faCheck,
@@ -13,25 +5,33 @@ import {
   faFileLines,
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
-import { Loading } from '../../components/Loading';
-import { Icon } from '../../components/Icon';
-import useSelect from '../../hooks/UseSelect';
-import Button from '../../components/Button';
-import { InputCustom } from '../../components/InputCustom';
-import { CustomSwitch } from '../../components/CustomSwitch';
-import useClientes from '../../hooks/useClientes';
-import { ModalCliente } from '../Modals/Cliente';
-import { MaskCnpjCpf } from '../../utils';
-import { iCliente } from '../../@types/Cliente';
-import { iFilterQuery, iFilter } from '../../@types/Filter';
-import { iOption, iColumnType, iTablePagination } from '../../@types/Table';
-import { iOrcamento, iOrcamentoInserir } from '../../@types/Orcamento';
-import { ModalOrcamento } from '../Modals/Orcamento';
-import { useLogin } from '../../hooks/useLogin';
-import { iVendedor } from '../../@types/Vendedor';
-import useOrcamento from '../../hooks/useOrcamento';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { iCliente } from '../../@types/Cliente';
+import { iFilter, iFilterQuery } from '../../@types/Filter';
+import { iOrcamento } from '../../@types/Orcamento';
+import { iColumnType, iOption, iTablePagination } from '../../@types/Table';
+import { iVendedor } from '../../@types/Vendedor';
+import Button from '../../components/Button';
+import { CustomSwitch } from '../../components/CustomSwitch';
+import { Icon } from '../../components/Icon';
+import { InputCustom } from '../../components/InputCustom';
+import { Loading } from '../../components/Loading';
+import Table from '../../components/Table';
+import useSelect from '../../hooks/UseSelect';
+import useClientes from '../../hooks/useClientes';
+import { useLogin } from '../../hooks/useLogin';
+import useOrcamento from '../../hooks/useOrcamento';
 import { useTheme } from '../../hooks/useTheme';
+import { MaskCnpjCpf } from '../../utils';
+import { ModalCliente } from '../Modals/Cliente';
+import { ModalOrcamento } from '../Modals/Orcamento';
+import {
+  Container,
+  ContainerInput,
+  FilterContainer,
+  SwitchContainer,
+} from './styles';
 
 interface iSearchCliente {
   filterBy: string;
@@ -127,17 +127,16 @@ export const Clientes: React.FC = () => {
             value: SearchCliente.value,
           },
         ];
-
-      if (filter.actives)
-        listFilter = [
-          ...listFilter,
-          {
-            key: 'BLOQUEADO',
-            value: 'N',
-            typeSearch: 'eq',
-          },
-        ];
     }
+    if (filter.actives)
+      listFilter = [
+        ...listFilter,
+        {
+          key: 'BLOQUEADO',
+          value: 'N',
+          typeSearch: 'eq',
+        },
+      ];
     return listFilter;
   };
 

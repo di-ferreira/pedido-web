@@ -1,4 +1,4 @@
-import { iColumnType } from '../../@types/Table';
+import { iColumnType } from '../../../@types/Table';
 import { TableRowCell } from '../TableRowCell';
 import { TableRowItem } from './styles';
 

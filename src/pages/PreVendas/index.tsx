@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react';
 
-import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
-import { iFilter, iFilterQuery } from '../../@types/Filter';
-import { iMovimento, iPreVenda } from '../../@types/PreVenda';
+import { iFilter } from '../../@types/Filter';
+import { iMovimento } from '../../@types/PreVenda';
 import { iColumnType, iOption } from '../../@types/Table';
 import { Loading } from '../../components/Loading';
 import Table from '../../components/Table';
-import useSelect from '../../hooks/UseSelect';
 import usePreVenda from '../../hooks/usePreVenda';
-import { ModalPreVenda } from '../Modals/PreVenda';
 import { Container } from './styles';
 
 interface iSearchPV {
@@ -19,7 +16,7 @@ interface iSearchPV {
 }
 
 export const PreVendas: React.FC = () => {
-  const { GetPreVenda, GetPreVendas } = usePreVenda();
+  const { GetPreVendas } = usePreVenda();
 
   const OptionsSelect: iOption[] = [
     { label: 'NOME', value: 'NOME' },
@@ -30,7 +27,6 @@ export const PreVendas: React.FC = () => {
   ];
 
   const [PreVendaList, setPreVendaList] = useState<iMovimento[]>([]);
-  const [PreVenda, setPreVenda] = useState<iMovimento | null>(null);
 
   /* PAGINAÇÃO */
   const [RegistersPerPage, setRegistersPerPage] = useState<number>(15);
@@ -63,21 +59,15 @@ export const PreVendas: React.FC = () => {
     actives: false,
   } as iSearchPV);
 
-  const { Select } = useSelect();
-
-  const [checkedSwitchFilter, setCheckedSwitchFilter] =
-    useState<boolean>(false);
-
   useEffect(() => {
     ListPreVenda();
   }, []);
 
-  const ListPreVenda = async (filter?: iFilter<iPreVenda>) => {
+  const ListPreVenda = async (filter?: iFilter<iMovimento>) => {
     setErrorMessage('');
     try {
       setIsLoading(true);
       const Data = await GetPreVendas(filter);
-      console.log('🚀 ~ file: index.tsx:75 ~ ListPreVenda ~ Data:', Data);
       setPreVendaList(Data.value);
 
       setTotalPages(Math.ceil(Data.Qtd_Registros / RegistersPerPage));
@@ -87,22 +77,6 @@ export const PreVendas: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const onOpenModalPreVenda = async (value: iMovimento) => {
-    const pv: iMovimento = (await GetPreVenda(value.MOVIMENTO)).data.value[0];
-    setPreVenda(pv);
-  };
-
-  const onCloseModalPreVenda = async (value: iMovimento) => {
-    const newListPreVenda: iMovimento[] = PreVendaList.map((pv: iMovimento) => {
-      if (pv.MOVIMENTO === value.MOVIMENTO) {
-        pv = value;
-        return pv;
-      } else return pv;
-    });
-    setPreVendaList(newListPreVenda);
-    setPreVenda(null);
   };
 
   const headers: iColumnType<iMovimento>[] = [
@@ -142,46 +116,7 @@ export const PreVendas: React.FC = () => {
         });
       },
     },
-    {
-      key: 'acoes',
-      title: 'AÇÕES',
-      width: '5rem',
-      action: [
-        {
-          onclick: (value: iMovimento) => {
-            onOpenModalPreVenda(value);
-          },
-          Icon: faEdit,
-          Rounded: true,
-          Title: 'Editar',
-          Type: 'warn',
-        },
-      ],
-    },
   ];
-
-  const MountQueryFilter = (filter: iSearchPV): iFilterQuery<iMovimento>[] => {
-    let listFilter: iFilterQuery<iMovimento>[] = [];
-
-    if (filter.value !== '') {
-      if (filter.filterBy === 'CLIENTE' || filter.filterBy === 'CIC')
-        listFilter = [
-          {
-            key: SearchPreVenda.filterBy as keyof iMovimento,
-            value: SearchPreVenda.value,
-            typeSearch: 'eq',
-          },
-        ];
-      else
-        listFilter = [
-          {
-            key: SearchPreVenda.filterBy as keyof iMovimento,
-            value: SearchPreVenda.value,
-          },
-        ];
-    }
-    return listFilter;
-  };
 
   const ChangeRowsPerPage = (value: iOption) => {
     setRegistersPerPage((oldValue) => {
@@ -192,7 +127,7 @@ export const PreVendas: React.FC = () => {
     ListPreVenda({
       top: Number(value.value),
       skip: RegistersPerPage * CurrentPage - RegistersPerPage,
-      orderBy: 'DataPedido',
+      orderBy: 'DATA',
       // filter: MountQueryFilter(SearchPreVenda),
     });
   };
@@ -202,7 +137,7 @@ export const PreVendas: React.FC = () => {
     ListPreVenda({
       top: RegistersPerPage,
       skip: 0,
-      orderBy: 'DataPedido',
+      orderBy: 'DATA',
       // filter: MountQueryFilter(SearchPreVenda),
     });
   };
@@ -212,7 +147,7 @@ export const PreVendas: React.FC = () => {
     ListPreVenda({
       top: RegistersPerPage,
       skip: SkipPage(),
-      orderBy: 'DataPedido',
+      orderBy: 'DATA',
       //   filter: MountQueryFilter(SearchPreVenda),
     });
   };
@@ -222,7 +157,7 @@ export const PreVendas: React.FC = () => {
     ListPreVenda({
       top: RegistersPerPage,
       skip: SkipPage(),
-      orderBy: 'DataPedido',
+      orderBy: 'DATA',
       //   filter: MountQueryFilter(SearchPreVenda),
     });
   };
@@ -232,65 +167,13 @@ export const PreVendas: React.FC = () => {
     ListPreVenda({
       top: RegistersPerPage,
       skip: SkipPage(),
-      orderBy: 'DataPedido',
+      orderBy: 'DATA',
       //   filter: MountQueryFilter(SearchPreVenda),
     });
   };
 
   return (
     <Container>
-      {/* <FilterContainer>
-         <Select
-          options={OptionsSelect}
-          onChange={(SingleValue) => {
-            SingleValue &&
-            setSearchOrcamento({
-              ...SearchOrcamento,
-              filterBy: String(SingleValue.value),
-            })
-          }}
-        /> 
-        <ContainerInput>
-          <InputCustom
-            height='4rem'
-            widht='31rem'
-            onChange={(e) => {
-              // setSearchOrcamento({
-              //   ...SearchOrcamento,
-              //   value: e.target.value,
-              // })
-            }}
-            placeholder='Digite sua busca'
-          />
-        </ContainerInput>
-
-        <Button
-          Icon={faSearch}
-          // onclick={() => SearchForFilter()}
-          Text='Buscar'
-          Type='secondary'
-          Title='Buscar'
-          Height={'40px'}
-        />
-        <SwitchContainer>
-          <CustomSwitch
-            label='Ativos'
-            checked={checkedSwitchFilter}
-            style='secondary'
-            onClick={() => {
-              // setCheckedSwitchFilter(!checkedSwitchFilter);
-              // setSearchOrcamento({
-              //   ...SearchOrcamento,
-              //   actives: !checkedSwitchFilter,
-              // });
-            }}
-          />
-        </SwitchContainer>
-      </FilterContainer>*/}
-      {PreVenda && (
-        <ModalPreVenda PreVenda={PreVenda} callback={onCloseModalPreVenda} />
-      )}
-
       {IsLoading && <Loading />}
       {PreVendaList && !IsLoading && (
         <Table

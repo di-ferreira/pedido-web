@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 
-import { Container, ContainerButtons, ContainerInfo, Label } from './styles';
-import Button from '../Button';
 import {
   faAngleDoubleLeft,
   faAngleDoubleRight,
   faAngleLeft,
   faAngleRight,
 } from '@fortawesome/free-solid-svg-icons';
-import useSelect from '../../hooks/UseSelect';
-import { iOption, iTablePagination } from '../../@types/Table';
+import { iOption, iTablePagination } from '../../../@types/Table';
+import useSelect from '../../../hooks/UseSelect';
+import Button from '../../Button';
+import { Container, ContainerButtons, ContainerInfo, Label } from './styles';
 
 export const TablePagination: React.FC<iTablePagination> = ({
   CurrentPage,

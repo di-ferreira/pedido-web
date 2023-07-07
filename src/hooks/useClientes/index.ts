@@ -27,10 +27,6 @@ const CreateFilter = (filter: iFilter<iCliente>): string => {
     ResultFilter = `$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}`;
     let andStr = ' AND ';
     filter.filter.map((itemFilter) => {
-      console.log(
-        '🚀 ~ file: index.ts:31 ~ filter.filter.map ~ ResultFilter:',
-        ResultFilter
-      );
       if (itemFilter.typeSearch) {
         itemFilter.typeSearch === 'like'
           ? (ResultFilter = `${ResultFilter}${andStr}${
@@ -44,10 +40,6 @@ const CreateFilter = (filter: iFilter<iCliente>): string => {
         } like '% ${String(itemFilter.value).toUpperCase()} %'${andStr}`;
       ResultFilter = ResultFilter.slice(0, -andStr.length);
     });
-    console.log(
-      '🚀 ~ file: index.ts:43 ~ CreateFilter ~ ResultFilter:',
-      ResultFilter
-    );
   }
 
   let ResultOrderBy = filter.orderBy ? `&$orderby=${filter.orderBy}` : '';
@@ -73,7 +65,6 @@ const GetClientes = async (
   const FILTER = filter
     ? CreateFilter(filter)
     : `?$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}&$inlinecount=allpages`;
-
   const response = await api.get(`${ROUTE_CLIENTE}${FILTER}`);
   let result: iDataCliente = {
     Qtd_Registros: response.data['@xdata.count'],

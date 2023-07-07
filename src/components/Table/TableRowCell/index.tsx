@@ -1,7 +1,7 @@
-import { iColumnType } from '../../@types/Table';
-import Button from '../Button';
-import { TableCell, ActionContainer } from './styles';
 import { get } from 'lodash';
+import { iColumnType } from '../../../@types/Table';
+import Button from '../../Button';
+import { ActionContainer, TableCell } from './styles';
 
 interface iTableCellProps<T> {
   item: T;

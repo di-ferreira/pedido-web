@@ -3,6 +3,11 @@ import { devices } from '../../Constants';
 import { Black, DarkRed, Light } from '../../colors';
 import { HEXToRGB } from '../../utils';
 
+interface iModalContainerStyle {
+  width?: string;
+  height?: string;
+}
+
 export const Backdrop = styled.div`
   display: flex;
   align-items: center;
@@ -19,11 +24,13 @@ export const Backdrop = styled.div`
   );
 `;
 
-export const ModalContainer = styled.section`
+export const ModalContainer = styled.section<iModalContainerStyle>`
   position: relative;
-  width: 80rem;
+  min-width: 50rem;
+  width: ${(props) => (props.width ? props.width : '80rem')};
+  max-width: 100vw;
   min-height: 50rem;
-  height: auto;
+  height: ${(props) => (props.height ? props.height : '60rem')};
   max-height: 100vh;
   overflow: hidden;
   border: 1px solid

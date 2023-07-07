@@ -1,5 +1,5 @@
-import { useMatch, useResolvedPath } from 'react-router-dom';
 import { format } from 'date-fns';
+import { useMatch, useResolvedPath } from 'react-router-dom';
 
 export const AddZeros = (data: string | number, totalZeros: number) => {
   return String(data).padStart(totalZeros, '0');
@@ -50,6 +50,28 @@ const MaskCpf = (value: String | undefined) => {
     .replace(/(\d{3})(\d)/, '$1.$2')
     .replace(/(\d{3})(\d{1,2})/, '$1-$2')
     .replace(/(-\d{2})\d+?$/, '$1'); // captura 2 numeros seguidos de um traço e não deixa ser digitado mais nada
+};
+
+export const FormatToCurrency = (value: string): string => {
+  let BrlValue = Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 3,
+  });
+  let result = BrlValue.format(parseFloat(value));
+  return result;
+};
+
+export const FormatToNumber = (value: string): number => {
+  let BrlValue = Intl.NumberFormat('pt-BR', {
+    // style: 'currency',
+    // currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 3,
+  });
+  let result = BrlValue.format(parseFloat(value));
+  return parseFloat(result);
 };
 
 const MaskCnpj = (value: String | undefined) => {

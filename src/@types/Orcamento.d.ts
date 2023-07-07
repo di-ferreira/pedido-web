@@ -45,7 +45,7 @@ export interface iItensOrcamento {
   VALOR: number;
   TOTAL: number;
   SUBTOTAL: number;
-  DESCONTO?: number;
+  DESCONTO: number;
   TABELA: string;
   OBS?: string;
   MD5?: string;
@@ -56,7 +56,7 @@ export interface iItensOrcamento {
   P_DESC?: number;
   ID_VALE_CASCO?: number;
   ORCAMENTO: iOrcamento;
-  PRODUTO: iProduto | null;
+  PRODUTO: iProduto;
 }
 
 export interface iOrcamentoInserir {

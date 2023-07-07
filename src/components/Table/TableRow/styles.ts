@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Black, Dark, Light } from '../../colors';
+import { Black, Dark, Light } from '../../../colors';
 
 export const TableRowItem = styled.tr`
   cursor: auto;
