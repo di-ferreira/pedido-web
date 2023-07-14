@@ -23,17 +23,19 @@ interface iInputCustom {
   defaultChecked?: boolean;
   onKeydown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void;
 }
 
 export const InputCustom: React.FC<iInputCustom> = ({
   onChange,
+  onKeydown,
+  onBlur,
   type,
   labelAlign,
   textAlign,
   label,
   labelPosition,
   placeholder,
-  onKeydown,
   readOnly,
   checked,
   defaultChecked,
@@ -69,6 +71,7 @@ export const InputCustom: React.FC<iInputCustom> = ({
         placeholder={placeholder}
         onKeyDown={(e) => onKeydown && onKeydown(e)}
         onChange={(e) => onChange && onChange(e)}
+        onBlur={(e) => onBlur && onBlur(e)}
         checked={checked}
         defaultChecked={defaultChecked}
       />

@@ -63,6 +63,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   const [valueSubTotal, setvalueSubTotal] = useState(0);
   const [valueTotal, setvalueTotal] = useState(0);
   const [valueFrete, setvalueFrete] = useState<string>('');
+  const [valueFreteNumero, setvalueFreteNumero] = useState<number>(0);
   const [valueObsPedido1, setvalueObsPedido1] = useState('');
   const [valueObsNotaFiscal, setvalueObsNotaFiscal] = useState('');
   const [valueNumeroOrdemCompraCliente, setvalueNumeroOrdemCompraCliente] =
@@ -87,6 +88,10 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
     const OpenModal = () => {
       showModal();
       setNewPreVenda(Orcamento);
+      console.log(
+        '🚀 ~ file: index.tsx:91 ~ OpenModal ~ Orcamento:',
+        Orcamento.TABELA
+      );
       ListarCondicaoPgto();
       ListarFormaPgto();
       ListarTransportadoras();
@@ -109,7 +114,22 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   };
 
   const OnChangeFrete = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setvalueFrete(e.target.value);
+    const inputValue = e.target.value;
+
+    if (inputValue.match(/^([0-9]{1,})?(\.)?([0-9]{1,})?$/))
+      setvalueFrete(inputValue);
+
+    if (inputValue.match(/^([0-9]{1,})?(\,)?([0-9]{1,})?$/))
+      setvalueFrete(inputValue.replace(',', '.'));
+  };
+
+  const OnBlurFrete = (e: React.FocusEvent<HTMLInputElement, Element>) => {
+    let newValueFrete = parseFloat(e.target.value) || 0;
+
+    setvalueFreteNumero(newValueFrete);
+    setvalueFrete(String(newValueFrete));
+    const total = valueSubTotal + newValueFrete;
+    setvalueTotal(total);
   };
 
   const OnChangeCondicaoPgto = (newValue: SingleValue<iOption>) => {
@@ -260,7 +280,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
       ModeloNota: '55',
       Itens: ItensPV,
       SubTotal: valueSubTotal,
-      Total: valueSubTotal + Number(valueFrete),
+      Total: valueTotal,
       ObsPedido1: valueObsPedido1,
       ObsPedido2: '',
       ObsNotaFiscal: valueObsNotaFiscal,
@@ -271,7 +291,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
       Origem: '',
       PedidoEcommerce: '',
       TipoEntrega: OptVeiculo ? OptVeiculo.label : '',
-      ValorFrete: parseFloat(valueFrete),
+      ValorFrete: valueFreteNumero,
     };
 
     await SavePreVenda(PV)
@@ -433,6 +453,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                   <FormEditOrcamentoRow>
                     <FormEditOrcamentoInputContainer width='18.6%'>
                       <InputCustom
+                        readOnly={true}
                         onChange={() => {}}
                         label='SUBTOTAL'
                         textAlign='right'
@@ -447,33 +468,17 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                     <FormEditOrcamentoInputContainer width='18.6%'>
                       <InputCustom
                         onChange={(e) => OnChangeFrete(e)}
-                        label='FRETE'
+                        onBlur={(e) => OnBlurFrete(e)}
+                        label='FRETE R$'
                         textAlign='right'
                         name='FRETE'
-                        value={parseFloat(valueFrete)}
-                        height='3.5rem'
-                      />
-                    </FormEditOrcamentoInputContainer>
-                    {/* <FormEditOrcamentoInputContainer width='18.6%'>
-                      <InputCustom
-                        label='ACRÉCIMO'
-                        textAlign='right'
-                        name='ACRECIMO'
-                        value={0}
+                        value={valueFrete}
                         height='3.5rem'
                       />
                     </FormEditOrcamentoInputContainer>
                     <FormEditOrcamentoInputContainer width='18.6%'>
                       <InputCustom
-                        label='DESCONTO'
-                        textAlign='right'
-                        name='DESCONTO'
-                        value={0}
-                        height='3.5rem'
-                      />
-                    </FormEditOrcamentoInputContainer> */}
-                    <FormEditOrcamentoInputContainer width='18.6%'>
-                      <InputCustom
+                        readOnly={true}
                         label='TOTAL'
                         textAlign='right'
                         name='TOTAL'

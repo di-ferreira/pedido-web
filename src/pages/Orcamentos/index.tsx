@@ -4,7 +4,6 @@ import { faEdit, faFileLines } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import { iFilter } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
-import { iMovimento } from '../../@types/PreVenda';
 import { iColumnType, iOption } from '../../@types/Table';
 import { Loading } from '../../components/Loading';
 import Table from '../../components/Table';
@@ -73,14 +72,11 @@ export const Orcamentos: React.FC = () => {
     setNewPreVenda(value);
   };
 
-  const onCloseModalPreVenda = async (value: iMovimento) => {
-    // const newListPreVenda: iMovimento[] = PreVendaList.map((pv: iMovimento) => {
-    //   if (pv.MOVIMENTO === value.MOVIMENTO) {
-    //     pv = value;
-    //     return pv;
-    //   } else return pv;
-    // });
-    // setPreVendaList(newListPreVenda);
+  const onCloseModalPreVenda = async (value: iOrcamento) => {
+    const newOrcamentoList: iOrcamento[] = OrcamentoList.filter(
+      (orc) => value.ORCAMENTO !== orc.ORCAMENTO
+    );
+    setOrcamentoList(newOrcamentoList);
     setNewPreVenda(null);
   };
 
