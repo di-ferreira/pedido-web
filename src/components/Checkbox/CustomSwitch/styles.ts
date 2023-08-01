@@ -1,5 +1,12 @@
 import styled from 'styled-components';
-import { Danger, Gray, Primary, Secondary, Success, Warn } from '../../colors';
+import {
+  Danger,
+  Gray,
+  Primary,
+  Secondary,
+  Success,
+  Warn,
+} from '../../../colors';
 
 export const TypeToColor = {
   default: {

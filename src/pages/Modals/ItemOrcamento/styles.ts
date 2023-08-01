@@ -46,6 +46,7 @@ export const FormEditOrcamentoColumn = styled.div`
 
 export const FormEditOrcamentoInputContainer = styled.div<iInputContainer>`
   width: ${(props) => (props.width ? props.width : '100%')};
+  flex-grow: 1;
   margin: 0.5rem;
   & * input {
     font-size: 1.7rem;

@@ -13,7 +13,7 @@ import { iOrcamento } from '../../@types/Orcamento';
 import { iColumnType, iOption, iTablePagination } from '../../@types/Table';
 import { iVendedor } from '../../@types/Vendedor';
 import Button from '../../components/Button';
-import { CustomSwitch } from '../../components/CustomSwitch';
+import Checkbox from '../../components/Checkbox';
 import { Icon } from '../../components/Icon';
 import { InputCustom } from '../../components/InputCustom';
 import { Loading } from '../../components/Loading';
@@ -86,18 +86,18 @@ export const Clientes: React.FC = () => {
   const [SearchCliente, setSearchCliente] = useState<iSearchCliente>({
     filterBy: OptionsSelect[0].value,
     value: '',
-    actives: false,
+    actives: true,
   } as iSearchCliente);
 
   const { Select } = useSelect();
 
-  const [checkedSwitchFilter, setCheckedSwitchFilter] =
-    useState<boolean>(false);
+  const [checkedSwitchFilter, setCheckedSwitchFilter] = useState<boolean>(true);
 
   useEffect(() => {
     ListClientes({
       top: RegistersPerPage,
       orderBy: 'CLIENTE',
+      filter: MountQueryFilter(SearchCliente),
     });
   }, []);
 
@@ -372,7 +372,8 @@ export const Clientes: React.FC = () => {
           Height={'40px'}
         />
         <SwitchContainer>
-          <CustomSwitch
+          <Checkbox
+            type='checkbox'
             label='Ativos'
             checked={checkedSwitchFilter}
             style='secondary'

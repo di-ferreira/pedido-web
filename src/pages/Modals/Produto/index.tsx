@@ -103,7 +103,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     {
       key: 'acoes',
       title: 'AÇÕES',
-      width: '5%',
+      width: '10%',
       action: [
         {
           onclick: AddProduto,
@@ -117,23 +117,38 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     {
       key: 'PRODUTO',
       title: 'CÓDIGO',
-      width: '5%',
+      width: '10%',
       isHideMobile: true,
+    },
+    {
+      key: 'REFERENCIA',
+      title: 'REFERÊNCIA',
+      width: '25%',
     },
     {
       key: 'NOME',
       title: 'NOME',
+      width: '20%',
+    },
+    {
+      key: 'APLICACOES',
+      title: 'APLICAÇÕES',
       width: '35%',
     },
+    // {
+    //   key: 'FABRICANTE',
+    //   title: 'FABRICANTE',
+    //   width: '35%',
+    // },
     {
       key: 'QTDATUAL',
       title: 'QTD',
-      width: '5%',
+      width: '10%',
     },
     {
       key: 'PRECO',
       title: 'VALOR',
-      width: '5%',
+      width: '10%',
       isHideMobile: true,
       render: (_, item) => {
         return item.PRECO.toLocaleString('pt-br', {
@@ -147,7 +162,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   return (
     <>
       {Modal && (
-        <Modal Title={`Buscar Produto`}>
+        <Modal Title={`Buscar Produto`} width='95%' height='90vh'>
           <FormEditOrcamento>
             <FormEditOrcamentoColumn>
               <FormEditOrcamentoRow>
@@ -169,7 +184,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
                   style={{ marginTop: '0.5rem' }}
                 />
               </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow height='45rem'>
+              <FormEditOrcamentoRow height='60vh'>
                 {newProdutos.length > 0 && (
                   <Table
                     messageNoData={'Essa busca não retornou itens!'}

@@ -22,7 +22,6 @@ import useSelect from '../../../hooks/UseSelect';
 import useModal from '../../../hooks/useModal';
 import useProduto from '../../../hooks/useProduto';
 import { useTheme } from '../../../hooks/useTheme';
-import api from '../../../services';
 import { ModalProduto } from '../Produto';
 
 export interface callback {
@@ -39,7 +38,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   Item,
   callback,
 }) => {
-  const { GetTabelasFromProduto } = useProduto();
+  const { GetTabelasFromProduto, GetProdutosSuperBusca } = useProduto();
   const { Select } = useSelect();
   const { Modal, showModal, OnCloseModal } = useModal();
   const { ThemeName } = useTheme();
@@ -71,7 +70,13 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       setSaveOrUpdateItem(true);
       setProdutoPalavras(Item.PRODUTO.PRODUTO);
     }
-    setTabelaSelected({ label: Item.TABELA, value: Item.VALOR });
+    setTabelaSelected({
+      label: `${Item.TABELA} - ${Item.VALOR.toLocaleString('pt-br', {
+        style: 'currency',
+        currency: 'BRL',
+      })}`,
+      value: Item.VALOR,
+    });
     setPrice(Item.TOTAL / Item.QTD);
     setTotal(Item.TOTAL);
     setQTDProduto(Item.QTD);
@@ -79,11 +84,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   }, [Item]);
 
   const fetchProdutoList = async (busca: string) => {
-    const response = await api.post(`/ServiceProdutos/SuperBusca`, {
-      Palavras: busca,
-      QuantidadeRegistros: 15,
-      PularRegistros: 0,
-    });
+    const response = await GetProdutosSuperBusca({ Palavras: busca });
 
     const { data } = response;
 
@@ -169,7 +170,13 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       tabelas = [...tabs];
       let tabOptions: iOption[] = [];
       tabelas.map((tab) =>
-        tabOptions.push({ label: tab.TABELA, value: tab.PRECO })
+        tabOptions.push({
+          label: `${tab.TABELA} - ${tab.PRECO.toLocaleString('pt-br', {
+            style: 'currency',
+            currency: 'BRL',
+          })}`,
+          value: tab.PRECO,
+        })
       );
       setTabelas(tabOptions);
     });
@@ -231,15 +238,6 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
           <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
             <FormEditOrcamentoColumn>
               <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='25%'>
-                  <InputCustom
-                    onChange={OnProdutoPalavras}
-                    onKeydown={OnSearchProduto}
-                    value={ProdutoPalavras}
-                    name='ProdutoPalavras'
-                    label='PRODUTO'
-                  />
-                </FormEditOrcamentoInputContainer>
                 <FormEditOrcamentoInputContainer width='25%'>
                   <InputCustom
                     label='REFERÊNCIA'

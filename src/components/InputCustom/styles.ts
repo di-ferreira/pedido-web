@@ -31,7 +31,7 @@ export const Container = styled.div<iContainer>`
       ? 'fit-content'
       : '100%'};
   margin: ${(props) =>
-    props.label ? '-0.5rem 0.5rem 0rem 0.5rem' : '0rem 0.5rem'};
+    props.label ? '-0.5rem 0.5rem 0rem 0rem' : '0rem 0.5rem 0rem 0rem'};
   height: ${(props) => (props.height ? props.height : 'auto')};
   ${(props) => (props.labelPosition !== 'top' ? 'align-items: center' : '')};
 

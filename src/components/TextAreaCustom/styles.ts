@@ -1,7 +1,7 @@
 import styled from 'styled-components';
+import { devices } from '../../Constants';
 import { Gray } from '../../colors';
 import { HEXToRGB } from '../../utils';
-import { devices } from '../../Constants';
 
 interface iContainer {
   height?: string;
@@ -38,6 +38,8 @@ export const TextArea = styled.textarea`
   height: 100%;
   min-height: 2.5rem;
   padding: 0 0.5rem;
+  resize: none;
+  overflow: auto;
   border-radius: 0.4rem;
   color: ${(props) => props.theme.colors.onBackground};
   background: ${(props) => props.theme.colors.background};

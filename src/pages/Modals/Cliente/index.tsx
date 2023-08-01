@@ -1,4 +1,11 @@
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 import React, { useEffect, useState } from 'react';
+import { iCliente } from '../../../@types/Cliente';
+import Button from '../../../components/Button';
+import Checkbox from '../../../components/Checkbox';
+import { InputCustom } from '../../../components/InputCustom';
+import useModal from '../../../hooks/useModal';
+import { MaskCnpjCpf } from '../../../utils';
 import {
   FormEditCliente,
   FormEditClienteColumn,
@@ -7,13 +14,6 @@ import {
   FormEditClienteSwitchContainer,
   FormFooter,
 } from './styles';
-import useModal from '../../../hooks/useModal';
-import { InputCustom } from '../../../components/InputCustom';
-import { CustomSwitch } from '../../../components/CustomSwitch';
-import Button from '../../../components/Button';
-import { faSave } from '@fortawesome/free-solid-svg-icons';
-import { MaskCnpjCpf } from '../../../utils';
-import { iCliente } from '../../../@types/Cliente';
 
 interface iModalCliente {
   Cliente: iCliente;
@@ -84,10 +84,10 @@ export const ModalCliente: React.FC<iModalCliente> = ({ Cliente }) => {
               </FormEditClienteRow>
               <FormEditClienteRow>
                 <FormEditClienteSwitchContainer width='20%'>
-                  <CustomSwitch
+                  <Checkbox
+                    type='checkbox'
                     label='BLOQUEADO'
                     checked={Cliente.BLOQUEADO === 'S' ? true : false}
-                    onClick={() => {}}
                   />
                 </FormEditClienteSwitchContainer>
                 <FormEditClienteInputContainer width='75%'>

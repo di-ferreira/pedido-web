@@ -1,6 +1,6 @@
 export interface iProduto {
   PRODUTO: string;
-  REFERENCIA?: string;
+  REFERENCIA: string;
   CODIGOBARRA?: string;
   LOCAL: string | null;
   NOME: string;
@@ -115,8 +115,8 @@ export interface iProduto {
   UNIDADE?: iUnidade;
   UNIDADE_TRIB?: iUnidadeTrib;
   NCM?: iNcm;
-  FABRICANTE?: iFabricante;
-  FORNECEDOR?: iFabricante;
+  FABRICANTE: iFabricante;
+  FORNECEDOR: iFabricante;
   GRUPO?: iGrupo;
   TIPO_ITEM?: iTipoItem;
   ListaSimilares: iListaSimilare[];

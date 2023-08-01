@@ -11,7 +11,7 @@ interface iDataProduto {
 
 type iProdutoResult = iUniqueResult<iProduto>;
 
-type iResultSQL = iDataResult<iTabelaVenda[]>;
+type iResultSQL = iDataResult<any[]>;
 
 interface iReqSuperBusca {
   Palavras: string;
@@ -79,7 +79,9 @@ const GetProdutosSuperBusca = async (
   let bodyReq: iReqSuperBusca = {
     Palavras: req.Palavras,
     PularRegistros: req.PularRegistros ? req.PularRegistros : 0,
-    QuantidadeRegistros: req.QuantidadeRegistros ? req.QuantidadeRegistros : 15,
+    QuantidadeRegistros: req.QuantidadeRegistros
+      ? req.QuantidadeRegistros
+      : 100,
   };
 
   const response = await api.post(
@@ -154,7 +156,20 @@ const GetTabelasFromProduto = async (
         StatusMessage
       );
     } else {
-      tabelas = [...tabelas, ...Data];
+      let newTables: iTabelaVenda[] = [];
+      if (Data !== null)
+        Data.map((tb) => {
+          if ('NOVO_PRECO' in tb) {
+            newTables.push({
+              BLOQUEADO: tb.BLOQUEADO,
+              PRECO: tb.NOVO_PRECO,
+              TABELA: tb.TABELA,
+            });
+          } else {
+            newTables.push(tb);
+          }
+        });
+      tabelas = [...tabelas, ...newTables];
     }
   });
 

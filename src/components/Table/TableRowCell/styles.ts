@@ -7,18 +7,15 @@ interface iTableCell {
 }
 
 export const TableCell = styled.td<iTableCell>`
-  padding: 1.2rem;
+  padding: 1.2rem 0;
   font-size: 1.5rem;
   text-align: center;
+  flex-grow: 1;
   color: ${(props) => props.theme.colors.onSurface};
   text-transform: capitalize;
   font-variant: small-caps;
-
-  flex: 1;
   width: ${(props) => (props.min_width ? props.min_width : 'auto')};
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   table-layout: fixed;
 
   &:first-child {
@@ -27,8 +24,9 @@ export const TableCell = styled.td<iTableCell>`
 
   @media only screen and ${devices.sm} {
     display: ${(props) => props.isHideMobile && 'none'};
-    width: 100%;
-    min-width: ${(props) => (props.min_width ? props.min_width : 'auto')};
+    // width: 100%;
+    // min-width: ${(props) => (props.min_width ? props.min_width : 'auto')};
+    width: ${(props) => (props.min_width ? props.min_width : 'auto')};
   }
 `;
 

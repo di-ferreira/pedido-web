@@ -61,6 +61,10 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   useEffect(() => {
     const OpenModal = () => {
       showModal();
+      console.log(
+        '🚀 ~ file: index.tsx:65 ~ OpenModal ~ Orcamento:',
+        Orcamento
+      );
       setOrcamento(Orcamento);
       setItensOrcamento(Orcamento.ItensOrcamento);
     };
@@ -241,7 +245,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     {
       key: 'acoes',
       title: 'AÇÕES',
-      width: '20%',
+      width: '15%',
       action: [
         {
           onclick: UpdateItem,
@@ -260,17 +264,27 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     {
       key: 'PRODUTO.NOME',
       title: 'PRODUTO',
-      width: '10%',
+      width: '15%',
+    },
+    {
+      key: 'PRODUTO.APLICACOES',
+      title: 'APLICAÇÕES',
+      width: '35%',
+    },
+    {
+      key: 'PRODUTO.FABRICANTE.NOME',
+      title: 'FABRICANTE',
+      width: '15%',
     },
     {
       key: 'QTD',
       title: 'QTD',
-      width: '10%',
+      width: '5%',
     },
     {
       key: 'TOTAL',
       title: 'TOTAL',
-      width: '20%',
+      width: '15%',
       isHideMobile: true,
       render: (_, item) => {
         return item.TOTAL.toLocaleString('pt-br', {
@@ -412,7 +426,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
               <FormEditOrcamentoInputContainer width='15%'>
                 <Button
                   onclick={() => SalvarOrcamento()}
-                  Text='SALVAR'
+                  Text='ORÇAMENTO'
                   Type='success'
                   Icon={faSave}
                   Height='3.5rem'
@@ -421,7 +435,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
               <FormEditOrcamentoInputContainer width='60%'>
                 <Button
                   onclick={() => GerarPreVenda(NewOrcamento)}
-                  Text='GERAR PRÉ-VENDA'
+                  Text='PRÉ-VENDA'
                   Type='success'
                   Icon={faSave}
                   Height='3.5rem'

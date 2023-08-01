@@ -15,7 +15,7 @@ import {
 import { iColumnType, iOption } from '../../../@types/Table';
 import { Secondary } from '../../../colors';
 import Button from '../../../components/Button';
-import { CustomSwitch } from '../../../components/CustomSwitch';
+import Checkbox from '../../../components/Checkbox';
 import { FieldSet } from '../../../components/FieldSet';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
@@ -395,7 +395,8 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                     <FormEditOrcamentoInputContainer width='100%'>
                       <FormEditOrcamentoRow>
                         <FormEditOrcamentoInputContainer width='7%'>
-                          <CustomSwitch
+                          <Checkbox
+                            type='checkbox'
                             labelColor='#fff'
                             label='ENTREGAR'
                             checkedOnColor={Secondary.main}

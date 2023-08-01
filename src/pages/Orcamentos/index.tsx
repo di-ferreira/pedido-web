@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { faEdit, faFileLines } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -96,10 +96,13 @@ export const Orcamentos: React.FC = () => {
     }
   };
 
-  const onOpenModalOrcamento = async (value: iOrcamento) => {
-    const orc: iOrcamento = (await GetOrcamento(value.ORCAMENTO)).data;
-    setOrcamento(orc);
-  };
+  const onOpenModalOrcamento = useCallback(
+    async (value: iOrcamento) => {
+      const orc: iOrcamento = (await GetOrcamento(value.ORCAMENTO)).data;
+      setOrcamento(orc);
+    },
+    [setOrcamento]
+  );
 
   const onCloseModalOrcamento = async (value: iOrcamento) => {
     const newListOrcamento: iOrcamento[] = OrcamentoList.map(
@@ -118,7 +121,7 @@ export const Orcamentos: React.FC = () => {
     {
       key: 'ORCAMENTO',
       title: 'ORCAMENTO',
-      width: '5rem',
+      width: '10%',
     },
     {
       key: 'CLIENTE.NOME',
@@ -144,6 +147,7 @@ export const Orcamentos: React.FC = () => {
       key: 'TOTAL',
       title: 'TOTAL',
       width: '7rem',
+      isHideMobile: true,
       render: (_, item) => {
         return item.TOTAL.toLocaleString('pt-br', {
           style: 'currency',

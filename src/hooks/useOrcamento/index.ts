@@ -85,7 +85,7 @@ const GetOrcamentos = async (
 
   const FILTER = filter
     ? CreateFilter(filter)
-    : `?$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}&$top=15&$inlinecount=allpages&$orderby=DATA desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento,ItensOrcamento/PRODUTO`;
+    : `?$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}&$top=15&$inlinecount=allpages&$orderby=ORCAMENTO desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`;
 
   const response = await api.get(`${ROUTE_GET_ALL_ORCAMENTO}${FILTER}`);
 
@@ -99,7 +99,7 @@ const GetOrcamentos = async (
 
 const GetOrcamento = (IdOrcamento: number): Promise<iResultOrcamento> => {
   return api.get(
-    `${ROUTE_GET_ALL_ORCAMENTO}(${IdOrcamento})?$expand=VENDEDOR,CLIENTE,ItensOrcamento,ItensOrcamento/PRODUTO`
+    `${ROUTE_GET_ALL_ORCAMENTO}(${IdOrcamento})?$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`
   );
 };
 

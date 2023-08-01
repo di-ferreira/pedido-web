@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Container, TextArea, LabelInput } from './styles';
+import { Container, LabelInput, TextArea } from './styles';
 
 interface iTextAreaCustom {
   label?: string;
@@ -32,6 +32,7 @@ export const TextAreaCustom: React.FC<iTextAreaCustom> = ({
         name={name}
         placeholder={placeholder}
         onChange={(e) => onChange && onChange(e)}
+        rows={7}
       />
     </Container>
   );

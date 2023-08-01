@@ -13,14 +13,10 @@ export const TableHeaderCell = styled.th<iTableCell>`
   font-weight: 500;
   text-align: center;
   font-size: 1.4rem;
-  padding: 1.2rem;
-  flex: 1;
+  padding: 1.2rem 0;
+  flex-grow: 1;
   width: ${(props) => (props.min_width ? props.min_width : 'auto')};
-  // width: 100%;
-  // min-width: 100%;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   table-layout: fixed;
   color: ${(props) => props.theme.colors.gray};
   border-bottom: solid 1px ${(props) => props.theme.colors.secondary};
