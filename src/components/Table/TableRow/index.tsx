@@ -1,6 +1,7 @@
 import { iColumnType } from '../../../@types/Table';
 import { TableRowCell } from '../TableRowCell';
-import { TableRowItem } from './styles';
+import { TableRowHeaderCell } from '../TableRowHeaderCell';
+import { TableCellContainer, TableRowItem } from './styles';
 
 interface iTableRowProps<T> {
   data: T[];
@@ -13,11 +14,25 @@ function TableRow<T>({ data, columns }: iTableRowProps<T>): JSX.Element {
       {data.map((item, idx) => (
         <TableRowItem key={`table-body-${idx}`}>
           {columns.map((column, columnIndex) => (
-            <TableRowCell
-              key={`table-row-cell-${columnIndex}`}
-              item={item}
-              column={column}
-            />
+            <>
+              <TableRowCell
+                key={`table-row-cell-${columnIndex}`}
+                item={item}
+                column={column}
+              />
+              <TableCellContainer isHideMobile={column.isHideMobile}>
+                <TableRowHeaderCell
+                  key={`table-row-header-cell-${columnIndex}`}
+                  item={item}
+                  column={column}
+                />
+                <TableRowCell
+                  key={`table-row-cell-${columnIndex}`}
+                  item={item}
+                  column={column}
+                />
+              </TableCellContainer>
+            </>
           ))}
         </TableRowItem>
       ))}

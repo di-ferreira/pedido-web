@@ -34,6 +34,7 @@ export const TableHeaderRow = styled.tr`
   position: relative;
   height: 5rem;
   @media only screen and ${devices.sm} {
+    display: none;
     overflow: auto hidden;
     height: 100%;
   }

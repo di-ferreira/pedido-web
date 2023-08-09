@@ -17,9 +17,11 @@ export const TableCell = styled.td<iTableCell>`
   width: ${(props) => (props.min_width ? props.min_width : 'auto')};
   overflow: hidden;
   table-layout: fixed;
+  display: none;
+  font-weight: bold;
 
   @media only screen and ${devices.sm} {
-    display: ${(props) => props.isHideMobile && 'none'};
+    display: ${(props) => (props.isHideMobile ? 'none' : 'flex')};
     width: 50%;
     align-items: center;
   }
