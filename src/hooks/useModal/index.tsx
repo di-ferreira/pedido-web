@@ -18,6 +18,11 @@ const RenderLayout: React.FC<iModalRender> = ({
   children,
   height,
   width,
+  lg,
+  md,
+  sm,
+  xl,
+  xs,
 }) => {
   const BtnClose = () => {
     OnClose();
@@ -44,7 +49,15 @@ const RenderLayout: React.FC<iModalRender> = ({
 
   return (
     <Backdrop>
-      <ModalContainer width={width} height={height}>
+      <ModalContainer
+        width={width}
+        height={height}
+        xs={xs}
+        sm={sm}
+        lg={lg}
+        md={md}
+        xl={xl}
+      >
         <CloseButton onClick={BtnClose}>
           <Icon Icon={faTimes} />
         </CloseButton>
@@ -67,6 +80,11 @@ const useModal = () => {
     OnCloseButtonClick,
     height,
     width,
+    lg,
+    md,
+    sm,
+    xl,
+    xs,
   }) =>
     ReactDOM.createPortal(
       RenderLayout({
@@ -76,6 +94,11 @@ const useModal = () => {
         OnCloseButtonClick,
         height,
         width,
+        lg,
+        md,
+        sm,
+        xl,
+        xs,
       }),
       document.body
     );

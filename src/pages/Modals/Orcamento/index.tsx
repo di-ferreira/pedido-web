@@ -17,6 +17,7 @@ import { iProduto } from '../../../@types/Produto';
 import { iColumnType } from '../../../@types/Table';
 import Button from '../../../components/Button';
 import { DetailContainer } from '../../../components/DetailContainer';
+import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
 import useModal from '../../../hooks/useModal';
@@ -26,13 +27,7 @@ import { useTheme } from '../../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../../utils';
 import { ModalItemOrcamento, callback } from '../ItemOrcamento';
 import { ModalPreVenda } from '../PreVenda';
-import {
-  FormEditOrcamento,
-  FormEditOrcamentoColumn,
-  FormEditOrcamentoInputContainer,
-  FormEditOrcamentoRow,
-  FormFooter,
-} from './styles';
+import { FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalOrcamento {
   Orcamento: iOrcamento;
@@ -61,10 +56,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   useEffect(() => {
     const OpenModal = () => {
       showModal();
-      console.log(
-        '🚀 ~ file: index.tsx:65 ~ OpenModal ~ Orcamento:',
-        Orcamento
-      );
+
       setOrcamento(Orcamento);
       setItensOrcamento(Orcamento.ItensOrcamento);
     };
@@ -99,7 +91,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     if (item.saveorupdate) {
       let removeItem: iItemRemove = {
         pIdOrcamento: NewOrcamento.ORCAMENTO,
-        pProduto: item.orcamento.PRODUTO ? item.orcamento.PRODUTO.PRODUTO : '',
+        pProduto: item.itemOrcamento.PRODUTO
+          ? item.itemOrcamento.PRODUTO.PRODUTO
+          : '',
       };
       RemoveItemOrcamento(removeItem).then(async (res) => {
         const { StatusCode, Data, StatusMessage } = res.data;
@@ -117,20 +111,20 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
           });
         } else {
           let saveItem: iItemInserir = {
-            pIdOrcamento: item.orcamento.ORCAMENTO.ORCAMENTO,
+            pIdOrcamento: item.itemOrcamento.ORCAMENTO.ORCAMENTO,
             pItemOrcamento: {
-              CodigoProduto: item.orcamento.PRODUTO
-                ? item.orcamento.PRODUTO.PRODUTO
+              CodigoProduto: item.itemOrcamento.PRODUTO
+                ? item.itemOrcamento.PRODUTO.PRODUTO
                 : '',
-              Desconto: item.orcamento.DESCONTO ? item.orcamento.DESCONTO : 0,
-              Frete: 0,
-              Qtd: item.orcamento.QTD,
-              Tabela: item.orcamento.TABELA,
-              Total: item.orcamento.PRODUTO
-                ? item.orcamento.PRODUTO.PRECO * item.orcamento.QTD
+              Desconto: item.itemOrcamento.DESCONTO
+                ? item.itemOrcamento.DESCONTO
                 : 0,
-              SubTotal: item.orcamento.SUBTOTAL,
-              Valor: item.orcamento.VALOR,
+              Frete: 0,
+              Qtd: item.itemOrcamento.QTD,
+              Tabela: item.itemOrcamento.TABELA,
+              Total: item.itemOrcamento.TOTAL,
+              SubTotal: item.itemOrcamento.SUBTOTAL,
+              Valor: item.itemOrcamento.VALOR,
             },
           };
 
@@ -156,10 +150,13 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
           });
         }
       });
-    } else await AddItem(item.orcamento);
+    } else {
+      await AddItem(item.itemOrcamento);
+    }
   };
 
   const AddItem = async (item: iItensOrcamento) => {
+    console.log('🚀 ~ file: index.tsx:161 ~ AddItem ~ item:', item);
     let saveItem: iItemInserir = {
       pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
       pItemOrcamento: {
@@ -168,7 +165,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         Frete: 0,
         Qtd: item.QTD,
         Tabela: item.TABELA,
-        Total: item.PRODUTO ? item.PRODUTO.PRECO * item.QTD : 0,
+        Total: item.TOTAL,
         SubTotal: item.SUBTOTAL,
         Valor: item.VALOR,
       },
@@ -201,6 +198,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       pIdOrcamento: NewOrcamento.ORCAMENTO,
       pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
     };
+
     RemoveItemOrcamento(removeItem).then(async (res) => {
       const { StatusCode, Data, StatusMessage } = res.data;
 
@@ -217,6 +215,10 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         });
       } else {
         const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
+        console.log(
+          '🚀 ~ file: index.tsx:223 ~ RemoveItemOrcamento ~ orc:',
+          orc
+        );
         setOrcamento(orc);
         setItensOrcamento(orc.ItensOrcamento);
       }
@@ -304,159 +306,242 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
               ? `ORÇAMENTO Nº ${NewOrcamento.ORCAMENTO.toString()}`
               : 'NOVO ORÇAMENTO'
           }
+          width='95%'
+          height='90vh'
+          sm={{ width: '100%', height: '100vh' }}
+          xs={{ width: '100%', height: '100vh' }}
           OnCloseButtonClick={() => callback && callback(NewOrcamento)}
         >
           <FormEditOrcamento>
-            <FormEditOrcamentoColumn>
-              <h3>CLIENTE</h3>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='8%'>
-                  <InputCustom
-                    labelPosition='top'
-                    label='CÓDIGO'
-                    name='CLIENTE.CLIENTE'
-                    value={NewOrcamento.CLIENTE.CLIENTE}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='50%'>
-                  <InputCustom
-                    label='NOME'
-                    name='CLIENTE.NOME'
-                    value={NewOrcamento.CLIENTE.NOME}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='35%'>
-                  <InputCustom
-                    label='CPF/CNPJ'
-                    name='CLIENTE.CIC'
-                    value={MaskCnpjCpf(NewOrcamento.CLIENTE.CIC)}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
-            <DetailContainer summary={'DETALHES'}>
-              <FormEditOrcamentoColumn>
-                <FormEditOrcamentoRow>
-                  <FormEditOrcamentoInputContainer width='45%'>
+            <FlexComponent direction='column' overflow='hidden auto'>
+              <FlexComponent direction='column'>
+                <h3>CLIENTE</h3>
+                <FlexComponent sm={{ wrap: 'wrap', gapColumn: '1rem' }}>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='8%'
+                    sm={{ width: '10%', order: 0 }}
+                  >
+                    <InputCustom
+                      labelPosition='top'
+                      label='CÓDIGO'
+                      name='CLIENTE.CLIENTE'
+                      value={NewOrcamento.CLIENTE.CLIENTE}
+                    />
+                  </FlexComponent>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='50%'
+                    sm={{ width: '100%', order: 2 }}
+                  >
+                    <InputCustom
+                      label='NOME'
+                      name='CLIENTE.NOME'
+                      value={NewOrcamento.CLIENTE.NOME}
+                    />
+                  </FlexComponent>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='42%'
+                    sm={{ width: '82%', order: 1 }}
+                  >
+                    <InputCustom
+                      label='CPF/CNPJ'
+                      name='CLIENTE.CIC'
+                      value={MaskCnpjCpf(NewOrcamento.CLIENTE.CIC)}
+                    />
+                  </FlexComponent>
+                </FlexComponent>
+              </FlexComponent>
+              <DetailContainer summary={'DETALHES'}>
+                <FlexComponent
+                  sm={{
+                    wrap: 'wrap',
+                    gapColumn: '1rem',
+                    gapRow: '1rem',
+                    margin: '0rem',
+                  }}
+                >
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='45%'
+                    sm={{ margin: '0rem', width: '100%' }}
+                  >
                     <InputCustom
                       label='TELEFONE'
                       name='TELEFONE'
                       value={NewOrcamento.DATA}
                     />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='40%'>
+                  </FlexComponent>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='40%'
+                    sm={{ margin: '0rem', width: '100%' }}
+                  >
                     <InputCustom
                       label='ENDEREÇO'
                       name='CLIENTE.ENDERECO'
                       value={NewOrcamento.CLIENTE.ENDERECO}
                     />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='15%'>
+                  </FlexComponent>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='15%'
+                    sm={{ margin: '0rem', width: '48.7%' }}
+                  >
                     <InputCustom
                       label='BAIRRO'
                       name='CLIENTE.BAIRRO'
                       value={NewOrcamento.CLIENTE.BAIRRO}
                     />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='20%'>
+                  </FlexComponent>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='20%'
+                    sm={{ margin: '0rem', width: '48.7%' }}
+                  >
                     <InputCustom
                       label='CIDADE'
                       name='CLIENTE.CIDADE'
                       value={NewOrcamento.CLIENTE.CIDADE}
                     />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='5%'>
+                  </FlexComponent>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='5%'
+                    sm={{ margin: '0rem', width: '48.7%' }}
+                  >
                     <InputCustom
                       label='UF'
                       name='CLIENTE.UF'
                       value={NewOrcamento.CLIENTE.UF}
                     />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='10%'>
+                  </FlexComponent>
+                  <FlexComponent
+                    margin='0.5rem'
+                    width='10%'
+                    sm={{ margin: '0rem', width: '48.7%' }}
+                  >
                     <InputCustom
                       label='CEP'
                       name='CLIENTE.CEP'
                       value={NewOrcamento.CLIENTE.CEP}
                     />
-                  </FormEditOrcamentoInputContainer>
-                </FormEditOrcamentoRow>
-              </FormEditOrcamentoColumn>
-              <FormEditOrcamentoColumn>
-                <h3>ORÇAMENTO</h3>
-                <FormEditOrcamentoRow>
-                  <FormEditOrcamentoInputContainer width='45%'>
-                    <InputCustom
-                      label='OBSERVAÇÃO 1'
-                      name='OBS1'
-                      value={NewOrcamento.OBS1}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                  <FormEditOrcamentoInputContainer width='45%'>
-                    <InputCustom
-                      label='OBSERVAÇÃO 2'
-                      name='OBS2'
-                      value={NewOrcamento.OBS2}
-                    />
-                  </FormEditOrcamentoInputContainer>
-                </FormEditOrcamentoRow>
-              </FormEditOrcamentoColumn>
-            </DetailContainer>
-            <FormEditOrcamentoColumn>
-              <FormEditOrcamentoRow>
-                <h3>ITENS</h3>
-                <Button
-                  onclick={() => OpenModalItemOrcamento()}
-                  Type='success'
-                  Title='Adicionar Item'
-                  Icon={faPlus}
-                  Height='2.5rem'
-                  Width='2.5rem'
-                  Rounded
-                />
-              </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow height='30rem'>
-                <Table
-                  messageNoData={'Esse orçamento não possuí itens!'}
-                  columns={tableHeaders}
-                  data={ItensOrcamento}
-                />
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
+                  </FlexComponent>
+                </FlexComponent>
+                <FlexComponent direction='column' margin='1rem 0'>
+                  <h3>ORÇAMENTO</h3>
+                  <FlexComponent
+                    margin='.5rem 0 0 0'
+                    sm={{ direction: 'column', gapRow: '1rem' }}
+                  >
+                    <FlexComponent
+                      margin='0.5rem'
+                      width='50%'
+                      sm={{ margin: '0rem', width: '100%' }}
+                    >
+                      <InputCustom
+                        label='OBSERVAÇÃO 1'
+                        name='OBS1'
+                        value={NewOrcamento.OBS1}
+                      />
+                    </FlexComponent>
+                    <FlexComponent
+                      margin='0.5rem'
+                      width='50%'
+                      sm={{ margin: '0rem', width: '100%' }}
+                    >
+                      <InputCustom
+                        label='OBSERVAÇÃO 2'
+                        name='OBS2'
+                        value={NewOrcamento.OBS2}
+                      />
+                    </FlexComponent>
+                  </FlexComponent>
+                </FlexComponent>
+              </DetailContainer>
+              <FlexComponent direction='column'>
+                <FlexComponent margin='0.5rem 0rem' gapColumn='.5rem'>
+                  <h3>ITENS</h3>
+                  <Button
+                    onclick={() => OpenModalItemOrcamento()}
+                    Type='success'
+                    Title='Adicionar Item'
+                    Icon={faPlus}
+                    Height='2.5rem'
+                    Width='2.5rem'
+                    Rounded
+                  />
+                </FlexComponent>
+                <FlexComponent height='60vh'>
+                  <Table
+                    messageNoData={'Esse orçamento não possuí itens!'}
+                    columns={tableHeaders}
+                    data={ItensOrcamento}
+                  />
+                </FlexComponent>
+              </FlexComponent>
+            </FlexComponent>
             <FormFooter>
-              <FormEditOrcamentoInputContainer width='15%'>
-                <Button
-                  onclick={() => SalvarOrcamento()}
-                  Text='ORÇAMENTO'
-                  Type='success'
-                  Icon={faSave}
-                  Height='3.5rem'
-                />
-              </FormEditOrcamentoInputContainer>
-              <FormEditOrcamentoInputContainer width='60%'>
-                <Button
-                  onclick={() => GerarPreVenda(NewOrcamento)}
-                  Text='PRÉ-VENDA'
-                  Type='success'
-                  Icon={faSave}
-                  Height='3.5rem'
-                />
-              </FormEditOrcamentoInputContainer>
-              <FormEditOrcamentoInputContainer width='20%'>
-                <InputCustom
-                  label='TOTAL ORCAMENTO'
-                  name='TOTAL'
-                  readOnly={true}
-                  textAlign='right'
-                  value={NewOrcamento.TOTAL.toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
-                />
-              </FormEditOrcamentoInputContainer>
+              <FlexComponent
+                padding='.5rem 0'
+                sm={{ direction: 'column', gapRow: '1rem', height: '30vh' }}
+              >
+                <FlexComponent
+                  width='50%'
+                  justifyContent='flex-start'
+                  gapColumn='1.5rem'
+                  sm={{
+                    gapColumn: '0rem',
+                    width: '100%',
+                    direction: 'column',
+                    gapRow: '1rem',
+                    order: 1,
+                  }}
+                >
+                  <FlexComponent width='20%' sm={{ width: '100%' }}>
+                    <Button
+                      onclick={() => SalvarOrcamento()}
+                      Text='ORÇAMENTO'
+                      Type='success'
+                      Icon={faSave}
+                      Height='3.5rem'
+                    />
+                  </FlexComponent>
+                  <FlexComponent width='20%' sm={{ width: '100%' }}>
+                    <Button
+                      onclick={() => GerarPreVenda(NewOrcamento)}
+                      Text='PRÉ-VENDA'
+                      Type='success'
+                      Icon={faSave}
+                      Height='3.5rem'
+                    />
+                  </FlexComponent>
+                </FlexComponent>
+                <FlexComponent
+                  width='50%'
+                  justifyContent='flex-end'
+                  sm={{ width: '100%', order: 0 }}
+                >
+                  <FlexComponent width='30%' sm={{ width: '100%' }}>
+                    <InputCustom
+                      label='TOTAL ORCAMENTO'
+                      name='TOTAL'
+                      readOnly={true}
+                      textAlign='right'
+                      value={NewOrcamento.TOTAL.toLocaleString('pt-br', {
+                        style: 'currency',
+                        currency: 'BRL',
+                      })}
+                    />
+                  </FlexComponent>
+                </FlexComponent>
+              </FlexComponent>
             </FormFooter>
           </FormEditOrcamento>
         </Modal>
       )}
+
       {ItemOrcamento && (
         <ModalItemOrcamento callback={SaveOrUpdate} Item={ItemOrcamento} />
       )}
@@ -469,4 +554,3 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     </>
   );
 };
-

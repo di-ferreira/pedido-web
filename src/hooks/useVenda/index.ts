@@ -3,8 +3,8 @@ import { iDataResult, iSelectSQL } from '../../@types';
 import { iFilter } from '../../@types/Filter';
 import { iMovimento } from '../../@types/PreVenda';
 import { iVendedor } from '../../@types/Vendedor';
-import { VENDEDOR_STORE } from '../../Constants';
 import api from '../../services/index';
+import { VENDEDOR_STORE } from '../../utils/Constants';
 
 interface iDataOrcamento {
   Qtd_Registros: number;

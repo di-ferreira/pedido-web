@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { devices } from '../../Constants';
+import { devices } from '../../utils/Constants';
 
 export const Container = styled.div`
   display: flex;
@@ -60,3 +60,4 @@ export const ContainerInput = styled.div`
   width: 25rem;
   margin: 0 0.5rem;
 `;
+

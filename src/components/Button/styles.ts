@@ -1,3 +1,4 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
 import {
   Black,
@@ -9,9 +10,8 @@ import {
   Success,
   Warn,
 } from '../../colors';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { HEXToRGB } from '../../utils';
-import { devices } from '../../Constants';
+import { devices } from '../../utils/Constants';
 
 export const TypeToColor = {
   default: {
@@ -63,7 +63,6 @@ export const Container = styled.button<ContainerProps>`
   color: ${(props) => props.color};
   height: ${(props) => (props.height ? props.height : 'auto')};
   width: ${(props) => (props.width ? props.width : 'auto')};
-  margin: 0 0.5rem;
   border: none;
   padding: ${(props) =>
     props.rounded ? '10px 10px' : '0.1rem 0.8rem 0.1rem 0.5rem'};

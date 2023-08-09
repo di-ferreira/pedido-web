@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { devices } from '../../../Constants';
+import { devices } from '../../../utils/Constants';
 
 interface iInputContainer {
   width?: string;
@@ -16,6 +16,7 @@ export const FormEditOrcamento = styled.form`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden auto;
 `;
 
 export const FormEditOrcamentoRow = styled.div<iRow>`
@@ -77,4 +78,3 @@ export const FormFooter = styled.footer`
   width: 100%;
   display: flex;
 `;
-

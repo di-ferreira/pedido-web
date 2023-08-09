@@ -135,11 +135,11 @@ export const ModalProduto: React.FC<iModalProduto> = ({
       title: 'APLICAÇÕES',
       width: '35%',
     },
-    // {
-    //   key: 'FABRICANTE',
-    //   title: 'FABRICANTE',
-    //   width: '35%',
-    // },
+    {
+      key: 'FABRICANTE.NOME',
+      title: 'FABRICANTE',
+      width: '35%',
+    },
     {
       key: 'QTDATUAL',
       title: 'QTD',
@@ -185,13 +185,11 @@ export const ModalProduto: React.FC<iModalProduto> = ({
                 />
               </FormEditOrcamentoRow>
               <FormEditOrcamentoRow height='60vh'>
-                {newProdutos.length > 0 && (
-                  <Table
-                    messageNoData={'Essa busca não retornou itens!'}
-                    columns={tableHeaders}
-                    data={newProdutos}
-                  />
-                )}
+                <Table
+                  messageNoData={'Essa busca não retornou itens!'}
+                  columns={tableHeaders}
+                  data={newProdutos}
+                />
               </FormEditOrcamentoRow>
             </FormEditOrcamentoColumn>
             <FormFooter>
@@ -208,4 +206,3 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     </>
   );
 };
-

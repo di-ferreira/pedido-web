@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { devices } from '../../Constants';
 import { Gray } from '../../colors';
 import { HEXToRGB } from '../../utils';
+import { devices } from '../../utils/Constants';
 
 interface iContainer {
   height?: string;
@@ -65,4 +65,3 @@ export const TextArea = styled.textarea`
     font-size: 1.9rem;
   }
 `;
-

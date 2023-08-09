@@ -1,20 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { faSave } from '@fortawesome/free-solid-svg-icons';
-import {
-  FormEditOrcamento,
-  FormEditOrcamentoColumn,
-  FormEditOrcamentoInputContainer,
-  FormEditOrcamentoRow,
-  FormFooter,
-} from './styles';
+import { FormEditOrcamento, FormFooter } from './styles';
 
+import dayjs from 'dayjs';
 import { SingleValue } from 'react-select';
 import { toast } from 'react-toastify';
 import { iItensOrcamento } from '../../../@types/Orcamento';
 import { iListaChave, iProduto, iTabelaVenda } from '../../../@types/Produto';
 import { iColumnType, iOption } from '../../../@types/Table';
 import Button from '../../../components/Button';
+import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
 import { TextAreaCustom } from '../../../components/TextAreaCustom';
@@ -22,10 +18,11 @@ import useSelect from '../../../hooks/UseSelect';
 import useModal from '../../../hooks/useModal';
 import useProduto from '../../../hooks/useProduto';
 import { useTheme } from '../../../hooks/useTheme';
+import { ObjectIsEmpty } from '../../../utils';
 import { ModalProduto } from '../Produto';
 
 export interface callback {
-  orcamento: iItensOrcamento;
+  itemOrcamento: iItensOrcamento;
   saveorupdate: boolean;
 }
 
@@ -48,6 +45,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
   const [Produtos, setProdutos] = useState<iProduto[]>([]);
+  const [Chaves, setChaves] = useState<iListaChave[]>([]);
   const [Price, setPrice] = useState<number>(0.0);
   const [Total, setTotal] = useState<number>(0.0);
   const [QTDProduto, setQTDProduto] = useState<number>(1);
@@ -65,10 +63,11 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       TOTAL: Item.TOTAL,
     });
 
-    if (Item.PRODUTO) {
+    if (!ObjectIsEmpty(Item.PRODUTO)) {
       GetTabelas(Item.PRODUTO);
       setSaveOrUpdateItem(true);
       setProdutoPalavras(Item.PRODUTO.PRODUTO);
+      setChaves(Item.PRODUTO.ListaChaves);
     }
     setTabelaSelected({
       label: `${Item.TABELA} - ${Item.VALOR.toLocaleString('pt-br', {
@@ -95,6 +94,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     } else if (ProdutosList[0]) {
       ProdutoToItem(ProdutosList[0]);
       setProdutoPalavras(ProdutosList[0].PRODUTO);
+      setChaves(ProdutosList[0].ListaChaves);
     } else {
       toast.error('Opps, Não encontrou nenhum PRODUTO 🤯', {
         position: 'bottom-right',
@@ -196,19 +196,25 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     });
     setTotal(Number(TabelaSelected?.value) * QTDProduto);
     setPrice(Number(TabelaSelected?.value));
+    setChaves(produto.ListaChaves);
   };
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
+    const tabelaSplited = TabelaSelected.label.split('-');
+    let tabela: string = tabelaSplited[0].replace(/\s/g, '');
+
     e.preventDefault();
     let result: callback = {
-      orcamento: {
+      itemOrcamento: {
         ...ItemOrcamento,
-        TABELA: TabelaSelected.label,
-        VALOR: Number(TabelaSelected.value),
+        TABELA: tabela,
+        VALOR: ItemOrcamento.VALOR,
+        TOTAL: ItemOrcamento.TOTAL,
+        SUBTOTAL: ItemOrcamento.TOTAL,
       },
       saveorupdate: SaveOrUpdateItem,
     };
-    setItemOrcamento(result.orcamento);
+    setItemOrcamento(result.itemOrcamento);
     callback(result);
     setProdutoPalavras('');
     setProdutos([]);
@@ -219,13 +225,21 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   const tableChavesHeaders: iColumnType<iListaChave>[] = [
     {
       key: 'DATA_ATUALIZACAO',
-      title: 'DATA',
-      width: '10%',
+      title: 'DATA ATUALIZACAO',
+      width: '30%',
+      render: (_, item) => {
+        return dayjs(item.DATA_ATUALIZACAO).format('DD/MM/YYYY');
+      },
     },
     {
       key: 'CNA',
       title: 'DOC',
       width: '10%',
+    },
+    {
+      key: 'Chave',
+      title: 'CHAVE',
+      width: '25%',
     },
   ];
 
@@ -234,127 +248,159 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       {Modal && (
         <Modal
           Title={`ADD ITEM AO ORÇAMENTO Nº ${ItemOrcamento?.ORCAMENTO.ORCAMENTO}`}
+          width='95vw'
+          height='95vh'
+          sm={{ width: '100%', height: '100vh' }}
+          xs={{ width: '100%', height: '100vh' }}
         >
           <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
-            <FormEditOrcamentoColumn>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='25%'>
-                  <InputCustom
-                    label='REFERÊNCIA'
-                    readOnly={true}
-                    name='REFERENCIA'
-                    value={ItemOrcamento.PRODUTO?.REFERENCIA}
+            <FlexComponent gapColumn='2rem' sm={{ direction: 'column' }}>
+              <FlexComponent
+                width='70%'
+                direction='column'
+                gapRow='1rem'
+                sm={{ width: '100%' }}
+              >
+                <FlexComponent
+                  gapColumn='1rem'
+                  sm={{ direction: 'column', gapRow: '1rem' }}
+                >
+                  <FlexComponent flexGrow={1}>
+                    <InputCustom
+                      onChange={OnProdutoPalavras}
+                      onKeydown={OnSearchProduto}
+                      value={ProdutoPalavras}
+                      name='ProdutoPalavras'
+                      label='PRODUTO'
+                    />
+                  </FlexComponent>
+                  <FlexComponent flexGrow={1}>
+                    <InputCustom
+                      readOnly={true}
+                      label='REFERÊNCIA'
+                      name='REFERENCIA'
+                      value={ItemOrcamento.PRODUTO?.REFERENCIA}
+                    />
+                  </FlexComponent>
+                  <FlexComponent flexGrow={1}>
+                    <InputCustom
+                      label='FABRICANTE'
+                      readOnly={true}
+                      name='FABRICANTE'
+                      value={ItemOrcamento.PRODUTO?.FABRICANTE?.NOME}
+                    />
+                  </FlexComponent>
+                  <FlexComponent flexGrow={1}>
+                    <InputCustom
+                      label='LOCALIZAÇÃO'
+                      readOnly={true}
+                      name='LOCALIZACAO'
+                      value={ItemOrcamento.PRODUTO?.LOCAL}
+                    />
+                  </FlexComponent>
+                </FlexComponent>
+                <FlexComponent direction='column' gapRow='1rem'>
+                  <FlexComponent>
+                    <InputCustom
+                      label='NOME DO PRODUTO'
+                      readOnly={true}
+                      name='PRODUTO.NOME'
+                      value={ItemOrcamento.PRODUTO?.NOME}
+                    />
+                  </FlexComponent>
+                  <FlexComponent>
+                    <TextAreaCustom
+                      label='APLICAÇÃO PRODUTO'
+                      readOnly={true}
+                      name='APLICACAO'
+                      value={ItemOrcamento.PRODUTO?.APLICACOES}
+                    />
+                  </FlexComponent>
+                  <FlexComponent>
+                    <TextAreaCustom
+                      label='INFORMACOES'
+                      readOnly={true}
+                      name='INFORMACOES.PRODUTO'
+                      value={ItemOrcamento.PRODUTO?.INSTRUCOES}
+                    />
+                  </FlexComponent>
+                </FlexComponent>
+              </FlexComponent>
+              <FlexComponent
+                width='30%'
+                sm={{ width: '100%', height: '25vh', margin: '1rem 0' }}
+              >
+                {ItemOrcamento.PRODUTO && (
+                  <Table
+                    messageNoData={
+                      'Não foi encontrado chaves para esses produtos!'
+                    }
+                    columns={tableChavesHeaders}
+                    data={Chaves}
                   />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='20%'>
-                  <InputCustom
-                    label='FABRICANTE'
-                    readOnly={true}
-                    name='FABRICANTE'
-                    value={ItemOrcamento.PRODUTO?.FABRICANTE?.NOME}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='20%'>
-                  <InputCustom
-                    label='LOCALIZAÇÃO'
-                    readOnly={true}
-                    name='LOCALIZACAO'
-                    value={ItemOrcamento.PRODUTO?.LOCAL}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='95%'>
-                  <InputCustom
-                    label='NOME DO PRODUTO'
-                    readOnly={true}
-                    name='PRODUTO.NOME'
-                    value={ItemOrcamento.PRODUTO?.NOME}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='95%'>
-                  <TextAreaCustom
-                    label='APLICAÇÃO PRODUTO'
-                    readOnly={true}
-                    name='APLICACAO'
-                    value={ItemOrcamento.PRODUTO?.APLICACOES}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='95%'>
-                  <TextAreaCustom
-                    label='INFORMACOES'
-                    readOnly={true}
-                    name='INFORMACOES.PRODUTO'
-                    value={ItemOrcamento.PRODUTO?.INSTRUCOES}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-              <FormEditOrcamentoColumn>
-                <FormEditOrcamentoRow>
-                  {ItemOrcamento.PRODUTO &&
-                    ItemOrcamento.PRODUTO.ListaChaves && (
-                      <Table
-                        messageNoData={'Essa busca não retornou itens!'}
-                        columns={tableChavesHeaders}
-                        data={ItemOrcamento.PRODUTO.ListaChaves}
-                      />
-                    )}
-                </FormEditOrcamentoRow>
-              </FormEditOrcamentoColumn>
-            </FormEditOrcamentoColumn>
-            <FormEditOrcamentoColumn>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='7%'>
-                  <InputCustom
-                    readOnly={true}
-                    label='ESTOQUE'
-                    name='ESTOQUE'
-                    type='number'
-                    textAlign='right'
-                    value={ItemOrcamento.PRODUTO?.QTDATUAL}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='5%'>
-                  <InputCustom
-                    onChange={OnChangeInputQTD}
-                    label='QTD'
-                    name='QTD'
-                    type='number'
-                    value={QTDProduto}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='25%'>
-                  <Select
-                    options={Tabelas}
-                    menuPosition='top'
-                    value={TabelaSelected}
-                    onChange={(SingleValue) => CalcTabela(SingleValue)}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='10%'>
-                  <InputCustom
-                    label='VALOR'
-                    name='VALOR'
-                    textAlign='right'
-                    value={Price.toLocaleString('pt-br', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })}
-                  />
-                </FormEditOrcamentoInputContainer>
-                <FormEditOrcamentoInputContainer width='15%'>
-                  <InputCustom
-                    label='TOTAL'
-                    name='TOTAL'
-                    textAlign='right'
-                    value={Total.toLocaleString('pt-br', {
-                      style: 'currency',
-                      currency: 'BRL',
-                    })}
-                  />
-                </FormEditOrcamentoInputContainer>
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
+                )}
+              </FlexComponent>
+            </FlexComponent>
+            <FlexComponent
+              gapColumn='1rem'
+              alignItems='flex-end'
+              padding='1rem 0 0 0'
+              sm={{
+                gapRow: '1rem',
+                gapColumn: '0.5rem',
+                wrap: 'wrap',
+              }}
+            >
+              <FlexComponent width='10%' sm={{ width: '49.4%' }}>
+                <InputCustom
+                  readOnly={true}
+                  label='ESTOQUE'
+                  name='ESTOQUE'
+                  type='number'
+                  textAlign='right'
+                  value={ItemOrcamento.PRODUTO?.QTDATUAL}
+                />
+              </FlexComponent>
+              <FlexComponent width='10%' sm={{ width: '49.4%' }}>
+                <InputCustom
+                  onChange={OnChangeInputQTD}
+                  label='QTD'
+                  name='QTD'
+                  type='number'
+                  value={QTDProduto}
+                />
+              </FlexComponent>
+              <FlexComponent width='40%' sm={{ width: '99%' }}>
+                <Select
+                  options={Tabelas}
+                  menuPosition='top'
+                  value={TabelaSelected}
+                  onChange={(SingleValue) => CalcTabela(SingleValue)}
+                />
+              </FlexComponent>
+              <FlexComponent width='20%' sm={{ width: '100%' }}>
+                <InputCustom
+                  label='VALOR'
+                  name='VALOR'
+                  textAlign='right'
+                  value={Price.toLocaleString('pt-br', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                />
+              </FlexComponent>
+              <FlexComponent width='20%' sm={{ width: '100%' }}>
+                <InputCustom
+                  label='TOTAL'
+                  name='TOTAL'
+                  textAlign='right'
+                  value={Total.toLocaleString('pt-br', {
+                    style: 'currency',
+                    currency: 'BRL',
+                  })}
+                />
+              </FlexComponent>
+            </FlexComponent>
             <FormFooter>
               <Button
                 Text='SALVAR'
@@ -377,4 +423,3 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     </>
   );
 };
-

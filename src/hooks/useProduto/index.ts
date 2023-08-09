@@ -85,7 +85,7 @@ const GetProdutosSuperBusca = async (
   };
 
   const response = await api.post(
-    `${ROUTE_SUPER_BUSCA}?$expand=FABRICANTE`,
+    `${ROUTE_SUPER_BUSCA}?$expand=FABRICANTE,FORNECEDOR,GRUPO,ListaChaves,ListaOfertaProduto,ListaSimilares,ListaVendaCasada,NCM,TIPO_ITEM,UNIDADE`,
     bodyReq
   );
 

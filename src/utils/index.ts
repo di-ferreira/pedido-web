@@ -113,3 +113,10 @@ export const MaskCEP = (value: String | undefined) => {
     .replace(/^(\d{5})(\d{3})+?$/, '$1-$2')
     .replace(/(-\d{3})(\d+?)/, '$1');
 };
+
+export const ObjectIsEmpty = (obj: Object): boolean => {
+  for (let prop in obj) {
+    if (obj.hasOwnProperty(prop)) return false;
+  }
+  return true;
+};

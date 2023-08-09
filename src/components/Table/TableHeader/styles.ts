@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { devices } from '../../../Constants';
 import { Black, Light } from '../../../colors';
+import { devices } from '../../../utils/Constants';
 
 interface iTableCell {
   isHideMobile?: boolean;

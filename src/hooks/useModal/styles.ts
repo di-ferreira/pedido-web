@@ -1,11 +1,19 @@
 import styled from 'styled-components';
-import { devices } from '../../Constants';
 import { Black, DarkRed, Light } from '../../colors';
 import { HEXToRGB } from '../../utils';
+import { devices } from '../../utils/Constants';
 
-interface iModalContainerStyle {
+interface iStyle {
   width?: string;
   height?: string;
+}
+
+interface iModalContainerStyle extends iStyle {
+  xs?: iStyle;
+  sm?: iStyle;
+  md?: iStyle;
+  lg?: iStyle;
+  xl?: iStyle;
 }
 
 export const Backdrop = styled.div`
@@ -26,18 +34,61 @@ export const Backdrop = styled.div`
 
 export const ModalContainer = styled.section<iModalContainerStyle>`
   position: relative;
-  min-width: 50rem;
-  width: ${(props) => (props.width ? props.width : '80rem')};
-  max-width: 100vw;
-  min-height: 50rem;
-  height: ${(props) => (props.height ? props.height : '60rem')};
-  max-height: 100vh;
   overflow: hidden;
   border: 1px solid
     rgba(${(props) => HEXToRGB(props.theme.colors.onBackground)}, 0.2);
   border-radius: 0.8rem;
   background-color: ${(props) => props.theme.colors.background};
   box-shadow: 6px 5px 5px 0px rgba(${HEXToRGB(Black.main)}, 0.5);
+
+  max-width: 100vw;
+  max-height: 100vh;
+
+  ${({ width, height }) => `
+    width: ${width ? width : '100vw'};
+    height: ${height ? height : '100vh'};
+  `}
+
+  ${({ xs }) =>
+    xs &&
+    `
+      @media only screen and ${devices.xs} {      
+          ${xs.width ? `width:${xs.width};` : ''}
+          ${xs.height ? `height:${xs.height};` : ''}
+      }
+    `}
+  ${({ sm }) =>
+    sm &&
+    `
+      @media only screen and ${devices.sm} {   
+          ${sm.width ? `width:${sm.width};` : ''}
+          ${sm.height ? `height:${sm.height};` : ''}
+      }
+    `}
+  ${({ md }) =>
+    md &&
+    `
+      @media only screen and ${devices.md} {     
+          ${md.width ? `width:${md.width};` : ''}
+          ${md.height ? `height:${md.height};` : ''}
+      }
+    `}
+  ${({ lg }) =>
+    lg &&
+    `
+      @media only screen and ${devices.lg} {     
+          ${lg.width ? `width:${lg.width};` : ''}
+          ${lg.height ? `height:${lg.height};` : ''}
+      }
+    `}
+  ${({ xl }) =>
+    xl &&
+    `
+      @media only screen and ${devices.xl} {     
+          ${xl.width ? `width:${xl.width};` : ''}
+          ${xl.height ? `height:${xl.height};` : ''}
+      }
+    `}
 `;
 
 export const ModalHeader = styled.header`

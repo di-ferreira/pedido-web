@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Dark } from '../../colors';
 import { HEXToRGB } from '../../utils';
-import { devices } from '../../Constants';
+import { devices } from '../../utils/Constants';
 
 interface iNavBarStyle {
   isOpen: boolean;

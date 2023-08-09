@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { iCliente } from '../../@types/Cliente';
 import { iFilter } from '../../@types/Filter';
 import { iVendedor } from '../../@types/Vendedor';
-import { VENDEDOR_STORE } from '../../Constants';
 import api from '../../services/index';
+import { VENDEDOR_STORE } from '../../utils/Constants';
 
 interface iDataCliente {
   Qtd_Registros: number;

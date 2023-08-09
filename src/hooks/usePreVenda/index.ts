@@ -9,8 +9,8 @@ import {
   iTransportadora,
 } from '../../@types/PreVenda';
 import { iVendedor } from '../../@types/Vendedor';
-import { VENDEDOR_STORE } from '../../Constants';
 import api from '../../services/index';
+import { VENDEDOR_STORE } from '../../utils/Constants';
 
 interface iDataOrcamento {
   Qtd_Registros: number;

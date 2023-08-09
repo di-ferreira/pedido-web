@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { devices } from '../../../Constants';
+import { devices } from '../../../utils/Constants';
 
 interface iInputContainer {
   width?: string;
@@ -14,10 +14,20 @@ interface iRow {
 export const FormEditOrcamento = styled.form`
   position: relative;
   width: 100%;
-  height: 90%;
+  height: 96%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: flex-start;
+  * input {
+    font-size: 1.7rem;
+  }
+
+  @media screen and ${devices.sm} {
+    & * input {
+      font-size: 1.5rem;
+    }
+  }
 `;
 
 export const FormEditOrcamentoRow = styled.div<iRow>`
@@ -27,6 +37,7 @@ export const FormEditOrcamentoRow = styled.div<iRow>`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  overflow: hidden auto;
 
   &:first-child {
     margin-top: 0;
@@ -74,9 +85,6 @@ export const FormEditOrcamentoSwitchContainer = styled.div<iInputContainer>`
 `;
 
 export const FormFooter = styled.footer`
-  background-color: ${(props) => props.theme.colors.background};
-  position: absolute;
-  bottom: 5%;
   width: 100%;
   display: flex;
 `;

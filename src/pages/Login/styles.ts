@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { HEXToRGB } from '../../utils';
 import { Black, Dark, DarkRed, Light } from '../../colors';
-import { devices } from '../../Constants';
+import { HEXToRGB } from '../../utils';
+import { devices } from '../../utils/Constants';
 
 export const Container = styled.div`
   width: 100vw;

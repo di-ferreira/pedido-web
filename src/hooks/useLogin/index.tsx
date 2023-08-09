@@ -1,8 +1,8 @@
-import { createContext, useContext, useEffect, useState } from 'react';
-import api from '../../services';
 import jwtDecode from 'jwt-decode';
-import { iCurrentUser, iVendaLogin, iTokenPayload } from '../../@types/Login';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { iCurrentUser, iTokenPayload, iVendaLogin } from '../../@types/Login';
 import { iVendedor } from '../../@types/Vendedor';
+import api from '../../services';
 import {
   ROUTE_GET_VENDEDOR,
   ROUTE_LOGIN,
@@ -12,7 +12,7 @@ import {
   VENDA_LOGIN,
   VENDA_PASSWORD,
   VENDEDOR_STORE,
-} from '../../Constants';
+} from '../../utils/Constants';
 
 type iStateLogin = {
   isLogged: boolean;
