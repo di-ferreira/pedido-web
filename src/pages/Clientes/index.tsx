@@ -14,6 +14,7 @@ import { iColumnType, iOption, iTablePagination } from '../../@types/Table';
 import { iVendedor } from '../../@types/Vendedor';
 import Button from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
+import { FlexComponent } from '../../components/FlexComponent';
 import { Icon } from '../../components/Icon';
 import { InputCustom } from '../../components/InputCustom';
 import { Loading } from '../../components/Loading';
@@ -390,20 +391,20 @@ export const Clientes: React.FC = () => {
       {Cliente && <ModalCliente Cliente={Cliente} />}
 
       {Orcamento && <ModalOrcamento Orcamento={Orcamento} />}
-
-      {IsLoading && <Loading />}
-      {ClienteList && !IsLoading && (
-        <Table
-          messageNoData={ErrorMessage}
-          columns={headers}
-          data={ClienteList}
-          pagination={paginationOptions}
-        />
-      )}
-      {ClienteList.length === 0 && !IsLoading && ErrorMessage === '' && (
-        <p>Não há registros</p>
-      )}
+      <FlexComponent height='100%'>
+        {IsLoading && <Loading />}
+        {ClienteList && !IsLoading && (
+          <Table
+            messageNoData={ErrorMessage}
+            columns={headers}
+            data={ClienteList}
+            pagination={paginationOptions}
+          />
+        )}
+        {ClienteList.length === 0 && !IsLoading && ErrorMessage === '' && (
+          <p>Não há registros</p>
+        )}
+      </FlexComponent>
     </Container>
   );
 };
-

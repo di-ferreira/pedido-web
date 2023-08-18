@@ -67,7 +67,8 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       GetTabelas(Item.PRODUTO);
       setSaveOrUpdateItem(true);
       setProdutoPalavras(Item.PRODUTO.PRODUTO);
-      setChaves(Item.PRODUTO.ListaChaves);
+      if (Item.PRODUTO.ListaChaves !== undefined)
+        setChaves(Item.PRODUTO.ListaChaves);
     }
     setTabelaSelected({
       label: `${Item.TABELA} - ${Item.VALOR.toLocaleString('pt-br', {
@@ -330,15 +331,13 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 width='30%'
                 sm={{ width: '100%', height: '25vh', margin: '1rem 0' }}
               >
-                {ItemOrcamento.PRODUTO && (
-                  <Table
-                    messageNoData={
-                      'Não foi encontrado chaves para esses produtos!'
-                    }
-                    columns={tableChavesHeaders}
-                    data={Chaves}
-                  />
-                )}
+                <Table
+                  messageNoData={
+                    'Não foi encontrado chaves para esses produtos!'
+                  }
+                  columns={tableChavesHeaders}
+                  data={Chaves}
+                />
               </FlexComponent>
             </FlexComponent>
             <FlexComponent

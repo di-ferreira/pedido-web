@@ -79,13 +79,11 @@ const GetProdutosSuperBusca = async (
   let bodyReq: iReqSuperBusca = {
     Palavras: req.Palavras,
     PularRegistros: req.PularRegistros ? req.PularRegistros : 0,
-    QuantidadeRegistros: req.QuantidadeRegistros
-      ? req.QuantidadeRegistros
-      : 100,
+    QuantidadeRegistros: req.QuantidadeRegistros ? req.QuantidadeRegistros : 15,
   };
 
   const response = await api.post(
-    `${ROUTE_SUPER_BUSCA}?$expand=FABRICANTE,FORNECEDOR,GRUPO,ListaChaves,ListaOfertaProduto,ListaSimilares,ListaVendaCasada,NCM,TIPO_ITEM,UNIDADE`,
+    `${ROUTE_SUPER_BUSCA}?$expand=FABRICANTE,FORNECEDOR,GRUPO,ListaChaves`,
     bodyReq
   );
 

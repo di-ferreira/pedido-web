@@ -120,3 +120,42 @@ export const ObjectIsEmpty = (obj: Object): boolean => {
   }
   return true;
 };
+
+export const CompareAND = (valueA: boolean, valueB: boolean): boolean => {
+  let result: boolean = false;
+  result = valueA && valueB;
+  return result;
+};
+
+export const CompareNAND = (valueA: boolean, valueB: boolean): boolean => {
+  let result: boolean = false;
+  result = !valueA && valueB;
+  return result;
+};
+
+export const CompareXOR = (valueA: boolean, valueB: boolean): boolean => {
+  console.log('🚀 ~ file: index.ts:137 ~ CompareXOR ~ valueB:', valueB);
+  let result: boolean = false;
+  if (valueA) result = true;
+  else result = valueA || valueB;
+  return result;
+};
+
+export const CompareXNOR = (valueA: boolean, valueB: boolean): boolean => {
+  let result: boolean = false;
+  if (!valueA) result = true;
+  else result = !(valueA || valueB);
+  return result;
+};
+
+export const CompareOR = (valueA: boolean, valueB: boolean): boolean => {
+  let result: boolean = false;
+  result = valueA || valueB;
+  return result;
+};
+
+export const CompareNOR = (valueA: boolean, valueB: boolean): boolean => {
+  let result: boolean = false;
+  result = !(valueA || valueB);
+  return result;
+};

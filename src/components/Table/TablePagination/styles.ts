@@ -44,6 +44,7 @@ export const ContainerButtons = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  column-gap: 1rem;
   width: 50%;
   height: 100%;
 

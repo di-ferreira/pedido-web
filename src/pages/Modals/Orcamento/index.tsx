@@ -499,7 +499,11 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     order: 1,
                   }}
                 >
-                  <FlexComponent width='20%' sm={{ width: '100%' }}>
+                  <FlexComponent
+                    width='20%'
+                    sm={{ width: '100%' }}
+                    lg={{ width: '100%' }}
+                  >
                     <Button
                       onclick={() => SalvarOrcamento()}
                       Text='ORÇAMENTO'
@@ -508,7 +512,11 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       Height='3.5rem'
                     />
                   </FlexComponent>
-                  <FlexComponent width='20%' sm={{ width: '100%' }}>
+                  <FlexComponent
+                    width='20%'
+                    sm={{ width: '100%' }}
+                    lg={{ width: '100%' }}
+                  >
                     <Button
                       onclick={() => GerarPreVenda(NewOrcamento)}
                       Text='PRÉ-VENDA'
