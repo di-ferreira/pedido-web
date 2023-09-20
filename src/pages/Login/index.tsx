@@ -1,25 +1,25 @@
+import { faLock, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import React, { useRef, useState } from 'react';
+import { Navigate } from 'react-router-dom';
+import { iVendaLogin } from '../../@types/Login';
+import LogoLight from '../../assets/EMSoft_icon.v2.png';
+import LoginIllustration from '../../assets/Login.svg';
+import LogoDark from '../../assets/favicon_white.png';
+import Button from '../../components/Button';
+import { InputCustom } from '../../components/InputCustom';
+import { useLogin } from '../../hooks/useLogin';
+import { useTheme } from '../../hooks/useTheme';
 import {
   Container,
+  ContainerInput,
+  ErrorLoginMsg,
+  ImageLogin,
+  LineDivisor,
   LoginContainer,
   LoginForm,
   LoginHeader,
   LoginTitle,
-  ImageLogin,
-  ContainerInput,
-  LineDivisor,
-  ErrorLoginMsg,
 } from './styles';
-import { InputCustom } from '../../components/InputCustom';
-import Button from '../../components/Button';
-import { faLock, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import LoginIllustration from '../../assets/Login.svg';
-import LogoLight from '../../assets/EMSoft_icon.v2.png';
-import LogoDark from '../../assets/favicon_white.png';
-import { useTheme } from '../../hooks/useTheme';
-import { useLogin } from '../../hooks/useLogin';
-import { Navigate } from 'react-router-dom';
-import { iVendaLogin } from '../../@types/Login';
 
 export const Login: React.FC = () => {
   const { ThemeName } = useTheme();
@@ -29,6 +29,8 @@ export const Login: React.FC = () => {
     codigoVendedor: '',
     password: '',
   });
+
+  const PassRef = useRef<HTMLInputElement>(null!);
 
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -46,9 +48,16 @@ export const Login: React.FC = () => {
     });
   };
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const OnKeyEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && e.currentTarget.name === 'codigoVendedor') {
+      PassRef.current.focus();
+    }
+    if (e.key === 'Enter' && e.currentTarget.name === 'password') {
+      onSubmit();
+    }
+  };
 
+  const onSubmit = () => {
     loginUser({
       codigoVendedor: UserLogin.codigoVendedor,
       password: UserLogin.password,
@@ -73,13 +82,15 @@ export const Login: React.FC = () => {
           <ImageLogin src={LoginIllustration} />
         </LoginHeader>
         <LineDivisor />
-        <LoginForm onSubmit={onSubmit}>
+        <LoginForm>
           <ContainerInput>
             <InputCustom
+              autofocus={true}
               name='codigoVendedor'
               value={UserLogin.codigoVendedor}
               onChange={OnChangeInput}
               label='CÓDIGO DE VENDEDOR'
+              onKeydown={OnKeyEnter}
             />
           </ContainerInput>
           <ContainerInput>
@@ -89,10 +100,11 @@ export const Login: React.FC = () => {
               onChange={OnChangeInput}
               label='SENHA'
               type='password'
+              ref={PassRef}
+              onKeydown={OnKeyEnter}
             />
           </ContainerInput>
           <Button
-            TypeButton='submit'
             Text={isLoading ? 'Carregando...' : 'LOGIN'}
             Type='secondary'
             Width='90%'
@@ -100,6 +112,7 @@ export const Login: React.FC = () => {
             Icon={isLoading ? faSpinner : faLock}
             disabled={isLoading}
             AnimationSpin={isLoading}
+            onclick={() => onSubmit()}
           />
           <ErrorLoginMsg>{isError && errorMsg}</ErrorLoginMsg>
         </LoginForm>

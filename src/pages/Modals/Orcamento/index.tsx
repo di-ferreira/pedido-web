@@ -316,11 +316,13 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
             <FlexComponent direction='column' overflow='hidden auto'>
               <FlexComponent direction='column'>
                 <h3>CLIENTE</h3>
-                <FlexComponent sm={{ wrap: 'wrap', gapColumn: '1rem' }}>
+                <FlexComponent
+                  sm={{ wrap: 'wrap', gapColumn: '1rem', gapRow: '1rem' }}
+                >
                   <FlexComponent
                     margin='0.5rem'
                     width='8%'
-                    sm={{ width: '10%', order: 0 }}
+                    sm={{ width: '20%', order: 0, margin: '0rem' }}
                   >
                     <InputCustom
                       labelPosition='top'
@@ -332,7 +334,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FlexComponent
                     margin='0.5rem'
                     width='50%'
-                    sm={{ width: '100%', order: 2 }}
+                    sm={{ width: '100%', order: 2, margin: '0rem' }}
                   >
                     <InputCustom
                       label='NOME'
@@ -343,7 +345,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FlexComponent
                     margin='0.5rem'
                     width='42%'
-                    sm={{ width: '82%', order: 1 }}
+                    sm={{ width: '77%', order: 1, margin: '0rem' }}
                   >
                     <InputCustom
                       label='CPF/CNPJ'
@@ -376,7 +378,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FlexComponent
                     margin='0.5rem'
                     width='40%'
-                    sm={{ margin: '0rem', width: '100%' }}
+                    sm={{ margin: '0rem', width: '48.5%' }}
                   >
                     <InputCustom
                       label='ENDEREÇO'
@@ -387,7 +389,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FlexComponent
                     margin='0.5rem'
                     width='15%'
-                    sm={{ margin: '0rem', width: '48.7%' }}
+                    sm={{ margin: '0rem', width: '48.5%' }}
                   >
                     <InputCustom
                       label='BAIRRO'
@@ -398,7 +400,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FlexComponent
                     margin='0.5rem'
                     width='20%'
-                    sm={{ margin: '0rem', width: '48.7%' }}
+                    sm={{ margin: '0rem', width: '48.5%' }}
                   >
                     <InputCustom
                       label='CIDADE'
@@ -409,7 +411,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FlexComponent
                     margin='0.5rem'
                     width='5%'
-                    sm={{ margin: '0rem', width: '48.7%' }}
+                    sm={{ margin: '0rem', width: '12%' }}
                   >
                     <InputCustom
                       label='UF'
@@ -420,7 +422,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                   <FlexComponent
                     margin='0.5rem'
                     width='10%'
-                    sm={{ margin: '0rem', width: '48.7%' }}
+                    sm={{ margin: '0rem', width: '33.5%' }}
                   >
                     <InputCustom
                       label='CEP'
