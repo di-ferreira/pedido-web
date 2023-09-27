@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FormEditOrcamento, FormFooter } from './styles';
 
 import dayjs from 'dayjs';
@@ -165,6 +165,11 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     }
   };
 
+  const OnSearchProdutoClick = () => {
+    console.log('OnSearchProdutoClick');
+    fetchProdutoList(ProdutoPalavras);
+  };
+
   const GetTabelas = async (produto: iProduto) => {
     let tabelas: iTabelaVenda[] = [];
     await GetTabelasFromProduto(produto).then((tabs) => {
@@ -255,7 +260,11 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
           xs={{ width: '100%', height: '100vh' }}
         >
           <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
-            <FlexComponent gapColumn='2rem' sm={{ direction: 'column' }}>
+            <FlexComponent
+              gapColumn='2rem'
+              sm={{ direction: 'column' }}
+              overflow='hidden auto'
+            >
               <FlexComponent
                 width='70%'
                 direction='column'
@@ -266,14 +275,27 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   gapColumn='1rem'
                   sm={{ direction: 'column', gapRow: '1rem' }}
                 >
-                  <FlexComponent flexGrow={1}>
-                    <InputCustom
-                      onChange={OnProdutoPalavras}
-                      onKeydown={OnSearchProduto}
-                      value={ProdutoPalavras}
-                      name='ProdutoPalavras'
-                      label='PRODUTO'
-                    />
+                  <FlexComponent flexGrow={1} alignItems='flex-end'>
+                    <FlexComponent width='85%'>
+                      <InputCustom
+                        onChange={OnProdutoPalavras}
+                        onKeydown={OnSearchProduto}
+                        value={ProdutoPalavras}
+                        name='ProdutoPalavras'
+                        label='PRODUTO'
+                      />
+                    </FlexComponent>
+                    <FlexComponent width='10%' container={true}>
+                      <Button
+                        Type='primary'
+                        TypeButton='button'
+                        onclick={OnSearchProdutoClick}
+                        Icon={faSearch}
+                        Height='3.5rem'
+                        Width='3.5rem'
+                        Title='Buscar Produto'
+                      />
+                    </FlexComponent>
                   </FlexComponent>
                   <FlexComponent flexGrow={1}>
                     <InputCustom
@@ -329,7 +351,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
               </FlexComponent>
               <FlexComponent
                 width='30%'
-                sm={{ width: '100%', height: '25vh', margin: '1rem 0' }}
+                sm={{ width: '100%', height: '20vh', margin: '1rem 0' }}
               >
                 <Table
                   messageNoData={
@@ -350,7 +372,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 wrap: 'wrap',
               }}
             >
-              <FlexComponent width='10%' sm={{ width: '49.4%' }}>
+              <FlexComponent width='10%' sm={{ width: '49%' }}>
                 <InputCustom
                   readOnly={true}
                   label='ESTOQUE'
@@ -360,7 +382,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   value={ItemOrcamento.PRODUTO?.QTDATUAL}
                 />
               </FlexComponent>
-              <FlexComponent width='10%' sm={{ width: '49.4%' }}>
+              <FlexComponent width='10%' sm={{ width: '49%' }}>
                 <InputCustom
                   onChange={OnChangeInputQTD}
                   label='QTD'

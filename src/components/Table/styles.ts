@@ -26,7 +26,6 @@ export const TableBody = styled.tbody`
   }
 
   @media only screen and ${devices.sm} {
-    height: 50vh;
     overflow: auto;
   }
 `;

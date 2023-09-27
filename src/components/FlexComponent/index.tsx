@@ -4,6 +4,7 @@ import { Container } from './styles';
 
 interface iFlexStyle {
   container?: boolean;
+  isHide?: boolean;
   direction?: 'row' | 'column';
   wrap?: 'nowrap' | 'wrap' | 'wrap-reverse';
   justifyContent?:
@@ -60,6 +61,7 @@ interface iFlexComponent extends iFlexStyle {
 }
 
 export const FlexComponent: React.FC<iFlexComponent> = ({
+  isHide,
   alignItems,
   alignSelf,
   children,
@@ -87,6 +89,7 @@ export const FlexComponent: React.FC<iFlexComponent> = ({
 }) => {
   return (
     <Container
+      isHide={isHide ? isHide : false}
       container={container ? container : true}
       direction={direction}
       alignItems={alignItems}

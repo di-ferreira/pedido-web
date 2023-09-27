@@ -12,7 +12,7 @@ interface iRow {
 
 export const FormEditOrcamento = styled.form`
   width: 100%;
-  height: 90%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

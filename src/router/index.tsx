@@ -1,17 +1,17 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
-import { Home } from '../pages/Home';
+import { ToastContainer } from 'react-toastify';
 import { MainLayout } from '../components/MainLayout';
+import { LoginProvider } from '../hooks/useLogin';
+import { useTheme } from '../hooks/useTheme';
 import { Clientes } from '../pages/Clientes';
+import { Home } from '../pages/Home';
+import { Login } from '../pages/Login';
+import { Logout } from '../pages/Logout';
+import { NotFound } from '../pages/NotFound';
 import { Orcamentos } from '../pages/Orcamentos';
 import { PreVendas } from '../pages/PreVendas';
 import { Vendas } from '../pages/Vendas';
-import { Login } from '../pages/Login';
-import { LoginProvider } from '../hooks/useLogin';
 import PrivateRoute from './PrivateRoutes';
-import { Logout } from '../pages/Logout';
-import { NotFound } from '../pages/NotFound';
-import { useTheme } from '../hooks/useTheme';
-import { ToastContainer } from 'react-toastify';
 
 const RoutesPage: React.FC = () => {
   const { ThemeName } = useTheme();
@@ -30,7 +30,7 @@ const RoutesPage: React.FC = () => {
         theme={ThemeName}
       />
       <Routes>
-        <Route path='/' element={<MainLayout />}>
+        <Route path='' element={<MainLayout />}>
           <Route path='login' element={<Login />} />
           <Route element={<PrivateRoute />}>
             <Route path='' element={<Navigate to='home' />} />

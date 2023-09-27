@@ -372,7 +372,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='TELEFONE'
                       name='TELEFONE'
-                      value={NewOrcamento.DATA}
+                      value={NewOrcamento.CLIENTE.TELEFONE}
                     />
                   </FlexComponent>
                   <FlexComponent

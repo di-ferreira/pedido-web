@@ -125,8 +125,12 @@ export const ModalHeader = styled.header`
 export const ModalBody = styled.article`
   position: relative;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 3.5rem);
   padding: 1rem;
+
+  @media screen and ${devices.xl} {
+    height: calc(90vh - 3.5rem);
+  }
 `;
 
 export const CloseButton = styled.button`

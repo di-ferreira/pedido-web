@@ -5,18 +5,13 @@ import { toast } from 'react-toastify';
 import { iProduto } from '../../../@types/Produto';
 import { iColumnType } from '../../../@types/Table';
 import Button from '../../../components/Button';
+import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
 import useModal from '../../../hooks/useModal';
 import useProduto from '../../../hooks/useProduto';
 import { useTheme } from '../../../hooks/useTheme';
-import {
-  FormEditOrcamento,
-  FormEditOrcamentoColumn,
-  FormEditOrcamentoInputContainer,
-  FormEditOrcamentoRow,
-  FormFooter,
-} from './styles';
+import { FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalProduto {
   produtos: iProduto[];
@@ -162,11 +157,21 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   return (
     <>
       {Modal && (
-        <Modal Title={`Buscar Produto`} width='95%' height='90vh'>
+        <Modal
+          Title={`Buscar Produto`}
+          width='95%'
+          height='90vh'
+          sm={{ width: '100%', height: '100vh' }}
+          xs={{ width: '100%', height: '100vh' }}
+        >
           <FormEditOrcamento>
-            <FormEditOrcamentoColumn>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoInputContainer width='85%'>
+            <FlexComponent direction='column' height='100%'>
+              <FlexComponent
+                alignItems='flex-end'
+                sm={{ direction: 'column' }}
+                gapRow='1rem'
+              >
+                <FlexComponent width='85%' sm={{ width: '100%' }}>
                   <InputCustom
                     onChange={OnChangeInput}
                     onKeydown={OnSearchProduto}
@@ -174,32 +179,36 @@ export const ModalProduto: React.FC<iModalProduto> = ({
                     name='SEARCH'
                     value={ProdutoPalavras}
                   />
-                </FormEditOrcamentoInputContainer>
-                <Button
-                  Icon={faSearch}
-                  onclick={() => fetchProdutoList(ProdutoPalavras)}
-                  Text='BUSCAR'
-                  Height='3.5rem'
-                  Type='primary'
-                  style={{ marginTop: '0.5rem' }}
-                />
-              </FormEditOrcamentoRow>
-              <FormEditOrcamentoRow height='60vh'>
+                </FlexComponent>
+                <FlexComponent width='15%' sm={{ width: '100%' }}>
+                  <Button
+                    Icon={faSearch}
+                    onclick={() => fetchProdutoList(ProdutoPalavras)}
+                    Text='BUSCAR'
+                    Height='3.5rem'
+                    Type='primary'
+                    style={{ marginTop: '0.5rem' }}
+                  />
+                </FlexComponent>
+              </FlexComponent>
+              <FlexComponent height='65vh'>
                 <Table
                   messageNoData={'Essa busca não retornou itens!'}
                   columns={tableHeaders}
                   data={newProdutos}
                 />
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
-            <FormFooter>
-              <Button
-                Text='SALVAR'
-                Type='success'
-                Icon={faSave}
-                Height='3.5rem'
-              />
-            </FormFooter>
+              </FlexComponent>
+              <FlexComponent margin='1rem 0rem'>
+                <FormFooter>
+                  <Button
+                    Text='SALVAR'
+                    Type='success'
+                    Icon={faSave}
+                    Height='3.5rem'
+                  />
+                </FormFooter>
+              </FlexComponent>
+            </FlexComponent>
           </FormEditOrcamento>
         </Modal>
       )}

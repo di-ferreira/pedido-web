@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { devices } from '../../utils/Constants';
 
 interface iStyle {
+  isHide?: boolean;
   width?: string;
   height?: string;
   container?: boolean;
@@ -56,6 +57,7 @@ export const Container = styled.div<iFlexComponentStyle>`
 `}
 
   ${({
+    isHide,
     container,
     direction,
     wrap,
@@ -67,7 +69,7 @@ export const Container = styled.div<iFlexComponentStyle>`
   }) =>
     container &&
     `
-        display:flex;
+        display:${isHide ? 'none' : 'flex'};
         flex-direction: ${direction ? direction : 'row'};
         ${wrap ? `flex-wrap: ${wrap};` : ''}
         ${justifyContent ? `justify-content:${justifyContent};` : ''}
@@ -82,6 +84,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     sm &&
     `
         @media only screen and ${devices.sm} {
+          ${sm.isHide === true ? `display:none` : 'display:flex'};
           ${sm.direction ? `flex-direction:${sm.direction}` : ''};
           ${sm.wrap ? `flex-wrap: ${sm.wrap};` : ''}
           ${sm.justifyContent ? `justify-content:${sm.justifyContent};` : ''}
@@ -106,6 +109,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     xs &&
     `
         @media only screen and ${devices.xs} {
+          ${xs.isHide ? `display:none` : 'display:flex'};
           ${xs.direction ? `flex-direction:${xs.direction}` : ''};
           ${xs.wrap ? `flex-wrap: ${xs.wrap};` : ''}
           ${xs.justifyContent ? `justify-content:${xs.justifyContent};` : ''}
@@ -130,6 +134,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     md &&
     `
         @media only screen and ${devices.md} {
+          ${md.isHide ? `display:none` : 'display:flex'};
           ${md.direction ? `flex-direction:${md.direction}` : ''};
           ${md.wrap ? `flex-wrap: ${md.wrap};` : ''}
           ${md.justifyContent ? `justify-content:${md.justifyContent};` : ''}
@@ -154,6 +159,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     lg &&
     `
         @media only screen and ${devices.lg} {
+          ${lg.isHide ? `display:none` : 'display:flex'};
           ${lg.direction ? `flex-direction:${lg.direction}` : ''};
           ${lg.wrap ? `flex-wrap: ${lg.wrap};` : ''}
           ${lg.justifyContent ? `justify-content:${lg.justifyContent};` : ''}
@@ -178,7 +184,8 @@ export const Container = styled.div<iFlexComponentStyle>`
     xl &&
     `
         @media only screen and ${devices.xl} {
-          ${xl.direction ? `flex-direction:${xl.direction}` : ''};
+         ${xl.isHide ? `display:none` : 'display:flex'};
+           ${xl.direction ? `flex-direction:${xl.direction}` : ''};
           ${xl.wrap ? `flex-wrap: ${xl.wrap};` : ''}
           ${xl.justifyContent ? `justify-content:${xl.justifyContent};` : ''}
           ${xl.alignItems ? `align-items: ${xl.alignItems};` : ''}
