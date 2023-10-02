@@ -52,7 +52,6 @@ export const CheckboxContainer = styled.div<iContainerCheckbox>`
 
   height: ${(props) => (props.height ? props.height : `4rem`)};
   padding: 0.8rem;
-  margin: 0rem 0.4rem;
   border-radius: 0.5rem;
 
   background-color: ${(props) =>
@@ -94,4 +93,3 @@ export const StyledCheckbox = styled.label<iCheckbox>`
     transition: all ease 0.5s;
   }
 `;
-

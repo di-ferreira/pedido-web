@@ -15,10 +15,11 @@ interface iRow {
 export const FormEditOrcamento = styled.form`
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 83vh;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: flex-start;
 `;
 export const FormEditOrcamentoRow = styled.div<iRow>`
   width: ${(props) => (props.width ? props.width : '100%')};
@@ -74,9 +75,6 @@ export const FormEditOrcamentoSwitchContainer = styled.div<iInputContainer>`
   }
 `;
 export const FormFooter = styled.footer`
-  background-color: ${(props) => props.theme.colors.background};
-  position: absolute;
-  bottom: 5%;
   width: 100%;
   display: flex;
 `;

@@ -64,13 +64,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   }, [Orcamento]);
 
   const onCloseModalPreVenda = async (value: iOrcamento) => {
-    // const newListPreVenda: iMovimento[] = PreVendaList.map((pv: iMovimento) => {
-    //   if (pv.MOVIMENTO === value.MOVIMENTO) {
-    //     pv = value;
-    //     return pv;
-    //   } else return pv;
-    // });
-    // setPreVendaList(newListPreVenda);
     setNewPreVenda(null);
   };
 
@@ -156,7 +149,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const AddItem = async (item: iItensOrcamento) => {
-    console.log('🚀 ~ file: index.tsx:161 ~ AddItem ~ item:', item);
     let saveItem: iItemInserir = {
       pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
       pItemOrcamento: {
@@ -230,11 +222,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const SalvarOrcamento = () => {
-    // toast.promise(SaveOrcamento(NewOrcamento), {
-    //   pending: `Salvando Orçamento do cliente ${NewOrcamento.CLIENTE.NOME}`,
-    //   success: 'Orçamento Salvo 👌',
-    //   error: 'Opps, ocorreu um erro 🤯',
-    // });
     OnCloseModal();
     callback && callback(NewOrcamento);
   };
@@ -262,6 +249,16 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
           Type: 'danger',
         },
       ],
+    },
+    {
+      key: 'PRODUTO.PRODUTO',
+      title: 'CÓDIGO',
+      width: '15%',
+    },
+    {
+      key: 'PRODUTO.REFERENCIA',
+      title: 'REFERÊNCIA',
+      width: '15%',
     },
     {
       key: 'PRODUTO.NOME',

@@ -39,12 +39,9 @@ const Checkbox: React.FC<iCheckbox> = ({
       checked={checked}
       onClick={onClick}
       checkedOffColor={checkedOffColor}
-      checkedOffBackground={checkedOffBackground}
-      checkedOnBackground={checkedOnBackground}
       checkedOnColor={checkedOnColor}
       height={height}
       label={label}
-      labelColor={labelColor}
       style={style}
       width={width}
     />

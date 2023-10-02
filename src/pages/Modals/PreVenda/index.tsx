@@ -17,19 +17,14 @@ import { Secondary } from '../../../colors';
 import Button from '../../../components/Button';
 import Checkbox from '../../../components/Checkbox';
 import { FieldSet } from '../../../components/FieldSet';
+import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
 import useSelect from '../../../hooks/UseSelect';
 import useModal from '../../../hooks/useModal';
 import usePreVenda from '../../../hooks/usePreVenda';
 import { useTheme } from '../../../hooks/useTheme';
-import {
-  FormEditOrcamento,
-  FormEditOrcamentoColumn,
-  FormEditOrcamentoInputContainer,
-  FormEditOrcamentoRow,
-  FormFooter,
-} from './styles';
+import { FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalPreVenda {
   Orcamento: iOrcamento;
@@ -84,21 +79,25 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
 
   const { Modal, showModal, OnCloseModal } = useModal();
 
+  const OpenModal = async () => {
+    showModal();
+    setNewPreVenda(Orcamento);
+    console.log(
+      '🚀 ~ file: index.tsx:91 ~ OpenModal ~ Pré-Venda:',
+      Orcamento.TABELA
+    );
+    await ListarCondicaoPgto();
+    await ListarFormaPgto();
+    await ListarTransportadoras();
+    setvalueSubTotal(Orcamento.TOTAL);
+    setvalueTotal(Orcamento.TOTAL);
+  };
+
   useEffect(() => {
-    const OpenModal = () => {
-      showModal();
-      setNewPreVenda(Orcamento);
-      console.log(
-        '🚀 ~ file: index.tsx:91 ~ OpenModal ~ Orcamento:',
-        Orcamento.TABELA
-      );
-      ListarCondicaoPgto();
-      ListarFormaPgto();
-      ListarTransportadoras();
-      setvalueSubTotal(Orcamento.TOTAL);
-      setvalueTotal(Orcamento.TOTAL);
+    const Open = () => {
+      OpenModal();
     };
-    return () => OpenModal();
+    return () => Open();
   }, [Orcamento]);
 
   const OnChangeTransp = (newValue: SingleValue<iOption>) => {
@@ -144,6 +143,12 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
         (Condicao) => Condicao.ID === newValue.value
       )[0];
       ListarParcelas(Condicao);
+    }
+  };
+
+  const OnChangeFormaPgto = (newValue: SingleValue<iOption>) => {
+    if (newValue) {
+      setOptFormasPgtoSelected(newValue);
     }
   };
 
@@ -322,42 +327,61 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
         <Modal
           Title={'FECHAMENTO DE PRÉ-VENDA'}
           OnCloseButtonClick={() => callback && callback(Orcamento)}
-          width='85vw'
-          height='100%'
+          width='95%'
+          height='90vh'
+          sm={{ width: '100%', height: '100vh' }}
+          xs={{ width: '100%', height: '100vh' }}
         >
           <FormEditOrcamento>
-            <FormEditOrcamentoColumn>
-              <FormEditOrcamentoRow>
-                <FormEditOrcamentoColumn width='69%'>
+            <FlexComponent
+              height='100%'
+              direction='column'
+              overflow='hidden auto'
+            >
+              <FlexComponent width='100%' sm={{ direction: 'column' }}>
+                <FlexComponent
+                  width='69%'
+                  direction='column'
+                  sm={{
+                    width: '100%',
+                    gapRow: '1rem',
+                    height: '75rem',
+                  }}
+                >
                   <h4>CONDIÇÃO DE PAGAMENTO</h4>
-                  <FormEditOrcamentoRow>
-                    <FormEditOrcamentoInputContainer width='10%'>
+                  <FlexComponent
+                    width='100%'
+                    margin='2rem 0rem 0rem 0rem'
+                    wrap='wrap'
+                    gapColumn='1rem'
+                    gapRow='1rem'
+                    sm={{ gapRow: '2.5rem' }}
+                  >
+                    <FlexComponent width='10%' sm={{ flexShrink: 2 }}>
                       <InputCustom
                         name='ID_CONDICAO'
                         value={IdCondicaoPgto}
                         height='3.5rem'
                       />
-                    </FormEditOrcamentoInputContainer>
-                    <FormEditOrcamentoInputContainer width='45%'>
+                    </FlexComponent>
+                    <FlexComponent width='45%' sm={{ flexGrow: 1 }}>
                       <Select
                         options={OptCondicaoPgto}
                         menuPosition='bottom'
                         value={OptCondicaoPgtoSelected}
                         onChange={OnChangeCondicaoPgto}
                       />
-                    </FormEditOrcamentoInputContainer>
-                    <FormEditOrcamentoInputContainer width='40%'>
+                    </FlexComponent>
+                    <FlexComponent width='42%' sm={{ flexGrow: 1 }}>
                       <Select
                         label='FORMAS DE PGTº'
                         options={OptFormasPgto}
                         menuPosition='bottom'
                         value={OptFormasPgtoSelected}
-                        onChange={(SingleValue) => console.log(SingleValue)}
+                        onChange={OnChangeFormaPgto}
                       />
-                    </FormEditOrcamentoInputContainer>
-                  </FormEditOrcamentoRow>
-                  <FormEditOrcamentoRow>
-                    <FormEditOrcamentoInputContainer width='100%'>
+                    </FlexComponent>
+                    <FlexComponent width='100%' sm={{ flexGrow: 1 }}>
                       <InputCustom
                         onChange={(e) => setvalueObsPedido1(e.target.value)}
                         label='OBS PEDIDO'
@@ -366,20 +390,40 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         value={valueObsPedido1}
                         height='3.5rem'
                       />
-                    </FormEditOrcamentoInputContainer>
-                  </FormEditOrcamentoRow>
-                  <FormEditOrcamentoRow>
-                    <h4>TRANSPORTADORA</h4>
-                    <FormEditOrcamentoRow>
-                      <FormEditOrcamentoInputContainer width='7%'>
+                    </FlexComponent>
+                  </FlexComponent>
+                  <FlexComponent
+                    width='100%'
+                    margin='2rem 0rem 0rem 0rem'
+                    wrap='wrap'
+                    gapColumn='1rem'
+                    gapRow='1rem'
+                    sm={{
+                      direction: 'column',
+                    }}
+                  >
+                    <FlexComponent
+                      width='100%'
+                      sm={{ margin: '1rem 0rem 0rem 0rem' }}
+                    >
+                      <h4>TRANSPORTADORA</h4>
+                    </FlexComponent>
+                    <FlexComponent
+                      width='100%'
+                      sm={{ gapRow: '2.5rem', gapColumn: '1rem', wrap: 'wrap' }}
+                    >
+                      <FlexComponent width='7%' sm={{ flexShrink: 1 }}>
                         <InputCustom
                           textAlign='right'
                           name='ID_TRANSPORTADORA'
                           value={IdTransp}
                           height='3.5rem'
                         />
-                      </FormEditOrcamentoInputContainer>
-                      <FormEditOrcamentoInputContainer width='90%'>
+                      </FlexComponent>
+                      <FlexComponent
+                        width='93%'
+                        sm={{ flexGrow: 1, width: '90%' }}
+                      >
                         <Select
                           options={OptTransportadoras}
                           menuPosition='bottom'
@@ -388,49 +432,53 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                             OnChangeTransp(SingleValue)
                           }
                         />
-                      </FormEditOrcamentoInputContainer>
-                    </FormEditOrcamentoRow>
-                  </FormEditOrcamentoRow>
-                  <FormEditOrcamentoRow>
-                    <FormEditOrcamentoInputContainer width='100%'>
-                      <FormEditOrcamentoRow>
-                        <FormEditOrcamentoInputContainer width='7%'>
-                          <Checkbox
-                            type='checkbox'
-                            labelColor='#fff'
-                            label='ENTREGAR'
-                            checkedOnColor={Secondary.main}
-                            checked={SwitchEntrega === 'S' ? true : false}
-                            onClick={() =>
-                              SwitchEntrega === 'S'
-                                ? setSwitchEntrega('N')
-                                : setSwitchEntrega('S')
-                            }
-                          />
-                        </FormEditOrcamentoInputContainer>
-                        <FormEditOrcamentoInputContainer width='90%'>
-                          <Select
-                            options={OptVeiculos}
-                            menuPosition='bottom'
-                            onChange={(SingleValue) => SelectVeic(SingleValue)}
-                          />
-                        </FormEditOrcamentoInputContainer>
-                      </FormEditOrcamentoRow>
-                      <FormEditOrcamentoInputContainer width='99%'>
-                        <InputCustom
-                          onChange={(e) =>
-                            setvalueObsNotaFiscal(e.target.value)
-                          }
-                          label='OBS NOTA FISCAL'
-                          labelPosition='top'
-                          name='OBS_NF'
-                          value={valueObsNotaFiscal}
-                          height='3.5rem'
-                        />
-                      </FormEditOrcamentoInputContainer>
-                    </FormEditOrcamentoInputContainer>
-                  </FormEditOrcamentoRow>
-                  <FormEditOrcamentoRow>
+                      </FlexComponent>
+                    </FlexComponent>
+                  </FlexComponent>
+                  <FlexComponent
+                    width='100%'
+                    margin='2rem 0rem 0rem 0rem'
+                    wrap='wrap'
+                    gapColumn='1rem'
+                    gapRow='1rem'
+                  >
+                    <FlexComponent width='18%' sm={{ width: '35%' }}>
+                      <Checkbox
+                        type='checkbox'
+                        labelColor='#fff'
+                        label='ENTREGAR'
+                        checkedOnColor={Secondary.main}
+                        checked={SwitchEntrega === 'S' ? true : false}
+                        onClick={() =>
+                          SwitchEntrega === 'S'
+                            ? setSwitchEntrega('N')
+                            : setSwitchEntrega('S')
+                        }
+                      />
+                    </FlexComponent>
+                    <FlexComponent width='80%' sm={{ width: '62%' }}>
+                      <Select
+                        options={OptVeiculos}
+                        menuPosition='bottom'
+                        onChange={(SingleValue) => SelectVeic(SingleValue)}
+                      />
+                    </FlexComponent>
+                    <FlexComponent width='100%'>
+                      <InputCustom
+                        onChange={(e) => setvalueObsNotaFiscal(e.target.value)}
+                        label='OBS NOTA FISCAL'
+                        labelPosition='top'
+                        name='OBS_NF'
+                        value={valueObsNotaFiscal}
+                        height='3.5rem'
+                      />
+                    </FlexComponent>
+                  </FlexComponent>
+                  <FlexComponent
+                    width='100%'
+                    margin='2rem 0rem 0rem 0rem'
+                    sm={{ margin: '1rem 0rem' }}
+                  >
                     <FieldSet legend='FRETE POR CONTA'>
                       <InputCustom
                         onChange={() => setFretePorConta(0)}
@@ -450,9 +498,19 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         type='radio'
                       />
                     </FieldSet>
-                  </FormEditOrcamentoRow>
-                  <FormEditOrcamentoRow>
-                    <FormEditOrcamentoInputContainer width='18.6%'>
+                  </FlexComponent>
+                  <FlexComponent
+                    width='100%'
+                    margin='2rem 0rem 0rem 0rem'
+                    wrap='wrap'
+                    gapColumn='1.3rem'
+                    gapRow='1rem'
+                    sm={{ gapRow: '2.5rem' }}
+                  >
+                    <FlexComponent
+                      width='32%'
+                      sm={{ flexGrow: 1, width: '100%' }}
+                    >
                       <InputCustom
                         readOnly={true}
                         onChange={() => {}}
@@ -465,8 +523,11 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         })}
                         height='3.5rem'
                       />
-                    </FormEditOrcamentoInputContainer>
-                    <FormEditOrcamentoInputContainer width='18.6%'>
+                    </FlexComponent>
+                    <FlexComponent
+                      width='32%'
+                      sm={{ flexGrow: 1, width: '100%' }}
+                    >
                       <InputCustom
                         onChange={(e) => OnChangeFrete(e)}
                         onBlur={(e) => OnBlurFrete(e)}
@@ -476,8 +537,11 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         value={valueFrete}
                         height='3.5rem'
                       />
-                    </FormEditOrcamentoInputContainer>
-                    <FormEditOrcamentoInputContainer width='18.6%'>
+                    </FlexComponent>
+                    <FlexComponent
+                      width='32%'
+                      sm={{ flexGrow: 1, width: '100%' }}
+                    >
                       <InputCustom
                         readOnly={true}
                         label='TOTAL'
@@ -489,37 +553,47 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         })}
                         height='3.5rem'
                       />
-                    </FormEditOrcamentoInputContainer>
-                  </FormEditOrcamentoRow>
-                </FormEditOrcamentoColumn>
-                <FormEditOrcamentoColumn width='31%' height='100vh'>
+                    </FlexComponent>
+                  </FlexComponent>
+                </FlexComponent>
+                <FlexComponent
+                  width='31%'
+                  height='100%'
+                  sm={{ width: '100%', height: '40vh' }}
+                >
                   <Table
                     messageNoData={'Sem condição de pagamento'}
                     columns={tableHeaders}
                     data={ListaParcelas}
                   />
-                </FormEditOrcamentoColumn>
-              </FormEditOrcamentoRow>
-            </FormEditOrcamentoColumn>
+                </FlexComponent>
+              </FlexComponent>
+            </FlexComponent>
             <FormFooter>
-              <FormEditOrcamentoInputContainer width='16%'>
-                <Button
-                  onclick={GerarPV}
-                  Text='GERAR PRÉ-VENDA'
-                  Type='success'
-                  Icon={faSave}
-                  Height='3.5rem'
-                />
-              </FormEditOrcamentoInputContainer>
-              <FormEditOrcamentoInputContainer width='60%'>
-                <Button
-                  Text='CANCELAR'
-                  onclick={() => OnCloseModal()}
-                  Type='danger'
-                  Icon={faBan}
-                  Height='3.5rem'
-                />
-              </FormEditOrcamentoInputContainer>
+              <FlexComponent
+                padding='1.5rem 0'
+                sm={{ direction: 'column', gapRow: '1rem', height: '12vh' }}
+                gapColumn='1.5rem'
+              >
+                <FlexComponent width='20%' sm={{ width: '100%' }}>
+                  <Button
+                    onclick={GerarPV}
+                    Text='GERAR PRÉ-VENDA'
+                    Type='success'
+                    Icon={faSave}
+                    Height='3.5rem'
+                  />
+                </FlexComponent>
+                <FlexComponent sm={{ width: '100%' }}>
+                  <Button
+                    Text='CANCELAR'
+                    onclick={() => OnCloseModal()}
+                    Type='danger'
+                    Icon={faBan}
+                    Height='3.5rem'
+                  />
+                </FlexComponent>
+              </FlexComponent>
             </FormFooter>
           </FormEditOrcamento>
         </Modal>
@@ -527,4 +601,3 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
     </>
   );
 };
-

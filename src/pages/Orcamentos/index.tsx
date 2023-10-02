@@ -69,14 +69,12 @@ export const Orcamentos: React.FC = () => {
   }, []);
 
   const onOpenModalPreVenda = async (value: iOrcamento) => {
+    console.log('pre-venda', value);
     setNewPreVenda(value);
   };
 
   const onCloseModalPreVenda = async (value: iOrcamento) => {
-    const newOrcamentoList: iOrcamento[] = OrcamentoList.filter(
-      (orc) => value.ORCAMENTO !== orc.ORCAMENTO
-    );
-    setOrcamentoList(newOrcamentoList);
+    ListOrcamentos();
     setNewPreVenda(null);
   };
 
@@ -305,4 +303,3 @@ export const Orcamentos: React.FC = () => {
     </Container>
   );
 };
-

@@ -13,7 +13,6 @@ import {
 
 interface iCustomCheckbox {
   label?: string;
-  labelColor?: string;
   checked: boolean;
   width?: string;
   height?: string;
@@ -21,8 +20,6 @@ interface iCustomCheckbox {
   style?: iSwitchType;
   checkedOffColor?: string;
   checkedOnColor?: string;
-  checkedOffBackground?: string;
-  checkedOnBackground?: string;
 }
 
 export const CustomCheckbox: React.FC<iCustomCheckbox> = ({
@@ -30,11 +27,8 @@ export const CustomCheckbox: React.FC<iCustomCheckbox> = ({
   onClick,
   checkedOffColor,
   checkedOnColor,
-  checkedOffBackground,
-  checkedOnBackground,
   height,
   label,
-  labelColor,
   style,
   width,
 }) => {
@@ -48,7 +42,7 @@ export const CustomCheckbox: React.FC<iCustomCheckbox> = ({
       handdleCheckboxOn={checkedOnColor ? checkedOnColor : switcherOn}
       handdleCheckboxOff={checkedOffColor ? checkedOffColor : switcherOff}
     >
-      <HiddenCheckbox checked={checked} />
+      <HiddenCheckbox onChange={() => onClick && onClick()} checked={checked} />
       <StyledCheckbox checked={checked}>
         <Icon Icon={faCheck} Type={style ? style : 'default'} />
       </StyledCheckbox>
@@ -56,4 +50,3 @@ export const CustomCheckbox: React.FC<iCustomCheckbox> = ({
     </CheckboxContainer>
   );
 };
-
