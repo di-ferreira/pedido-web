@@ -1,16 +1,3 @@
-export interface iTableProps<T> {
-  data: T[];
-  columns: iColumnType<T>[];
-}
-
-export type iTabData = {
-  Icon: IconProp;
-  TitleTab: string;
-  Link: string;
-  Closable?: boolean;
-  isActive: boolean;
-};
-
 export interface iTablePagination {
   CurrentPage: number;
   TotalPages: number;
@@ -42,3 +29,11 @@ export interface iColumnType<T> {
   render?: (column: iColumnType<T>, item: T) => void;
   action?: iButtonAction<T>[];
 }
+
+export type iTabData = {
+  Icon: IconProp;
+  TitleTab: string;
+  Link: string;
+  Closable?: boolean;
+  isActive: boolean;
+};

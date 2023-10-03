@@ -72,7 +72,7 @@ const CreateFilter = (filter: iFilter<iOrcamento>): string => {
 
   ResultFilter !== '' ? (ResultTop = `&${ResultTop}`) : (ResultTop = ResultTop);
 
-  let ResultRoute: string = `?${ResultFilter}${ResultTop}${ResultSkip}${ResultOrderBy}&$inlinecount=allpages`;
+  let ResultRoute: string = `?${ResultFilter}${ResultTop}${ResultSkip}${ResultOrderBy}&$inlinecount=allpages&$orderby=ORCAMENTO desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`;
   return ResultRoute;
 };
 
