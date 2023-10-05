@@ -166,7 +166,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
     }
 
     setListaParcelas(parcelas);
-    TableRef.current.onRefreshData();
+    TableRef.current.onRefreshData(parcelas);
   };
 
   const ListarCondicaoPgto = async () => {
