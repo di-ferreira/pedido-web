@@ -1,29 +1,34 @@
-import { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import { iFilter } from '../../@types/Filter';
-import { iColumnType, iOption } from '../../@types/Table';
+import {
+  iColumnType,
+  iDataResultTable,
+  iOption,
+  iTableRef,
+} from '../../@types/Table';
 import { Loading } from '../Loading';
 import TableHeader from './TableHeader';
 import { TablePagination } from './TablePagination';
 import TableRow from './TableRow';
 import { MessageNoData, TableBody, TableWrapper } from './styles';
 
-interface iDataResultTable<T> {
-  Qtd_Registros: number;
-  value: T[];
-}
-interface iTableDataProps<T> {
+type iTableDataProps<T> = {
   pagination?: boolean;
   columns?: iColumnType<T>[];
   filter?: iFilter<T>;
-  onDataFetch: (filter?: iFilter<T>) => Promise<iDataResultTable<T>>;
-}
+  TableData?: T[];
+  onDataFetch?: (filter?: iFilter<T>) => Promise<iDataResultTable<T>>;
+};
 
-function Table<T>({
-  onDataFetch,
-  columns,
-  pagination,
-  filter,
-}: iTableDataProps<T>): JSX.Element {
+function TableWrap<T>(
+  { onDataFetch, columns, pagination, filter, TableData }: iTableDataProps<T>,
+  ref: React.Ref<iTableRef<T>>
+): JSX.Element {
   const [FilterConfig, setFilterConfig] = useState<iFilter<T>>({
     skip: 0,
     top: 15,
@@ -38,6 +43,24 @@ function Table<T>({
   const [Data, setData] = useState<T[]>([]);
   const [Headers, setHeaders] = useState<iColumnType<T>[]>([]);
   const [IsLoading, setIsLoading] = useState<boolean>(false);
+
+  useImperativeHandle(ref, () => ({
+    onRefresh: (filter?: iFilter<T>) => {
+      let filterValue: iFilter<T> = {
+        top: RowsPerPage,
+        skip: RowsPerPage * CurrentPage - RowsPerPage,
+        orderBy: FilterConfig.orderBy,
+        filter: FilterConfig.filter,
+      };
+      if (filter) {
+        filterValue = filter;
+      }
+      OnFetchDataTable(filterValue);
+    },
+    onRefreshData: (Data: T[]) => {
+      setData(Data);
+    },
+  }));
 
   const ConvertColumnsHeders = (column: T[]) => {
     const keyNames = Object.keys(column[0] as {});
@@ -121,18 +144,32 @@ function Table<T>({
       setMessage('');
       try {
         setIsLoading(true);
-        const { Qtd_Registros, value } = await onDataFetch(filter);
-        setData(value);
-        setTotalPages(Math.ceil(Qtd_Registros / RowsPerPage));
-        setTotalRegisters(Qtd_Registros);
 
-        if (Qtd_Registros === 0) {
-          setMessage('Nenhum registro encontrado');
-        }
-        if (!columns) {
-          ConvertColumnsHeders(value);
-        } else {
-          setHeaders(columns);
+        if (onDataFetch) {
+          const { Qtd_Registros, value } = await onDataFetch(filter);
+          setData(value);
+          setTotalPages(Math.ceil(Qtd_Registros / RowsPerPage));
+          setTotalRegisters(Qtd_Registros);
+
+          if (Qtd_Registros === 0) {
+            setMessage('Nenhum registro encontrado');
+          }
+          if (!columns) {
+            ConvertColumnsHeders(value);
+          } else {
+            setHeaders(columns);
+          }
+        } else if (TableData) {
+          setData(TableData);
+
+          if (TableData.length === 0) {
+            setMessage('Nenhum registro encontrado');
+          }
+          if (!columns) {
+            ConvertColumnsHeders(TableData);
+          } else {
+            setHeaders(columns);
+          }
         }
       } catch (error: any) {
         setMessage(error.message);
@@ -149,42 +186,36 @@ function Table<T>({
 
   return (
     <TableWrapper>
-      {IsLoading ? (
-        <Loading />
-      ) : (
-        <>
-          <thead>
-            <TableHeader columns={Headers} />
-          </thead>
-          {Message !== '' || Data.length === 0 ? (
-            <TableBody>
-              <MessageNoData>{Message}</MessageNoData>
-            </TableBody>
+      <thead>
+        <TableHeader columns={Headers} />
+      </thead>
+      <TableBody>
+        {IsLoading && <Loading />}
+        {!IsLoading &&
+          (Message !== '' || Data.length === 0 ? (
+            <MessageNoData>{Message}</MessageNoData>
           ) : (
-            <>
-              <TableBody>
-                <TableRow data={Data} columns={Headers} />
-              </TableBody>
-              {pagination && (
-                <tfoot>
-                  <TablePagination
-                    CurrentPage={CurrentPage}
-                    TotalPages={TotalPages}
-                    RowsPerPage={RowsPerPage}
-                    onChange={ChangeRowsPerPage}
-                    onFirstPage={GoToFirstPage}
-                    onNextPage={GoToNextPage}
-                    onPrevPage={GoToPrevPage}
-                    onLastPage={GoToLastPage}
-                  />
-                </tfoot>
-              )}
-            </>
-          )}
-        </>
+            <TableRow data={Data} columns={Headers} />
+          ))}
+      </TableBody>
+      {pagination && (
+        <tfoot>
+          <TablePagination
+            CurrentPage={CurrentPage}
+            TotalPages={TotalPages}
+            RowsPerPage={RowsPerPage}
+            onChange={ChangeRowsPerPage}
+            onFirstPage={GoToFirstPage}
+            onNextPage={GoToNextPage}
+            onPrevPage={GoToPrevPage}
+            onLastPage={GoToLastPage}
+          />
+        </tfoot>
       )}
     </TableWrapper>
   );
 }
+
+const Table = React.forwardRef(TableWrap);
 
 export default Table;

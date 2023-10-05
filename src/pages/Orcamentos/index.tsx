@@ -1,10 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { faEdit, faFileLines } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
 import { iFilter } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
-import { iColumnType } from '../../@types/Table';
+import { iColumnType, iTableRef } from '../../@types/Table';
 import Table from '../../components/Table';
 import useOrcamento from '../../hooks/useOrcamento';
 import { ModalOrcamento } from '../Modals/Orcamento';
@@ -14,9 +14,9 @@ import { Container } from './styles';
 export const Orcamentos: React.FC = () => {
   const { GetOrcamentos, GetOrcamento } = useOrcamento();
 
-  const [OrcamentoList, setOrcamentoList] = useState<iOrcamento[]>([]);
   const [Orcamento, setOrcamento] = useState<iOrcamento | null>(null);
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
+  const TableRef = useRef<iTableRef<iOrcamento>>(null!);
 
   const onOpenModalPreVenda = async (value: iOrcamento) => {
     setNewPreVenda(value);
@@ -24,6 +24,7 @@ export const Orcamentos: React.FC = () => {
 
   const onCloseModalPreVenda = async (value: iOrcamento) => {
     ListOrcamentos();
+    TableRef.current.onRefresh();
     setNewPreVenda(null);
   };
 
@@ -42,6 +43,7 @@ export const Orcamentos: React.FC = () => {
   const onCloseModalOrcamento = useCallback(
     async (value: iOrcamento) => {
       ListOrcamentos();
+      TableRef.current.onRefresh();
       setOrcamento(null);
     },
     [setOrcamento]
@@ -122,7 +124,12 @@ export const Orcamentos: React.FC = () => {
           callback={onCloseModalPreVenda}
         />
       )}
-      <Table onDataFetch={ListOrcamentos} columns={headers} pagination />
+      <Table
+        onDataFetch={ListOrcamentos}
+        columns={headers}
+        ref={TableRef}
+        pagination
+      />
     </Container>
   );
 };

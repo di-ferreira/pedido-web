@@ -21,6 +21,10 @@ export interface iOption {
   value: string | number;
 }
 
+export interface iDataResultTable<T> {
+  Qtd_Registros: number;
+  value: T[];
+}
 export interface iColumnType<T> {
   key: string;
   title: string;
@@ -37,3 +41,14 @@ export type iTabData = {
   Closable?: boolean;
   isActive: boolean;
 };
+
+export interface iTableRef<T> {
+  onRefresh: (filter?: iFilter<T>) => void;
+  onRefreshData: (Data: T[]) => void;
+}
+
+declare module 'react' {
+  function forwardRef<T, P = {}>(
+    render: (props: P, ref: React.Ref<T>) => React.JSX.Element | null
+  ): (props: P & React.RefAttributes<T>) => React.JSX.Element | null;
+}

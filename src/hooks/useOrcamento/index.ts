@@ -7,18 +7,10 @@ import {
   iOrcamento,
   iOrcamentoInserir,
 } from '../../@types/Orcamento';
+import { iDataResultTable } from '../../@types/Table';
 import { iVendedor } from '../../@types/Vendedor';
 import api from '../../services/index';
 import { VENDEDOR_STORE } from '../../utils/Constants';
-
-interface iDataOrcamento {
-  Qtd_Registros: number;
-  value: iOrcamento[];
-}
-
-interface iDataCreateOrcamento {
-  data: iDataResult<iOrcamento>;
-}
 
 interface iResultOrcamento {
   data: iOrcamento;
@@ -30,7 +22,9 @@ interface iUseOrcamento {
   AddItemOrcamento: (item: iItemInserir) => Promise<iDataResult<iOrcamento>>;
   RemoveItemOrcamento: (item: iItemRemove) => Promise<iDataResult<iOrcamento>>;
   GetOrcamento: (IdOrcamento: number) => Promise<iResultOrcamento>;
-  GetOrcamentos: (filter?: iFilter<iOrcamento>) => Promise<iDataOrcamento>;
+  GetOrcamentos: (
+    filter?: iFilter<iOrcamento>
+  ) => Promise<iDataResultTable<iOrcamento>>;
 }
 
 const ROUTE_GET_ALL_ORCAMENTO = '/Orcamento';
@@ -51,15 +45,15 @@ const CreateFilter = (filter: iFilter<iOrcamento>): string => {
     filter.filter.map((itemFilter) => {
       if (itemFilter.typeSearch)
         itemFilter.typeSearch === 'like'
-          ? (ResultFilter = `${ResultFilter}${andStr}${
+          ? (ResultFilter = `${ResultFilter}${andStr} contains(${
               itemFilter.key
-            } like '% ${String(itemFilter.value).toUpperCase()} %'${andStr}`)
+            }, '${String(itemFilter.value).toUpperCase()}')${andStr}`)
           : itemFilter.typeSearch === 'eq' &&
             (ResultFilter = `${ResultFilter}${andStr}${itemFilter.key} eq '${itemFilter.value}'${andStr}`);
       else
-        ResultFilter = `${ResultFilter}${andStr}${
+        ResultFilter = `${ResultFilter}${andStr} contains(${
           itemFilter.key
-        } like '% ${String(itemFilter.value).toUpperCase()} %'${andStr}`;
+        }, '${String(itemFilter.value).toUpperCase()}')${andStr}`;
     });
     ResultFilter = ResultFilter.slice(0, -andStr.length);
   }
@@ -78,7 +72,7 @@ const CreateFilter = (filter: iFilter<iOrcamento>): string => {
 
 const GetOrcamentos = async (
   filter?: iFilter<iOrcamento>
-): Promise<iDataOrcamento> => {
+): Promise<iDataResultTable<iOrcamento>> => {
   let VendedorLocal: iVendedor = JSON.parse(
     String(localStorage.getItem(VENDEDOR_STORE))
   );
@@ -89,7 +83,7 @@ const GetOrcamentos = async (
 
   const response = await api.get(`${ROUTE_GET_ALL_ORCAMENTO}${FILTER}`);
 
-  let result: iDataOrcamento = {
+  let result: iDataResultTable<iOrcamento> = {
     Qtd_Registros: response.data['@xdata.count'],
     value: response.data.value,
   };

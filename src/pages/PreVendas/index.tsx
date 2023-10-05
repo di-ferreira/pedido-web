@@ -1,82 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import dayjs from 'dayjs';
 import { iFilter } from '../../@types/Filter';
 import { iMovimento } from '../../@types/PreVenda';
-import { iColumnType, iOption } from '../../@types/Table';
-import { Loading } from '../../components/Loading';
+import { iColumnType } from '../../@types/Table';
 import Table from '../../components/Table';
 import usePreVenda from '../../hooks/usePreVenda';
 import { Container } from './styles';
 
-interface iSearchPV {
-  filterBy: string;
-  value: string;
-  actives: boolean;
-}
-
 export const PreVendas: React.FC = () => {
   const { GetPreVendas } = usePreVenda();
 
-  const OptionsSelect: iOption[] = [
-    { label: 'NOME', value: 'NOME' },
-    { label: 'CÓDIGO', value: 'PreVenda' },
-    { label: 'CPF/CNPJ', value: 'CIC' },
-    { label: 'BAIRRO', value: 'BAIRRO' },
-    { label: 'CIDADE', value: 'CIDADE' },
-  ];
-
-  const [PreVendaList, setPreVendaList] = useState<iMovimento[]>([]);
-
-  /* PAGINAÇÃO */
-  const [RegistersPerPage, setRegistersPerPage] = useState<number>(15);
-
-  const [CurrentPage, setCurrentPage] = useState<number>(1);
-
-  const [TotalPages, setTotalPages] = useState<number>(1);
-
-  const [TotalRegister, setTotalRegister] = useState<number>(1);
-
-  const SkipPage = (
-    NextPage: boolean = true,
-    RegPerPage: number = RegistersPerPage
-  ): number => {
-    let CurPage = NextPage ? CurrentPage + 1 : CurrentPage - 1;
-    const Skip = RegPerPage * CurPage - RegPerPage;
-    return Skip;
-  };
-
-  /* STATUS LISTA OrcamentoS */
-
-  const [ErrorMessage, setErrorMessage] = useState<string>('');
-
-  const [IsLoading, setIsLoading] = useState<boolean>(false);
-
-  /* OUTROS */
-  const [SearchPreVenda, setSearchPreVenda] = useState<iSearchPV>({
-    filterBy: OptionsSelect[0].value,
-    value: '',
-    actives: false,
-  } as iSearchPV);
-
-  useEffect(() => {
-    ListPreVenda();
-  }, []);
-
   const ListPreVenda = async (filter?: iFilter<iMovimento>) => {
-    setErrorMessage('');
-    try {
-      setIsLoading(true);
-      const Data = await GetPreVendas(filter);
-      setPreVendaList(Data.value);
-
-      setTotalPages(Math.ceil(Data.Qtd_Registros / RegistersPerPage));
-      setTotalRegister(Data.Qtd_Registros);
-    } catch (error: any) {
-      setErrorMessage(error.message);
-    } finally {
-      setIsLoading(false);
-    }
+    return await GetPreVendas(filter);
   };
 
   const headers: iColumnType<iMovimento>[] = [
@@ -118,83 +54,9 @@ export const PreVendas: React.FC = () => {
     },
   ];
 
-  const ChangeRowsPerPage = (value: iOption) => {
-    setRegistersPerPage((oldValue) => {
-      oldValue = Number(value.value);
-      return oldValue;
-    });
-
-    ListPreVenda({
-      top: Number(value.value),
-      skip: RegistersPerPage * CurrentPage - RegistersPerPage,
-      orderBy: 'DATA',
-      // filter: MountQueryFilter(SearchPreVenda),
-    });
-  };
-
-  const GoToFirstPage = () => {
-    setCurrentPage(1);
-    ListPreVenda({
-      top: RegistersPerPage,
-      skip: 0,
-      orderBy: 'DATA',
-      // filter: MountQueryFilter(SearchPreVenda),
-    });
-  };
-
-  const GoToNextPage = () => {
-    CurrentPage < TotalPages && setCurrentPage((oldPage) => oldPage + 1);
-    ListPreVenda({
-      top: RegistersPerPage,
-      skip: SkipPage(),
-      orderBy: 'DATA',
-      //   filter: MountQueryFilter(SearchPreVenda),
-    });
-  };
-
-  const GoToPrevPage = () => {
-    CurrentPage < TotalPages && setCurrentPage((oldPage) => oldPage - 1);
-    ListPreVenda({
-      top: RegistersPerPage,
-      skip: SkipPage(),
-      orderBy: 'DATA',
-      //   filter: MountQueryFilter(SearchPreVenda),
-    });
-  };
-
-  const GoToLastPage = () => {
-    setCurrentPage(TotalPages);
-    ListPreVenda({
-      top: RegistersPerPage,
-      skip: SkipPage(),
-      orderBy: 'DATA',
-      //   filter: MountQueryFilter(SearchPreVenda),
-    });
-  };
-
   return (
     <Container>
-      {IsLoading && <Loading />}
-      {PreVendaList && !IsLoading && (
-        <Table
-          messageNoData={ErrorMessage}
-          columns={headers}
-          data={PreVendaList}
-          pagination={{
-            CurrentPage,
-            TotalPages,
-            onFirstPage: GoToFirstPage,
-            onLastPage: GoToLastPage,
-            onNextPage: GoToNextPage,
-            onPrevPage: GoToPrevPage,
-            RowsPerPage: RegistersPerPage,
-            onChange: ChangeRowsPerPage,
-          }}
-        />
-      )}
-      {PreVendaList.length === 0 && !IsLoading && ErrorMessage === '' && (
-        <p>Não há registros</p>
-      )}
+      <Table onDataFetch={ListPreVenda} columns={headers} pagination />
     </Container>
   );
 };

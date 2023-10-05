@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { iDataResult, iSelectSQL, iUniqueResult } from '../../@types';
 import { iFilter } from '../../@types/Filter';
 import { iProduto, iTabelaVenda } from '../../@types/Produto';
+import { iDataResultTable } from '../../@types/Table';
 import api from '../../services/index';
 
 interface iDataProduto {
@@ -22,9 +23,11 @@ interface iReqSuperBusca {
 interface iUseProduto {
   GetProduto: (produto: string) => Promise<iProdutoResult>;
   GetProdutosSuperBusca: (
-    req: iReqSuperBusca
-  ) => Promise<iDataResult<iProduto[]>>;
-  GetProdutos: (filter?: iFilter<iProduto>) => Promise<iDataProduto>;
+    filter?: iFilter<iProduto>
+  ) => Promise<iDataResultTable<iProduto>>;
+  GetProdutos: (
+    filter?: iFilter<iProduto>
+  ) => Promise<iDataResultTable<iProduto>>;
   GetTabelasFromProduto: (produto: iProduto) => Promise<iTabelaVenda[]>;
 }
 
@@ -74,12 +77,12 @@ const CreateFilter = (filter: iFilter<iProduto>): string => {
 };
 
 const GetProdutosSuperBusca = async (
-  req: iReqSuperBusca
-): Promise<iDataResult<iProduto[]>> => {
+  filter?: iFilter<iProduto>
+): Promise<iDataResultTable<iProduto>> => {
   let bodyReq: iReqSuperBusca = {
-    Palavras: req.Palavras,
-    PularRegistros: req.PularRegistros ? req.PularRegistros : 0,
-    QuantidadeRegistros: req.QuantidadeRegistros ? req.QuantidadeRegistros : 15,
+    Palavras: filter?.filter ? String(filter.filter[0].value) : '',
+    PularRegistros: filter?.skip ? filter.skip : 0,
+    QuantidadeRegistros: filter?.top ? filter.top : 15,
   };
 
   const response = await api.post(
@@ -87,13 +90,9 @@ const GetProdutosSuperBusca = async (
     bodyReq
   );
 
-  let result: iDataResult<iProduto[]> = {
-    data: {
-      Data: response.data.Data,
-      RecordCount: response.data.RecordCount,
-      StatusCode: response.data.StatusCode,
-      StatusMessage: response.data.StatusMessage,
-    },
+  let result: iDataResultTable<iProduto> = {
+    Qtd_Registros: response.data.RecordCount,
+    value: response.data.Data,
   };
 
   return result;
@@ -176,7 +175,8 @@ const GetTabelasFromProduto = async (
 
 const useProduto = create<iUseProduto>((set) => ({
   GetProduto: (produto: string) => GetProduto(produto),
-  GetProdutosSuperBusca: (req: iReqSuperBusca) => GetProdutosSuperBusca(req),
+  GetProdutosSuperBusca: (filter?: iFilter<iProduto>) =>
+    GetProdutosSuperBusca(filter),
   GetProdutos: (filter?: iFilter<iProduto>) => GetProdutos(filter),
   GetTabelasFromProduto: (produto: iProduto) => GetTabelasFromProduto(produto),
 }));

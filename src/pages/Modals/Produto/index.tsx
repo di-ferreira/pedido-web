@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { faPlus, faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'react-toastify';
+import { faPlus, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { iFilter } from '../../../@types/Filter';
 import { iProduto } from '../../../@types/Produto';
-import { iColumnType } from '../../../@types/Table';
+import { iColumnType, iTableRef } from '../../../@types/Table';
 import Button from '../../../components/Button';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
@@ -28,8 +28,8 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   const { GetProdutosSuperBusca, GetProduto } = useProduto();
   const { Modal, showModal, OnCloseModal } = useModal();
   const [newProdutos, setProdutos] = useState<iProduto[]>({} as iProduto[]);
-  const [Produto, setProduto] = useState<iProduto>({} as iProduto);
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
+  const TableRef = useRef<iTableRef<iProduto>>(null!);
 
   useEffect(() => {
     setProdutos(produtos);
@@ -37,42 +37,17 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     showModal();
   }, [produtos]);
 
-  const fetchProdutoList = async (busca: string) => {
-    const resultSuperBusca = await GetProdutosSuperBusca({ Palavras: busca });
+  const fetchProdutoList = async (filter?: iFilter<iProduto>) => {
+    return await GetProdutosSuperBusca(filter);
+  };
 
-    const { data } = resultSuperBusca;
-
-    let ProdutosList: iProduto[] = data.Data;
-
-    if (data.StatusCode !== 200)
-      toast.error(`Opps, ${data.StatusMessage} 🤯`, {
-        position: 'bottom-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: ThemeName,
-      });
-
-    if (ProdutosList.length > 1) {
-      setProdutos(ProdutosList);
-    } else if (ProdutosList[0]) {
-      setProdutoPalavras(ProdutosList[0].PRODUTO);
-      AddProduto(ProdutosList[0]);
-    }
-
-    if (data.StatusCode === 200 && ProdutosList.length < 1) {
-      toast.error('Opps, Não encontrou nenhum PRODUTO 🤯', {
-        position: 'bottom-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: ThemeName,
-      });
-    }
+  const ListProdutos = async () => {
+    TableRef.current.onRefresh({
+      top: 15,
+      skip: 0,
+      orderBy: 'PRODUTO',
+      filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
+    });
   };
 
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,7 +59,12 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   const OnSearchProduto = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      fetchProdutoList(e.currentTarget.value);
+      fetchProdutoList({
+        top: 15,
+        skip: 0,
+        orderBy: 'PRODUTO',
+        filter: [{ key: 'PRODUTO', value: e.currentTarget.value }],
+      });
     }
   };
 
@@ -183,7 +163,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
                 <FlexComponent width='15%' sm={{ width: '100%' }}>
                   <Button
                     Icon={faSearch}
-                    onclick={() => fetchProdutoList(ProdutoPalavras)}
+                    onclick={() => ListProdutos()}
                     Text='BUSCAR'
                     Height='3.5rem'
                     Type='primary'
@@ -193,18 +173,27 @@ export const ModalProduto: React.FC<iModalProduto> = ({
               </FlexComponent>
               <FlexComponent height='65vh'>
                 <Table
-                  messageNoData={'Essa busca não retornou itens!'}
                   columns={tableHeaders}
-                  data={newProdutos}
+                  onDataFetch={() =>
+                    fetchProdutoList({
+                      top: 15,
+                      skip: 0,
+                      orderBy: 'PRODUTO',
+                      filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
+                    })
+                  }
+                  pagination
+                  ref={TableRef}
                 />
               </FlexComponent>
               <FlexComponent margin='1rem 0rem'>
                 <FormFooter>
                   <Button
-                    Text='SALVAR'
-                    Type='success'
-                    Icon={faSave}
+                    Text='CANCELAR'
+                    Type='danger'
+                    Icon={faTimes}
                     Height='3.5rem'
+                    onclick={() => OnCloseModal()}
                   />
                 </FormFooter>
               </FlexComponent>

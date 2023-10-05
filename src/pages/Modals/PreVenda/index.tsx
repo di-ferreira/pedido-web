@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { faBan, faSave } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
@@ -12,7 +12,7 @@ import {
   iPreVenda,
   iTransportadora,
 } from '../../../@types/PreVenda';
-import { iColumnType, iOption } from '../../../@types/Table';
+import { iColumnType, iOption, iTableRef } from '../../../@types/Table';
 import { Secondary } from '../../../colors';
 import Button from '../../../components/Button';
 import Checkbox from '../../../components/Checkbox';
@@ -76,16 +76,13 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
     { label: 'MOTO', value: 'MOTO' },
   ]);
   const [OptVeiculo, setOptVeiculo] = useState<iOption>(OptVeiculos[0]);
+  const TableRef = useRef<iTableRef<iParcelasPgto>>(null!);
 
   const { Modal, showModal, OnCloseModal } = useModal();
 
   const OpenModal = async () => {
     showModal();
     setNewPreVenda(Orcamento);
-    console.log(
-      '🚀 ~ file: index.tsx:91 ~ OpenModal ~ Pré-Venda:',
-      Orcamento.TABELA
-    );
     await ListarCondicaoPgto();
     await ListarFormaPgto();
     await ListarTransportadoras();
@@ -169,6 +166,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
     }
 
     setListaParcelas(parcelas);
+    TableRef.current.onRefreshData();
   };
 
   const ListarCondicaoPgto = async () => {
@@ -562,9 +560,9 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                   sm={{ width: '100%', height: '40vh' }}
                 >
                   <Table
-                    messageNoData={'Sem condição de pagamento'}
                     columns={tableHeaders}
-                    data={ListaParcelas}
+                    TableData={ListaParcelas}
+                    ref={TableRef}
                   />
                 </FlexComponent>
               </FlexComponent>

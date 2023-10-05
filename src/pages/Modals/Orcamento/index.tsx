@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   faEdit,
@@ -14,7 +14,7 @@ import {
   iOrcamento,
 } from '../../../@types/Orcamento';
 import { iProduto } from '../../../@types/Produto';
-import { iColumnType } from '../../../@types/Table';
+import { iColumnType, iTableRef } from '../../../@types/Table';
 import Button from '../../../components/Button';
 import { DetailContainer } from '../../../components/DetailContainer';
 import { FlexComponent } from '../../../components/FlexComponent';
@@ -22,7 +22,6 @@ import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
 import useModal from '../../../hooks/useModal';
 import useOrcamento from '../../../hooks/useOrcamento';
-import usePreVenda from '../../../hooks/usePreVenda';
 import { useTheme } from '../../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../../utils';
 import { ModalItemOrcamento, callback } from '../ItemOrcamento';
@@ -51,7 +50,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   const { AddItemOrcamento, GetOrcamento, RemoveItemOrcamento } =
     useOrcamento();
-  const { SavePreVenda } = usePreVenda();
+  const TableRef = useRef<iTableRef<iItensOrcamento>>(null!);
 
   useEffect(() => {
     const OpenModal = () => {
@@ -139,6 +138,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
               const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
               setOrcamento(orc);
               setItensOrcamento(orc.ItensOrcamento);
+              TableRef.current.onRefreshData(orc.ItensOrcamento);
             }
           });
         }
@@ -181,6 +181,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
         setOrcamento(orc);
         setItensOrcamento(orc.ItensOrcamento);
+        TableRef.current.onRefreshData(orc.ItensOrcamento);
       }
     });
   };
@@ -207,12 +208,10 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         });
       } else {
         const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
-        console.log(
-          '🚀 ~ file: index.tsx:223 ~ RemoveItemOrcamento ~ orc:',
-          orc
-        );
+
         setOrcamento(orc);
         setItensOrcamento(orc.ItensOrcamento);
+        TableRef.current.onRefreshData(orc.ItensOrcamento);
       }
     });
   };
@@ -474,9 +473,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 </FlexComponent>
                 <FlexComponent height='60vh'>
                   <Table
-                    messageNoData={'Esse orçamento não possuí itens!'}
                     columns={tableHeaders}
-                    data={ItensOrcamento}
+                    TableData={ItensOrcamento}
+                    ref={TableRef}
                   />
                 </FlexComponent>
               </FlexComponent>

@@ -5,19 +5,18 @@ import {
   faFileLines,
   faSearch,
 } from '@fortawesome/free-solid-svg-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { iCliente } from '../../@types/Cliente';
 import { iFilter, iFilterQuery } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
-import { iColumnType, iOption, iTablePagination } from '../../@types/Table';
+import { iColumnType, iOption, iTableRef } from '../../@types/Table';
 import { iVendedor } from '../../@types/Vendedor';
 import Button from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
 import { FlexComponent } from '../../components/FlexComponent';
 import { Icon } from '../../components/Icon';
 import { InputCustom } from '../../components/InputCustom';
-import { Loading } from '../../components/Loading';
 import Table from '../../components/Table';
 import useSelect from '../../hooks/UseSelect';
 import useClientes from '../../hooks/useClientes';
@@ -53,35 +52,11 @@ export const Clientes: React.FC = () => {
     { label: 'BAIRRO', value: 'BAIRRO' },
     { label: 'CIDADE', value: 'CIDADE' },
   ];
+  const TableRef = useRef<iTableRef<iCliente>>(null!);
 
-  const [ClienteList, setClienteList] = useState<iCliente[]>([]);
   const [Cliente, setCliente] = useState<iCliente | null>(null);
 
   const [Orcamento, setOrcamento] = useState<iOrcamento | null>(null);
-
-  /* PAGINAÇÃO */
-  const [RegistersPerPage, setRegistersPerPage] = useState<number>(15);
-
-  const [CurrentPage, setCurrentPage] = useState<number>(1);
-
-  const [TotalPages, setTotalPages] = useState<number>(1);
-
-  const [TotalRegister, setTotalRegister] = useState<number>(1);
-
-  const SkipPage = (
-    NextPage: boolean = true,
-    RegPerPage: number = RegistersPerPage
-  ): number => {
-    let CurPage = NextPage ? CurrentPage + 1 : CurrentPage - 1;
-    const Skip = RegPerPage * CurPage - RegPerPage;
-    return Skip;
-  };
-
-  /* STATUS LISTA CLIENTES */
-
-  const [ErrorMessage, setErrorMessage] = useState<string>('');
-
-  const [IsLoading, setIsLoading] = useState<boolean>(false);
 
   /* OUTROS */
   const [SearchCliente, setSearchCliente] = useState<iSearchCliente>({
@@ -93,14 +68,6 @@ export const Clientes: React.FC = () => {
   const { Select } = useSelect();
 
   const [checkedSwitchFilter, setCheckedSwitchFilter] = useState<boolean>(true);
-
-  useEffect(() => {
-    ListClientes({
-      top: RegistersPerPage,
-      orderBy: 'CLIENTE',
-      filter: MountQueryFilter(SearchCliente),
-    });
-  }, []);
 
   const RenderIconBloqueado = (value: string): JSX.Element => {
     if (value === 'S') return <Icon Icon={faBan} Type='danger' key={value} />;
@@ -142,8 +109,8 @@ export const Clientes: React.FC = () => {
   };
 
   const SearchForFilter = () => {
-    ListClientes({
-      top: RegistersPerPage,
+    TableRef.current.onRefresh({
+      top: 15,
       skip: 0,
       orderBy: 'CLIENTE',
       filter: MountQueryFilter(SearchCliente),
@@ -151,72 +118,7 @@ export const Clientes: React.FC = () => {
   };
 
   const ListClientes = async (filter?: iFilter<iCliente>) => {
-    setErrorMessage('');
-    try {
-      setIsLoading(true);
-      const Data = await GetClientes(filter);
-      setClienteList(Data.value);
-      setTotalPages(Math.ceil(Data.Qtd_Registros / RegistersPerPage));
-      setTotalRegister(Data.Qtd_Registros);
-    } catch (error: any) {
-      setErrorMessage(error.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const ChangeRowsPerPage = (value: iOption) => {
-    setRegistersPerPage((oldValue) => {
-      oldValue = Number(value.value);
-      return oldValue;
-    });
-
-    ListClientes({
-      top: Number(value.value),
-      skip: RegistersPerPage * CurrentPage - RegistersPerPage,
-      orderBy: 'CLIENTE',
-      filter: MountQueryFilter(SearchCliente),
-    });
-  };
-
-  const GoToFirstPage = () => {
-    setCurrentPage(1);
-    ListClientes({
-      top: RegistersPerPage,
-      skip: 0,
-      orderBy: 'CLIENTE',
-      filter: MountQueryFilter(SearchCliente),
-    });
-  };
-
-  const GoToNextPage = () => {
-    CurrentPage < TotalPages && setCurrentPage((oldPage) => oldPage + 1);
-    ListClientes({
-      top: RegistersPerPage,
-      skip: SkipPage(),
-      orderBy: 'CLIENTE',
-      filter: MountQueryFilter(SearchCliente),
-    });
-  };
-
-  const GoToPrevPage = () => {
-    CurrentPage < TotalPages && setCurrentPage((oldPage) => oldPage - 1);
-    ListClientes({
-      top: RegistersPerPage,
-      skip: SkipPage(false),
-      orderBy: 'CLIENTE',
-      filter: MountQueryFilter(SearchCliente),
-    });
-  };
-
-  const GoToLastPage = () => {
-    setCurrentPage(TotalPages);
-    ListClientes({
-      top: RegistersPerPage,
-      skip: TotalRegister - RegistersPerPage,
-      orderBy: 'CLIENTE',
-      filter: MountQueryFilter(SearchCliente),
-    });
+    return await GetClientes(filter);
   };
 
   const onOpenModalCliente = (value: iCliente) => {
@@ -251,17 +153,6 @@ export const Clientes: React.FC = () => {
           theme: ThemeName,
         });
       });
-  };
-
-  const paginationOptions: iTablePagination = {
-    CurrentPage,
-    TotalPages,
-    onFirstPage: GoToFirstPage,
-    onLastPage: GoToLastPage,
-    onNextPage: GoToNextPage,
-    onPrevPage: GoToPrevPage,
-    RowsPerPage: RegistersPerPage,
-    onChange: ChangeRowsPerPage,
   };
 
   const headers: iColumnType<iCliente>[] = [
@@ -392,18 +283,19 @@ export const Clientes: React.FC = () => {
 
       {Orcamento && <ModalOrcamento Orcamento={Orcamento} />}
       <FlexComponent height='100%'>
-        {IsLoading && <Loading />}
-        {ClienteList && !IsLoading && (
-          <Table
-            messageNoData={ErrorMessage}
-            columns={headers}
-            data={ClienteList}
-            pagination={paginationOptions}
-          />
-        )}
-        {ClienteList.length === 0 && !IsLoading && ErrorMessage === '' && (
-          <p>Não há registros</p>
-        )}
+        <Table
+          columns={headers}
+          onDataFetch={() =>
+            ListClientes({
+              top: 15,
+              skip: 0,
+              orderBy: 'CLIENTE',
+              filter: MountQueryFilter(SearchCliente),
+            })
+          }
+          ref={TableRef}
+          pagination
+        />
       </FlexComponent>
     </Container>
   );

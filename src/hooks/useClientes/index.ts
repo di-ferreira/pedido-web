@@ -29,15 +29,15 @@ const CreateFilter = (filter: iFilter<iCliente>): string => {
     filter.filter.map((itemFilter) => {
       if (itemFilter.typeSearch) {
         itemFilter.typeSearch === 'like'
-          ? (ResultFilter = `${ResultFilter}${andStr}${
+          ? (ResultFilter = `${ResultFilter}${andStr} contains(${
               itemFilter.key
-            } like '% ${String(itemFilter.value).toUpperCase()} %'${andStr}`)
+            }, '${String(itemFilter.value).toUpperCase()}')${andStr}`)
           : itemFilter.typeSearch === 'eq' &&
             (ResultFilter = `${ResultFilter}${andStr}${itemFilter.key} eq '${itemFilter.value}'${andStr}`);
       } else
-        ResultFilter = `${ResultFilter}${andStr}${
+        ResultFilter = `${ResultFilter}${andStr} contains(${
           itemFilter.key
-        } like '% ${String(itemFilter.value).toUpperCase()} %'${andStr}`;
+        }, '${String(itemFilter.value).toUpperCase()}')${andStr}`;
       ResultFilter = ResultFilter.slice(0, -andStr.length);
     });
   }

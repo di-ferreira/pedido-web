@@ -6,6 +6,7 @@ import { FormEditOrcamento, FormFooter } from './styles';
 import dayjs from 'dayjs';
 import { SingleValue } from 'react-select';
 import { toast } from 'react-toastify';
+import { iFilter } from '../../../@types/Filter';
 import { iItensOrcamento } from '../../../@types/Orcamento';
 import { iListaChave, iProduto, iTabelaVenda } from '../../../@types/Produto';
 import { iColumnType, iOption } from '../../../@types/Table';
@@ -83,12 +84,12 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     setProdutos([]);
   }, [Item]);
 
-  const fetchProdutoList = async (busca: string) => {
-    const response = await GetProdutosSuperBusca({ Palavras: busca });
+  const fetchProdutoList = async (filter?: iFilter<iProduto>) => {
+    const response = await GetProdutosSuperBusca(filter);
 
-    const { data } = response;
+    const { value } = response;
 
-    let ProdutosList: iProduto[] = data.Data;
+    let ProdutosList: iProduto[] = value;
 
     if (ProdutosList.length > 1) {
       setProdutos(ProdutosList);
@@ -161,13 +162,17 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   const OnSearchProduto = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      fetchProdutoList(e.currentTarget.value);
+      fetchProdutoList({
+        filter: [{ key: 'PRODUTO', value: e.currentTarget.value }],
+      });
     }
   };
 
   const OnSearchProdutoClick = () => {
     console.log('OnSearchProdutoClick');
-    fetchProdutoList(ProdutoPalavras);
+    fetchProdutoList({
+      filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
+    });
   };
 
   const GetTabelas = async (produto: iProduto) => {
@@ -258,6 +263,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
           height='95vh'
           sm={{ width: '100%', height: '100vh' }}
           xs={{ width: '100%', height: '100vh' }}
+          OnCloseButtonClick={() => setProdutoPalavras('')}
         >
           <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
             <FlexComponent
@@ -353,13 +359,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 width='30%'
                 sm={{ width: '100%', height: '20vh', margin: '1rem 0' }}
               >
-                <Table
-                  messageNoData={
-                    'Não foi encontrado chaves para esses produtos!'
-                  }
-                  columns={tableChavesHeaders}
-                  data={Chaves}
-                />
+                <Table columns={tableChavesHeaders} TableData={Chaves} />
               </FlexComponent>
             </FlexComponent>
             <FlexComponent

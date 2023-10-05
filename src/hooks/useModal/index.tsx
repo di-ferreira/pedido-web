@@ -31,7 +31,7 @@ const RenderLayout: React.FC<iModalRender> = ({
 
   const OnEscKeyClose = (fn: () => void) => {
     const handleEscKey = useCallback(
-      (e: { key: string }) => {
+      (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
           fn();
         }
