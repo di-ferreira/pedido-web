@@ -1,27 +1,13 @@
 import React from 'react';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import {
-  Container,
-  IconButton,
-  NavButtonLink,
-  ContainerButton,
-} from './styles';
-import { isActiveLink } from '../../utils';
+import { iNavButton } from '../../@types/Navigation';
 import useTabListStore from '../../hooks/useTabList';
-
-interface iNavButton {
-  Text: string;
-  Link: string;
-  Icon: IconProp;
-  isButton?: boolean;
-  onClick?: () => void;
-}
+import { isActiveLink } from '../../utils';
+import { Container, IconButton, NavButtonLink } from './styles';
 
 export const NavButton: React.FC<iNavButton> = ({
   Text,
   Icon,
   Link,
-  isButton,
   onClick,
 }) => {
   const { openTab } = useTabListStore((state) => state);

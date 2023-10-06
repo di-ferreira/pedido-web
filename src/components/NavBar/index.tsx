@@ -1,35 +1,36 @@
-import React, { useState } from 'react';
-import { NavButton } from '../NavButton';
 import {
-  faHouseChimney,
-  faUsers,
-  faFileLines,
-  faFileInvoiceDollar,
-  faPowerOff,
   faArrowLeft,
   faArrowRight,
+  faFileInvoiceDollar,
+  faFileLines,
+  faHouseChimney,
+  faPowerOff,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ProfileImage from '../../assets/avatar_4.png';
+import React, { useState } from 'react';
+import { isMobile } from 'react-device-detect';
+import { Navigate } from 'react-router-dom';
+import { iNavButton } from '../../@types/Navigation';
 import LogoLight from '../../assets/EMSoft_icon.v2.png';
+import ProfileImage from '../../assets/avatar_4.png';
 import LogoDark from '../../assets/favicon_white.png';
+import { useLogin } from '../../hooks/useLogin';
+import { useTheme } from '../../hooks/useTheme';
+import { NavButton } from '../NavButton';
+import { SwitchTheme } from '../SwitchTheme';
 import {
   BorderImage,
   Container,
+  ContainerNav,
+  ContainerSwitchTheme,
   NavigationContainer,
   OpenCloseButton,
   Profile,
-  ProfileName,
   ProfileGroup,
+  ProfileName,
   Top,
-  ContainerSwitchTheme,
-  ContainerNav,
 } from './styles';
-import { useTheme } from '../../hooks/useTheme';
-import { useLogin } from '../../hooks/useLogin';
-import { Navigate } from 'react-router-dom';
-import { SwitchTheme } from '../SwitchTheme';
-import { isMobile } from 'react-device-detect';
 
 interface iNavBar {
   Open: boolean;
@@ -38,6 +39,7 @@ interface iNavBar {
 export const NavBar: React.FC<iNavBar> = ({ Open }) => {
   const { ThemeName } = useTheme();
   const [OpenCloseNavBar, SetOpenCloseNavBar] = useState<boolean>(Open);
+
   const { logoutUser, currentUser } = useLogin();
 
   const CloseNavBarMobile = () => {
@@ -48,11 +50,52 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
     logoutUser();
     <Navigate to='/login' replace />;
   };
+
   const IconOpenCloseButton = OpenCloseNavBar ? (
     <FontAwesomeIcon icon={faArrowLeft} />
   ) : (
     <FontAwesomeIcon icon={faArrowRight} />
   );
+
+  const [NavigationButtons, _] = useState<iNavButton[]>([
+    {
+      Text: 'dashboard',
+      Link: 'home',
+      Icon: faHouseChimney,
+      onClick: CloseNavBarMobile,
+    },
+    {
+      Text: 'clientes',
+      Link: 'clientes',
+      Icon: faUsers,
+      onClick: CloseNavBarMobile,
+    },
+    {
+      Text: 'orçamentos',
+      Link: 'orcamentos',
+      Icon: faFileLines,
+      onClick: CloseNavBarMobile,
+    },
+    {
+      Text: 'pré-vendas',
+      Link: 'pre-vendas',
+      Icon: faFileInvoiceDollar,
+      onClick: CloseNavBarMobile,
+    },
+    {
+      Text: 'vendas',
+      Link: 'vendas',
+      Icon: faFileInvoiceDollar,
+      onClick: CloseNavBarMobile,
+    },
+    {
+      Text: 'sair',
+      Link: 'logout',
+      Icon: faPowerOff,
+      onClick: Logout,
+    },
+  ]);
+
   return (
     <Container isOpen={OpenCloseNavBar}>
       <OpenCloseButton onClick={() => SetOpenCloseNavBar(!OpenCloseNavBar)}>
@@ -78,43 +121,15 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
           </ProfileName>
         </Profile>
         <NavigationContainer>
-          <NavButton
-            onClick={CloseNavBarMobile}
-            Icon={faHouseChimney}
-            Text='dashboard'
-            Link='home'
-          />
-          <NavButton
-            onClick={CloseNavBarMobile}
-            Icon={faUsers}
-            Text='clientes'
-            Link='clientes'
-          />
-          <NavButton
-            onClick={CloseNavBarMobile}
-            Icon={faFileLines}
-            Text='orçamentos'
-            Link='orcamentos'
-          />
-          <NavButton
-            onClick={CloseNavBarMobile}
-            Icon={faFileInvoiceDollar}
-            Text='pré-vendas'
-            Link='pre-vendas'
-          />
-          <NavButton
-            onClick={CloseNavBarMobile}
-            Icon={faFileInvoiceDollar}
-            Text='vendas'
-            Link='vendas'
-          />
-          <NavButton
-            Icon={faPowerOff}
-            Text='sair'
-            Link='logout'
-            isButton={true}
-            onClick={Logout}
-          />
+          {NavigationButtons.map((button, index) => (
+            <NavButton
+              key={index}
+              onClick={button.onClick}
+              Icon={button.Icon}
+              Text={button.Text}
+              Link={button.Link}
+            />
+          ))}
         </NavigationContainer>
       </ContainerNav>
       <ContainerSwitchTheme>
