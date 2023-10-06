@@ -113,7 +113,7 @@ export const ModalHeader = styled.header`
     white-space: nowrap;
     text-align: left;
   }
-  @media screen and ${devices.sm} {
+  @media screen and (${devices.sm}) {
     & > h1 {
       white-space: normal;
       text-align: center;
@@ -122,13 +122,14 @@ export const ModalHeader = styled.header`
   }
 `;
 
-export const ModalBody = styled.article`
+export const ModalBody = styled.article<iStyle>`
   position: relative;
-  width: 100%;
-  height: calc(100vh - 3.5rem);
+  width: ${(props) => (props.width ? props.width : '100%')};
+  height: ${(props) =>
+    props.height ? `calc(${props.height} - 3.5rem)` : 'calc(100vh - 3.5rem)'};
   padding: 1rem;
 
-  @media screen and ${devices.xl} {
+  @media screen and (${devices.xl}) {
     height: calc(90vh - 3.5rem);
   }
 `;

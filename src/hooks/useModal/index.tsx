@@ -18,6 +18,8 @@ const RenderLayout: React.FC<iModalRender> = ({
   children,
   height,
   width,
+  bodyHeight,
+  bodyWidth,
   lg,
   md,
   sm,
@@ -64,7 +66,9 @@ const RenderLayout: React.FC<iModalRender> = ({
         <ModalHeader>
           <h1>{Title}</h1>
         </ModalHeader>
-        <ModalBody>{children}</ModalBody>
+        <ModalBody height={bodyHeight} width={bodyWidth}>
+          {children}
+        </ModalBody>
       </ModalContainer>
     </Backdrop>
   );
@@ -80,6 +84,8 @@ const useModal = () => {
     OnCloseButtonClick,
     height,
     width,
+    bodyHeight,
+    bodyWidth,
     lg,
     md,
     sm,
@@ -94,6 +100,8 @@ const useModal = () => {
         OnCloseButtonClick,
         height,
         width,
+        bodyHeight,
+        bodyWidth,
         lg,
         md,
         sm,

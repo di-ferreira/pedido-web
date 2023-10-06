@@ -3,6 +3,8 @@ export interface iModalRender extends iModalStyle {
   OnClose: () => void;
   OnCloseButtonClick?: () => void;
   children?: ReactNode;
+  bodyHeight?: string;
+  bodyWidth?: string;
   xs?: iModalStyle;
   sm?: iModalStyle;
   md?: iModalStyle;
@@ -17,6 +19,8 @@ export interface iModal extends iModalStyle {
   Title: string;
   OnCloseButtonClick?: () => void;
   children?: ReactNode;
+  bodyHeight?: string;
+  bodyWidth?: string;
   xs?: iModalStyle;
   sm?: iModalStyle;
   md?: iModalStyle;

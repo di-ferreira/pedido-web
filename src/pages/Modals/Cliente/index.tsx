@@ -3,17 +3,11 @@ import React, { useEffect, useState } from 'react';
 import { iCliente } from '../../../@types/Cliente';
 import Button from '../../../components/Button';
 import Checkbox from '../../../components/Checkbox';
+import { FlexComponent } from '../../../components/FlexComponent/index';
 import { InputCustom } from '../../../components/InputCustom';
 import useModal from '../../../hooks/useModal';
 import { MaskCnpjCpf } from '../../../utils';
-import {
-  FormEditCliente,
-  FormEditClienteColumn,
-  FormEditClienteInputContainer,
-  FormEditClienteRow,
-  FormEditClienteSwitchContainer,
-  FormFooter,
-} from './styles';
+import { FormEditCliente, FormFooter } from './styles';
 
 interface iModalCliente {
   Cliente: iCliente;
@@ -21,7 +15,7 @@ interface iModalCliente {
 export const ModalCliente: React.FC<iModalCliente> = ({ Cliente }) => {
   const [cliente, setCliente] = useState<iCliente>(Cliente);
 
-  const { Modal, showModal } = useModal();
+  const { Modal, showModal, OnCloseModal } = useModal();
 
   useEffect(() => {
     showModal();
@@ -29,83 +23,99 @@ export const ModalCliente: React.FC<iModalCliente> = ({ Cliente }) => {
   }, [Cliente]);
 
   const ClearFields = () => {
+    OnCloseModal();
     setCliente({} as iCliente);
   };
 
   return (
     <>
       {Modal && (
-        <Modal Title={cliente.NOME}>
+        <Modal
+          Title={cliente.NOME}
+          OnCloseButtonClick={ClearFields}
+          width='70%'
+          height='40vh'
+          bodyHeight='100%'
+          sm={{ width: '100%', height: '100vh' }}
+          xs={{ width: '100%', height: '100vh' }}
+        >
           <FormEditCliente>
-            <FormEditClienteColumn>
-              <FormEditClienteRow>
-                <FormEditClienteInputContainer width='10%'>
+            <FlexComponent
+              direction='column'
+              overflow='hidden auto'
+              gapRow='1rem'
+            >
+              <FlexComponent
+                alignItems='flex-end'
+                gapColumn='1rem'
+                sm={{ direction: 'column', gapRow: '1rem' }}
+              >
+                <FlexComponent width='10%' sm={{ width: '100%' }}>
                   <InputCustom
                     onChange={() => {}}
                     label='ID'
                     name='CLIENTE'
                     value={Cliente.CLIENTE}
                   />
-                </FormEditClienteInputContainer>
-                <FormEditClienteInputContainer width='60%'>
+                </FlexComponent>
+                <FlexComponent width='60%' sm={{ width: '100%' }}>
                   <InputCustom
                     label='NOME'
                     onChange={() => {}}
                     name='NOME'
                     value={Cliente.NOME}
                   />
-                </FormEditClienteInputContainer>
-                <FormEditClienteInputContainer width='45%'>
+                </FlexComponent>
+                <FlexComponent width='45%' sm={{ width: '100%' }}>
                   <InputCustom
                     label='E-MAIL'
                     onChange={() => {}}
                     name='EMAIL'
                     value={Cliente.EMAIL}
                   />
-                </FormEditClienteInputContainer>
-                <FormEditClienteInputContainer width='45%'>
+                </FlexComponent>
+                <FlexComponent width='45%' sm={{ width: '100%' }}>
                   <InputCustom
                     label='TELEFONE'
                     onChange={() => {}}
                     name='TELEFONE'
                     value={Cliente.TELEFONE}
                   />
-                </FormEditClienteInputContainer>
-              </FormEditClienteRow>
-              <FormEditClienteRow>
-                <FormEditClienteInputContainer width='45%'>
-                  <InputCustom
-                    label='CNPJ'
-                    onChange={() => {}}
-                    name='Cliente.CIC'
-                    value={MaskCnpjCpf(Cliente.CIC)}
-                  />
-                </FormEditClienteInputContainer>
-              </FormEditClienteRow>
-              <FormEditClienteRow>
-                <FormEditClienteSwitchContainer width='20%'>
+                </FlexComponent>
+              </FlexComponent>
+              <FlexComponent width='45%' sm={{ width: '100%' }}>
+                <InputCustom
+                  label='CNPJ'
+                  onChange={() => {}}
+                  name='Cliente.CIC'
+                  value={MaskCnpjCpf(Cliente.CIC)}
+                />
+              </FlexComponent>
+              <FlexComponent sm={{ direction: 'column', gapRow: '1rem' }}>
+                <FlexComponent width='20%' sm={{ width: '100%' }}>
                   <Checkbox
                     type='checkbox'
                     label='BLOQUEADO'
                     checked={Cliente.BLOQUEADO === 'S' ? true : false}
                   />
-                </FormEditClienteSwitchContainer>
-                <FormEditClienteInputContainer width='75%'>
+                </FlexComponent>
+                <FlexComponent width='75%' sm={{ width: '100%' }}>
                   <InputCustom
                     label='MOTIVO BLOQUEIO'
                     onChange={() => {}}
                     name='Cliente.MOTIVO'
                     value={Cliente.MOTIVO}
                   />
-                </FormEditClienteInputContainer>
-              </FormEditClienteRow>
-            </FormEditClienteColumn>
+                </FlexComponent>
+              </FlexComponent>
+            </FlexComponent>
             <FormFooter>
               <Button
-                Text='ATUALIZAR'
-                Type='success'
+                Text='FECHAR'
+                Type='danger'
                 Icon={faSave}
                 Height='3.5rem'
+                onclick={() => ClearFields()}
               />
             </FormFooter>
           </FormEditCliente>
@@ -114,4 +124,3 @@ export const ModalCliente: React.FC<iModalCliente> = ({ Cliente }) => {
     </>
   );
 };
-
