@@ -80,6 +80,8 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const SaveOrUpdate = async (item: callback) => {
+    console.log('Save Item', item);
+
     if (item.saveorupdate) {
       let removeItem: iItemRemove = {
         pIdOrcamento: NewOrcamento.ORCAMENTO,
@@ -164,6 +166,8 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     };
 
     AddItemOrcamento(saveItem).then(async (res) => {
+      console.log('addItem', res);
+
       const { StatusCode, Data, StatusMessage } = res.data;
 
       if (StatusCode !== 200) {
@@ -178,10 +182,18 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
           theme: ThemeName,
         });
       } else {
-        const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
-        setOrcamento(orc);
-        setItensOrcamento(orc.ItensOrcamento);
-        TableRef.current.onRefreshData(orc.ItensOrcamento);
+        // const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
+        // console.log('addItem orc', orc);
+
+        // setOrcamento(orc);
+        // setItensOrcamento(orc.ItensOrcamento);
+        // TableRef.current.onRefreshData(orc.ItensOrcamento);
+        GetOrcamento(Data.ORCAMENTO).then((result) => {
+          const orc = result.data;
+          setOrcamento(orc);
+          setItensOrcamento(orc.ItensOrcamento);
+          TableRef.current.onRefreshData(orc.ItensOrcamento);
+        });
       }
     });
   };
