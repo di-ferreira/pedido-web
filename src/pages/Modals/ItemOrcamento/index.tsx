@@ -169,7 +169,6 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   };
 
   const OnSearchProdutoClick = () => {
-    console.log('OnSearchProdutoClick');
     fetchProdutoList({
       filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
     });
@@ -190,6 +189,18 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
         })
       );
       setTabelas(tabOptions);
+      setTabelaSelected(tabOptions[0]);
+      setItemOrcamento((old) => {
+        return {
+          ...old,
+          PRODUTO: produto,
+          SUBTOTAL: Number(tabOptions[0]?.value) * QTDProduto,
+          TOTAL: Number(tabOptions[0]?.value) * QTDProduto,
+          VALOR: Number(tabOptions[0]?.value),
+        };
+      });
+      setTotal(Number(tabOptions[0]?.value) * QTDProduto);
+      setPrice(Number(tabOptions[0]?.value));
     });
   };
 
@@ -197,16 +208,13 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     setProdutoPalavras(produto.PRODUTO);
 
     await GetTabelas(produto);
-
-    setItemOrcamento({
-      ...ItemOrcamento,
-      PRODUTO: produto,
-      SUBTOTAL: Number(TabelaSelected?.value) * QTDProduto,
-      TOTAL: Number(TabelaSelected?.value) * QTDProduto,
-      VALOR: Number(TabelaSelected?.value),
+    setItemOrcamento((old) => {
+      return {
+        ...old,
+        PRODUTO: produto,
+      };
     });
-    setTotal(Number(TabelaSelected?.value) * QTDProduto);
-    setPrice(Number(TabelaSelected?.value));
+
     setChaves(produto.ListaChaves);
   };
 
