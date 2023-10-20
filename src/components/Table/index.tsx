@@ -44,23 +44,31 @@ function TableWrap<T>(
   const [Headers, setHeaders] = useState<iColumnType<T>[]>([]);
   const [IsLoading, setIsLoading] = useState<boolean>(false);
 
-  useImperativeHandle(ref, () => ({
-    onRefresh: (filter?: iFilter<T>) => {
-      let filterValue: iFilter<T> = {
-        top: RowsPerPage,
-        skip: RowsPerPage * CurrentPage - RowsPerPage,
-        orderBy: FilterConfig.orderBy,
-        filter: FilterConfig.filter,
-      };
-      if (filter) {
-        filterValue = filter;
-      }
-      OnFetchDataTable(filterValue);
-    },
-    onRefreshData: (Data: T[]) => {
-      setData(Data);
-    },
-  }));
+  useImperativeHandle(
+    ref,
+    useCallback(
+      () => ({
+        onRefresh: (filter?: iFilter<T>) => {
+          let filterValue: iFilter<T> = {
+            top: RowsPerPage,
+            skip: RowsPerPage * CurrentPage - RowsPerPage,
+            orderBy: FilterConfig.orderBy,
+            filter: FilterConfig.filter,
+          };
+          if (filter) {
+            filterValue = filter;
+          }
+          OnFetchDataTable(filterValue);
+        },
+        onRefreshData: (Data: T[]) => {
+          setData((oldData) => {
+            return (oldData = Data);
+          });
+        },
+      }),
+      [setData]
+    )
+  );
 
   const ConvertColumnsHeders = (column: T[]) => {
     const keyNames = Object.keys(column[0] as {});

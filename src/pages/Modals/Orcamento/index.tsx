@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 
 import {
   faEdit,
@@ -33,10 +33,7 @@ interface iModalOrcamento {
   callback?: (value: iOrcamento) => void;
 }
 
-export const ModalOrcamento: React.FC<iModalOrcamento> = ({
-  Orcamento,
-  callback,
-}) => {
+const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento, callback }) => {
   const { ThemeName } = useTheme();
 
   const [NewOrcamento, setOrcamento] = useState<iOrcamento>(Orcamento);
@@ -89,61 +86,8 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
           ? item.itemOrcamento.PRODUTO.PRODUTO
           : '',
       };
-      RemoveItemOrcamento(removeItem).then(async (res) => {
-        const { StatusCode, Data, StatusMessage } = res.data;
-
-        if (StatusCode !== 200) {
-          toast.error(`Opps, ${StatusMessage} 🤯`, {
-            position: 'bottom-right',
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: ThemeName,
-          });
-        } else {
-          let saveItem: iItemInserir = {
-            pIdOrcamento: item.itemOrcamento.ORCAMENTO.ORCAMENTO,
-            pItemOrcamento: {
-              CodigoProduto: item.itemOrcamento.PRODUTO
-                ? item.itemOrcamento.PRODUTO.PRODUTO
-                : '',
-              Desconto: item.itemOrcamento.DESCONTO
-                ? item.itemOrcamento.DESCONTO
-                : 0,
-              Frete: 0,
-              Qtd: item.itemOrcamento.QTD,
-              Tabela: item.itemOrcamento.TABELA,
-              Total: item.itemOrcamento.TOTAL,
-              SubTotal: item.itemOrcamento.SUBTOTAL,
-              Valor: item.itemOrcamento.VALOR,
-            },
-          };
-
-          AddItemOrcamento(saveItem).then(async (res) => {
-            const { StatusCode, Data, StatusMessage } = res.data;
-
-            if (StatusCode !== 200) {
-              toast.error(`Opps, ${StatusMessage} 🤯`, {
-                position: 'bottom-right',
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: ThemeName,
-              });
-            } else {
-              const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
-              setOrcamento(orc);
-              setItensOrcamento(orc.ItensOrcamento);
-              TableRef.current.onRefreshData(orc.ItensOrcamento);
-            }
-          });
-        }
+      RemoveItemOrcamento(removeItem).finally(async () => {
+        await AddItem(item.itemOrcamento);
       });
     } else {
       await AddItem(item.itemOrcamento);
@@ -166,8 +110,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     };
 
     AddItemOrcamento(saveItem).then(async (res) => {
-      console.log('addItem', res);
-
       const { StatusCode, Data, StatusMessage } = res.data;
 
       if (StatusCode !== 200) {
@@ -182,13 +124,8 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
           theme: ThemeName,
         });
       } else {
-        // const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
-        // console.log('addItem orc', orc);
-
-        // setOrcamento(orc);
-        // setItensOrcamento(orc.ItensOrcamento);
-        // TableRef.current.onRefreshData(orc.ItensOrcamento);
         GetOrcamento(Data.ORCAMENTO).then((result) => {
+          console.log('addItem GetOrcamento', result);
           const orc = result.data;
           setOrcamento(orc);
           setItensOrcamento(orc.ItensOrcamento);
@@ -572,3 +509,5 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     </>
   );
 };
+
+export default memo(ModalOrcamento);
