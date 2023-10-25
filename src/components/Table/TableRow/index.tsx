@@ -12,7 +12,7 @@ function TableRow<T>({ data, columns }: iTableRowProps<T>): JSX.Element {
   return (
     <>
       {data.map((item, idx) => (
-        <TableRowItem key={`table-body-${idx}`}>
+        <TableRowItem key={`${idx}`}>
           {columns.map((column, columnIndex) => (
             <>
               <TableRowCell

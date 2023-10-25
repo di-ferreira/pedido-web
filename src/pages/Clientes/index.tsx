@@ -117,7 +117,14 @@ export const Clientes: React.FC = () => {
     });
   };
 
-  const ListClientes = async (filter?: iFilter<iCliente>) => {
+  const ListClientes = async (
+    filter: iFilter<iCliente> = {
+      top: 15,
+      skip: 0,
+      orderBy: 'CLIENTE',
+      filter: MountQueryFilter(SearchCliente),
+    }
+  ) => {
     return await GetClientes(filter);
   };
 
@@ -285,14 +292,7 @@ export const Clientes: React.FC = () => {
       <FlexComponent height='100%'>
         <Table
           columns={headers}
-          onDataFetch={() =>
-            ListClientes({
-              top: 15,
-              skip: 0,
-              orderBy: 'CLIENTE',
-              filter: MountQueryFilter(SearchCliente),
-            })
-          }
+          onDataFetch={ListClientes}
           ref={TableRef}
           pagination
         />

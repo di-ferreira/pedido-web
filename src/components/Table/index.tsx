@@ -44,31 +44,27 @@ function TableWrap<T>(
   const [Headers, setHeaders] = useState<iColumnType<T>[]>([]);
   const [IsLoading, setIsLoading] = useState<boolean>(false);
 
-  useImperativeHandle(
-    ref,
-    useCallback(
-      () => ({
-        onRefresh: (filter?: iFilter<T>) => {
-          let filterValue: iFilter<T> = {
-            top: RowsPerPage,
-            skip: RowsPerPage * CurrentPage - RowsPerPage,
-            orderBy: FilterConfig.orderBy,
-            filter: FilterConfig.filter,
-          };
-          if (filter) {
-            filterValue = filter;
-          }
-          OnFetchDataTable(filterValue);
-        },
-        onRefreshData: (Data: T[]) => {
-          setData((oldData) => {
-            return (oldData = Data);
-          });
-        },
-      }),
-      [setData]
-    )
-  );
+  useImperativeHandle(ref, () => ({
+    onRefresh: (filter?: iFilter<T>) => {
+      let filterValue: iFilter<T> = {
+        ...FilterConfig,
+        top: RowsPerPage,
+        skip: RowsPerPage * CurrentPage - RowsPerPage,
+      };
+      if (filter) {
+        filterValue = { ...filterValue, ...filter };
+        setFilterConfig((oldFilter) => {
+          return { ...oldFilter, ...filterValue };
+        });
+      }
+      OnFetchDataTable(filterValue);
+    },
+    onRefreshData: (Data: T[]) => {
+      setData((oldData) => {
+        return (oldData = Data);
+      });
+    },
+  }));
 
   const ConvertColumnsHeders = (column: T[]) => {
     const keyNames = Object.keys(column[0] as {});
@@ -100,50 +96,45 @@ function TableWrap<T>(
     });
 
     OnFetchDataTable({
+      ...FilterConfig,
       top: value ? Number(value.value) : RowsPerPage,
       skip: RowsPerPage * CurrentPage - RowsPerPage,
-      orderBy: FilterConfig.orderBy,
-      filter: FilterConfig.filter,
     });
   };
 
   const GoToFirstPage = () => {
     setCurrentPage(1);
     OnFetchDataTable({
+      ...FilterConfig,
       top: RowsPerPage,
       skip: 0,
-      orderBy: FilterConfig.orderBy,
-      filter: FilterConfig.filter,
     });
   };
 
   const GoToNextPage = () => {
     CurrentPage < TotalPages && setCurrentPage((oldPage) => oldPage + 1);
     OnFetchDataTable({
+      ...FilterConfig,
       top: RowsPerPage,
       skip: SkipPage(),
-      orderBy: FilterConfig.orderBy,
-      filter: FilterConfig.filter,
     });
   };
 
   const GoToPrevPage = () => {
     CurrentPage < TotalPages && setCurrentPage((oldPage) => oldPage - 1);
     OnFetchDataTable({
+      ...FilterConfig,
       top: RowsPerPage,
       skip: SkipPage(false),
-      orderBy: FilterConfig.orderBy,
-      filter: FilterConfig.filter,
     });
   };
 
   const GoToLastPage = () => {
     setCurrentPage(TotalPages);
     OnFetchDataTable({
+      ...FilterConfig,
       top: RowsPerPage,
       skip: TotalRegisters - RowsPerPage,
-      orderBy: FilterConfig.orderBy,
-      filter: FilterConfig.filter,
     });
   };
 
@@ -190,6 +181,9 @@ function TableWrap<T>(
 
   useEffect(() => {
     OnFetchDataTable();
+    setFilterConfig((oldFilter) => {
+      return { ...filter };
+    });
   }, []);
 
   return (

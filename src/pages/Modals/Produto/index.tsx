@@ -41,13 +41,15 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     return await GetProdutosSuperBusca(filter);
   };
 
-  const ListProdutos = async () => {
-    TableRef.current.onRefresh({
+  const ListProdutos = async (
+    filter: iFilter<iProduto> = {
       top: 15,
       skip: 0,
       orderBy: 'PRODUTO',
       filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
-    });
+    }
+  ) => {
+    TableRef.current.onRefresh(filter);
   };
 
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -174,14 +176,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
               <FlexComponent height='65vh'>
                 <Table
                   columns={tableHeaders}
-                  onDataFetch={() =>
-                    fetchProdutoList({
-                      top: 15,
-                      skip: 0,
-                      orderBy: 'PRODUTO',
-                      filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
-                    })
-                  }
+                  onDataFetch={fetchProdutoList}
                   pagination
                   ref={TableRef}
                 />

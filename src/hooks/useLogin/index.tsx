@@ -146,7 +146,12 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
 
             setIsLogged(VerifyToken(userLogin.value));
 
+            api.defaults.headers.common['cache-control'] =
+              ' no-cache, no-store, must-revalidate';
+            api.defaults.headers.common['pragma'] = 'no-cache';
+            api.defaults.headers.common['Expires'] = 0;
             api.defaults.headers.common.Accept = '*/*';
+            api.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
             api.defaults.headers.common['Content-Type'] = 'application/json';
             api.defaults.headers.common.Authorization = `bearer ${userLogin.value}`;
 

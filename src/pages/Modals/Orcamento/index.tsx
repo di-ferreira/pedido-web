@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   faEdit,
@@ -33,7 +33,10 @@ interface iModalOrcamento {
   callback?: (value: iOrcamento) => void;
 }
 
-const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento, callback }) => {
+export const ModalOrcamento: React.FC<iModalOrcamento> = ({
+  Orcamento,
+  callback,
+}) => {
   const { ThemeName } = useTheme();
 
   const [NewOrcamento, setOrcamento] = useState<iOrcamento>(Orcamento);
@@ -77,8 +80,6 @@ const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento, callback }) => {
   };
 
   const SaveOrUpdate = async (item: callback) => {
-    console.log('Save Item', item);
-
     if (item.saveorupdate) {
       let removeItem: iItemRemove = {
         pIdOrcamento: NewOrcamento.ORCAMENTO,
@@ -509,5 +510,3 @@ const ModalOrcamento: React.FC<iModalOrcamento> = ({ Orcamento, callback }) => {
     </>
   );
 };
-
-export default memo(ModalOrcamento);
