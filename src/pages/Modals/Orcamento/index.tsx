@@ -39,6 +39,15 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 }) => {
   const { ThemeName } = useTheme();
 
+  const {
+    AddItemOrcamento,
+    GetOrcamento,
+    RemoveItemOrcamento,
+    SetOrcamento,
+    DeleteItemOrcamento,
+    NewItemOrcamento,
+  } = useOrcamento();
+
   const [NewOrcamento, setOrcamento] = useState<iOrcamento>(Orcamento);
   const [ItensOrcamento, setItensOrcamento] = useState<iItensOrcamento[]>([]);
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
@@ -48,19 +57,17 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   const { Modal, showModal, OnCloseModal } = useModal();
 
-  const { AddItemOrcamento, GetOrcamento, RemoveItemOrcamento } =
-    useOrcamento();
   const TableRef = useRef<iTableRef<iItensOrcamento>>(null!);
 
   useEffect(() => {
     const OpenModal = () => {
       showModal();
 
-      setOrcamento(Orcamento);
+      SetOrcamento(Orcamento.ORCAMENTO);
       setItensOrcamento(Orcamento.ItensOrcamento);
     };
     return () => OpenModal();
-  }, [Orcamento]);
+  }, []);
 
   const onCloseModalPreVenda = async (value: iOrcamento) => {
     setNewPreVenda(null);
@@ -82,7 +89,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   const SaveOrUpdate = async (item: callback) => {
     if (item.saveorupdate) {
       let removeItem: iItemRemove = {
-        pIdOrcamento: NewOrcamento.ORCAMENTO,
+        pIdOrcamento: Number(NewOrcamento.ORCAMENTO),
         pProduto: item.itemOrcamento.PRODUTO
           ? item.itemOrcamento.PRODUTO.PRODUTO
           : '',
@@ -137,7 +144,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   const DeleteItem = async (item: iItensOrcamento) => {
     let removeItem: iItemRemove = {
-      pIdOrcamento: NewOrcamento.ORCAMENTO,
+      pIdOrcamento: Number(NewOrcamento.ORCAMENTO),
       pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
     };
 
@@ -166,12 +173,12 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const UpdateItem = async (item: iItensOrcamento) => {
-    setItemOrcamento({ ...item, ORCAMENTO: NewOrcamento });
+    setItemOrcamento({ ...item, ORCAMENTO: NewOrcamento as iOrcamento });
   };
 
   const SalvarOrcamento = () => {
     OnCloseModal();
-    callback && callback(NewOrcamento);
+    callback && callback(NewOrcamento as iOrcamento);
   };
 
   const GerarPreVenda = (orc: iOrcamento) => {
@@ -244,7 +251,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   return (
     <>
-      {Modal && NewOrcamento && NewOrcamento.CLIENTE && (
+      {Modal && NewOrcamento.CLIENTE && (
         <Modal
           Title={
             NewOrcamento.ORCAMENTO > 0

@@ -12,7 +12,8 @@ import { ModalPreVenda } from '../Modals/PreVenda';
 import { Container } from './styles';
 
 export const Orcamentos: React.FC = () => {
-  const { GetOrcamentos, GetOrcamento } = useOrcamento();
+  const { GetOrcamentos, GetOrcamento, SetOrcamento, CurrentOrcamento } =
+    useOrcamento();
 
   const [Orcamento, setOrcamento] = useState<iOrcamento | null>(null);
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
@@ -34,10 +35,11 @@ export const Orcamentos: React.FC = () => {
 
   const onOpenModalOrcamento = useCallback(
     async (value: iOrcamento) => {
+      SetOrcamento(value.ORCAMENTO);
       const orc: iOrcamento = (await GetOrcamento(value.ORCAMENTO)).data;
       setOrcamento(orc);
     },
-    [setOrcamento]
+    [CurrentOrcamento]
   );
 
   const onCloseModalOrcamento = useCallback(
@@ -112,9 +114,9 @@ export const Orcamentos: React.FC = () => {
 
   return (
     <Container>
-      {Orcamento && (
+      {CurrentOrcamento && (
         <ModalOrcamento
-          Orcamento={Orcamento}
+          Orcamento={CurrentOrcamento}
           callback={onCloseModalOrcamento}
         />
       )}{' '}
