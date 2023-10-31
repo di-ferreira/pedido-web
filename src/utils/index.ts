@@ -8,6 +8,7 @@ export const AddZeros = (data: string | number, totalZeros: number) => {
 export const isActiveLink = (Link: string): boolean => {
   const revolvedPath = useResolvedPath(Link);
   const isActive = useMatch({ path: revolvedPath.pathname, end: true });
+
   return isActive !== null;
 };
 
@@ -134,7 +135,6 @@ export const CompareNAND = (valueA: boolean, valueB: boolean): boolean => {
 };
 
 export const CompareXOR = (valueA: boolean, valueB: boolean): boolean => {
-  console.log('🚀 ~ file: index.ts:137 ~ CompareXOR ~ valueB:', valueB);
   let result: boolean = false;
   if (valueA) result = true;
   else result = valueA || valueB;

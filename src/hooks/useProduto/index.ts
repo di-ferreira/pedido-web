@@ -148,10 +148,6 @@ const GetTabelasFromProduto = async (
   }).then((res) => {
     const { Data, StatusCode, StatusMessage } = res.data;
     if (StatusCode !== 200) {
-      console.log(
-        '🚀 ~ useProduto:153 ~ GetTabelasFromProduto ~ StatusMessage:',
-        StatusMessage
-      );
     } else {
       let newTables: iTabelaVenda[] = [];
       if (Data !== null)

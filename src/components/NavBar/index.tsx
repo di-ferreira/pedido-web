@@ -8,7 +8,7 @@ import {
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import { Navigate } from 'react-router-dom';
 import { iNavButton } from '../../@types/Navigation';
@@ -36,7 +36,7 @@ interface iNavBar {
   Open: boolean;
 }
 
-export const NavBar: React.FC<iNavBar> = ({ Open }) => {
+export const NavBar: React.FC<iNavBar> = memo(({ Open }) => {
   const { ThemeName } = useTheme();
   const [OpenCloseNavBar, SetOpenCloseNavBar] = useState<boolean>(Open);
 
@@ -137,4 +137,4 @@ export const NavBar: React.FC<iNavBar> = ({ Open }) => {
       </ContainerSwitchTheme>
     </Container>
   );
-};
+});

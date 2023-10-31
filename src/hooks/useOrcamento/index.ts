@@ -17,7 +17,7 @@ interface iResultOrcamento {
 }
 
 interface iUseOrcamento {
-  CurrentOrcamento: iOrcamento;
+  CurrentOrcamento: iOrcamento | null;
   SaveOrcamento: (orcamento: iOrcamento) => Promise<iDataResult<iOrcamento>>;
   AddItemOrcamento: (item: iItemInserir) => Promise<iDataResult<iOrcamento>>;
   RemoveItemOrcamento: (item: iItemRemove) => Promise<iDataResult<iOrcamento>>;
@@ -25,6 +25,8 @@ interface iUseOrcamento {
   GetOrcamentos: (
     filter?: iFilter<iOrcamento>
   ) => Promise<iDataResultTable<iOrcamento>>;
+  SetOrcamento: (IdOrcamento: number) => void;
+  ResetOrcamento: () => void;
 }
 
 const ROUTE_GET_ALL_ORCAMENTO = '/Orcamento';
@@ -152,8 +154,22 @@ const RemoveItemOrcamento = (
   return result;
 };
 
+const setOrcamento = (IdOrcamento: number): iOrcamento => {
+  let newOrcamento: iOrcamento = {} as iOrcamento;
+  GetOrcamento(IdOrcamento)
+    .then((result) => {
+      newOrcamento = result.data;
+      return newOrcamento;
+    })
+    .catch((err) => {});
+  return newOrcamento;
+};
+
 const useOrcamento = create<iUseOrcamento>((set) => ({
-  CurrentOrcamento: {} as iOrcamento,
+  CurrentOrcamento: null,
+  ResetOrcamento: () => set((state) => ({ CurrentOrcamento: null })),
+  SetOrcamento: (IdOrcamento: number) =>
+    set((state) => ({ CurrentOrcamento: setOrcamento(IdOrcamento) })),
   SaveOrcamento: (orcamento: iOrcamento) => SaveOrcamento(orcamento),
   GetOrcamento: (IdOrcamento: number) => GetOrcamento(IdOrcamento),
   GetOrcamentos: (filter) => GetOrcamentos(filter),

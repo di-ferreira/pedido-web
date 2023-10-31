@@ -126,7 +126,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         });
       } else {
         GetOrcamento(Data.ORCAMENTO).then((result) => {
-          console.log('addItem GetOrcamento', result);
           const orc = result.data;
           setOrcamento(orc);
           setItensOrcamento(orc.ItensOrcamento);
