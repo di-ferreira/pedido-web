@@ -12,10 +12,9 @@ import { ModalPreVenda } from '../Modals/PreVenda';
 import { Container } from './styles';
 
 export const Orcamentos: React.FC = () => {
-  const { GetOrcamentos, GetOrcamento, SetOrcamento, CurrentOrcamento } =
-    useOrcamento();
+  const { GetOrcamentos, SetOrcamento } = useOrcamento();
 
-  const [Orcamento, setOrcamento] = useState<iOrcamento | null>(null);
+  const [OpenModalOrc, setOpenModalOrc] = useState<boolean>(false);
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
   const TableRef = useRef<iTableRef<iOrcamento>>(null!);
 
@@ -34,22 +33,19 @@ export const Orcamentos: React.FC = () => {
   };
 
   const onOpenModalOrcamento = useCallback(
-    async (value: iOrcamento) => {
-      SetOrcamento(value.ORCAMENTO);
-      const orc: iOrcamento = (await GetOrcamento(value.ORCAMENTO)).data;
-      setOrcamento(orc);
+    (value: iOrcamento) => {
+      SetOrcamento(value.ORCAMENTO).then(() => {
+        setOpenModalOrc(true);
+      });
     },
-    [CurrentOrcamento]
+    [setOpenModalOrc]
   );
 
-  const onCloseModalOrcamento = useCallback(
-    async (value: iOrcamento) => {
-      ListOrcamentos();
-      TableRef.current.onRefresh();
-      setOrcamento(null);
-    },
-    [setOrcamento]
-  );
+  const onCloseModalOrcamento = useCallback(async (value: iOrcamento) => {
+    ListOrcamentos();
+    TableRef.current.onRefresh();
+    setOpenModalOrc(false);
+  }, []);
 
   const headers: iColumnType<iOrcamento>[] = [
     {
@@ -114,12 +110,7 @@ export const Orcamentos: React.FC = () => {
 
   return (
     <Container>
-      {CurrentOrcamento && (
-        <ModalOrcamento
-          Orcamento={CurrentOrcamento}
-          callback={onCloseModalOrcamento}
-        />
-      )}{' '}
+      {OpenModalOrc && <ModalOrcamento callback={onCloseModalOrcamento} />}
       {NewPreVenda && (
         <ModalPreVenda
           Orcamento={NewPreVenda}

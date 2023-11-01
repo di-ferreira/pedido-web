@@ -17,12 +17,12 @@ interface iResultOrcamento {
 }
 
 interface iUseOrcamento {
-  CurrentOrcamento: iOrcamento | null;
+  CurrentOrcamento: iOrcamento;
   ListOrcamentos: iOrcamento[];
-  SetOrcamento: (IdOrcamento: number) => void;
+  SetOrcamento: (IdOrcamento: number) => Promise<void>;
   ResetOrcamento: () => void;
   NewOrcamento: (orcamento: iOrcamento) => void;
-  NewItemOrcamento: (item: iItemInserir) => void;
+  NewItemOrcamento: (item: iItemInserir) => Promise<void>;
   DeleteItemOrcamento: (item: iItemInserir) => void;
   UpdateItemOrcamento: (item: iItemInserir) => void;
 
@@ -39,6 +39,144 @@ const ROUTE_GET_ALL_ORCAMENTO = '/Orcamento';
 const ROUTE_SAVE_ORCAMENTO = '/ServiceVendas/NovoOrcamento';
 const ROUTE_REMOVE_ITEM_ORCAMENTO = '/ServiceVendas/ExcluirItemOrcamento';
 const ROUTE_SAVE_ITEM_ORCAMENTO = '/ServiceVendas/NovoItemOrcamento';
+
+const ResetOrcamento = (): iOrcamento => {
+  return {
+    ORCAMENTO: 0,
+    TOTAL: 0,
+    VENDEDOR: {
+      VENDEDOR: 0,
+      NOME: '',
+      ENDERECO: '',
+      BAIRRO: '',
+      CIDADE: '',
+      UF: '',
+      CEP: '',
+      TELEFONE: '',
+      SENHA: '',
+      ATUALIZAR: '',
+      COMISSAO: 0,
+      CTPS: '',
+      FUNCAO: '',
+      ADMISSAO: '',
+      DEMISSAO: '',
+      SALARIO: 0,
+      VALE_TRANSPORTE: 0,
+      NASCIMENTO: '',
+      CPF: '',
+      IDENTIDADE: '',
+      ESTADO_CIVIL: '',
+      PIS: '',
+      NACIONALIDADE: '',
+      NATURALIDADE: '',
+      CONJUGE: '',
+      EMAIL: '',
+      CELULAR: '',
+      ATIVO: '',
+      VENDA: '',
+      TIPO_VENDEDOR: '',
+      CARTAO_NUMERO: '',
+      CARTAO_MATRICULA: '',
+      META_MARKUP: 0,
+      META_INDEXADOR: 0,
+      SETOR: '',
+      TABELAS_PERMITIDAS: '',
+    },
+    CLIENTE: {
+      CLIENTE: 0,
+      NOME: '',
+      ENDERECO: '',
+      BAIRRO: '',
+      CIDADE: '',
+      UF: '',
+      CEP: '',
+      CIC: '',
+      DT_CADASTRO: '',
+      DT_NASCIMENTO: '',
+      DT_ULT_COMPRA: '',
+      INSC_IDENT: '',
+      TELEFONE: '',
+      FAX: '',
+      EMAIL: '',
+      BLOQUEADO: '',
+      MOTIVO: '',
+      P1_DE: 0,
+      P1_ATE: 0,
+      P1_VENCIMENTO: 0,
+      P2_DE: 0,
+      P2_ATE: 0,
+      P2_VENCIMENTO: 0,
+      USARLIMITE: '',
+      LIMITE: 0,
+      DESCONTO: '',
+      OBS: '',
+      VALOR_DESCONTO: 0,
+      ECF: '',
+      BOLETO: '',
+      CARTEIRA: '',
+      ROTA: 0,
+      TAXA_ENTREGA: 0,
+      CLASSIFICACAO: 0,
+      FRETE_POR_CONTA: '',
+      FRETE_TIPO: '',
+      ACRESCIMO_NOTA: 0,
+      VENDEDOR: 0,
+      OS: '',
+      TIPO_FAT: '',
+      MESSAGEM_FINANCEIRO: '',
+      ENDERECO_NUM: '',
+      ENDERECO_CPL: '',
+      ENDERECO_COD_MUN: 0,
+      ENDERECO_COD_UF: 0,
+      Tabela: '',
+      ATUALIZAR: '',
+      CONDICAO_PAGAMENTO: '',
+      APELIDO: '',
+      EMAIL_FINANCEIRO: '',
+      DESCONTO_AVISTA: 0,
+      TRANSPORTADORA: 0,
+      ID_CONDICAO: 0,
+      FROTA: '',
+      IDENTIDADE: '',
+      MENSAGEM_FINANCEIRO: '',
+      GRUPO: 0,
+      END_ENTREGA: '',
+      INSCRICAO_M: '',
+      LIMITE_CHEQUE: 0,
+      META: 0,
+      SOMENTE_NFE: '',
+      VENDEDOR_INTERNO: 0,
+      DATA_ATUALIZACAO: '',
+      GEO_LAT: '',
+      GEO_LNG: '',
+      DDA: '',
+      V100: '',
+      TIPO_CLIENTE: '',
+      AtualizarRegiao: '',
+      SENHA: '',
+      EMAIL_VENDA_DIRETA: '',
+      SENHA_VENDA_DIRETA: '',
+      PERC_VENDA_DIRETA: 0,
+      ConsumidorFinal: '',
+      DESCONTO_BOLETO: '',
+      REGIAO: {
+        ID: 0,
+        DESCRICAO: '',
+        CARENCIA: 0,
+        COMISSAO: 0,
+        Locais_List: [],
+      },
+      OFICINA: '',
+      Telefones: [],
+      FollowUpList: [],
+      AgendamentosList: [],
+      PendenciasList: [],
+    },
+    ItensOrcamento: [],
+  };
+};
+
+let CurOrc: iOrcamento = ResetOrcamento();
 
 const CreateFilter = (filter: iFilter<iOrcamento>): string => {
   let VendedorLocal: iVendedor = JSON.parse(
@@ -160,15 +298,10 @@ const RemoveItemOrcamento = (
   return result;
 };
 
-const SetOrcamento = (IdOrcamento: number): iOrcamento => {
-  let newOrcamento: iOrcamento = {} as iOrcamento;
-  GetOrcamento(IdOrcamento)
-    .then((result) => {
-      newOrcamento = result.data;
-      return newOrcamento;
-    })
-    .catch((err) => {});
-  return newOrcamento;
+const SetOrcamento = async (IdOrcamento: number): Promise<void> => {
+  const { data } = await GetOrcamento(IdOrcamento);
+  CurOrc = data;
+  console.log('SetOrcamento', CurOrc);
 };
 
 const NewOrcamento = (orcamento: iOrcamento): iOrcamento => {
@@ -184,18 +317,9 @@ const NewOrcamento = (orcamento: iOrcamento): iOrcamento => {
   return newOrcamento;
 };
 
-const NewItemOrcamento = (itemOrcamento: iItemInserir): iOrcamento => {
-  SaveItemOrcamento;
-  let ResultOrcamento: iOrcamento = {} as iOrcamento;
-  SaveItemOrcamento(itemOrcamento)
-    .then((result) => {
-      ResultOrcamento = result.data.Data;
-      return ResultOrcamento;
-    })
-    .catch((err) => {
-      console.log('Error useOrcamento', err);
-    });
-  return ResultOrcamento;
+const NewItemOrcamento = async (itemOrcamento: iItemInserir): Promise<void> => {
+  const { data } = await SaveItemOrcamento(itemOrcamento);
+  CurOrc = data.Data;
 };
 
 const DeleteItemOrcamento = (itemOrcamento: iItemInserir): iOrcamento => {
@@ -215,16 +339,29 @@ const DeleteItemOrcamento = (itemOrcamento: iItemInserir): iOrcamento => {
   return ResultOrcamento;
 };
 
+const GetCurrentOrcamento = (): iOrcamento => {
+  console.log(CurOrc);
+
+  return CurOrc;
+};
+
 const useOrcamento = create<iUseOrcamento>((set) => ({
-  CurrentOrcamento: null,
+  CurrentOrcamento: GetCurrentOrcamento(),
   ListOrcamentos: [],
-  ResetOrcamento: () => set((state) => ({ CurrentOrcamento: null })),
-  SetOrcamento: (IdOrcamento: number) =>
-    set((state) => ({ CurrentOrcamento: SetOrcamento(IdOrcamento) })),
+  ResetOrcamento: () =>
+    set((state) => ({ CurrentOrcamento: ResetOrcamento() })),
+  SetOrcamento: (IdOrcamento: number) => {
+    return SetOrcamento(IdOrcamento).then(() => {
+      set((state) => ({ CurrentOrcamento: CurOrc }));
+    });
+  },
   NewOrcamento: (orcamento: iOrcamento) =>
     set((state) => ({ CurrentOrcamento: NewOrcamento(orcamento) })),
-  NewItemOrcamento: (item: iItemInserir) =>
-    set((state) => ({ CurrentOrcamento: NewItemOrcamento(item) })),
+  NewItemOrcamento: (itemOrcamento: iItemInserir) => {
+    return NewItemOrcamento(itemOrcamento).then(() => {
+      set((state) => ({ CurrentOrcamento: CurOrc }));
+    });
+  },
   DeleteItemOrcamento: (item: iItemInserir) =>
     set((state) => ({ CurrentOrcamento: DeleteItemOrcamento(item) })),
   UpdateItemOrcamento: (item: iItemInserir) => {},

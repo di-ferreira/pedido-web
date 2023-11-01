@@ -29,12 +29,12 @@ import { ModalPreVenda } from '../PreVenda';
 import { FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalOrcamento {
-  Orcamento: iOrcamento;
+  // Orcamento?: iOrcamento;
   callback?: (value: iOrcamento) => void;
 }
 
 export const ModalOrcamento: React.FC<iModalOrcamento> = ({
-  Orcamento,
+  // Orcamento,
   callback,
 }) => {
   const { ThemeName } = useTheme();
@@ -43,12 +43,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     AddItemOrcamento,
     GetOrcamento,
     RemoveItemOrcamento,
-    SetOrcamento,
-    DeleteItemOrcamento,
-    NewItemOrcamento,
+    CurrentOrcamento,
   } = useOrcamento();
 
-  const [NewOrcamento, setOrcamento] = useState<iOrcamento>(Orcamento);
   const [ItensOrcamento, setItensOrcamento] = useState<iItensOrcamento[]>([]);
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
     null
@@ -63,8 +60,10 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     const OpenModal = () => {
       showModal();
 
-      SetOrcamento(Orcamento.ORCAMENTO);
-      setItensOrcamento(Orcamento.ItensOrcamento);
+      // SetOrcamento(Orcamento.ORCAMENTO);
+      setItensOrcamento(
+        CurrentOrcamento ? CurrentOrcamento.ItensOrcamento : []
+      );
     };
     return () => OpenModal();
   }, []);
@@ -75,7 +74,8 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   const OpenModalItemOrcamento = () => {
     setItemOrcamento({
-      ORCAMENTO: Orcamento,
+      // ORCAMENTO: Orcamento,
+      ORCAMENTO: CurrentOrcamento,
       QTD: 1,
       SUBTOTAL: 0.0,
       TOTAL: 0.0,
@@ -89,7 +89,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   const SaveOrUpdate = async (item: callback) => {
     if (item.saveorupdate) {
       let removeItem: iItemRemove = {
-        pIdOrcamento: Number(NewOrcamento.ORCAMENTO),
+        pIdOrcamento: Number(CurrentOrcamento.ORCAMENTO),
         pProduto: item.itemOrcamento.PRODUTO
           ? item.itemOrcamento.PRODUTO.PRODUTO
           : '',
@@ -134,7 +134,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       } else {
         GetOrcamento(Data.ORCAMENTO).then((result) => {
           const orc = result.data;
-          setOrcamento(orc);
+          // setOrcamento(orc);
           setItensOrcamento(orc.ItensOrcamento);
           TableRef.current.onRefreshData(orc.ItensOrcamento);
         });
@@ -144,7 +144,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   const DeleteItem = async (item: iItensOrcamento) => {
     let removeItem: iItemRemove = {
-      pIdOrcamento: Number(NewOrcamento.ORCAMENTO),
+      pIdOrcamento: Number(CurrentOrcamento.ORCAMENTO),
       pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
     };
 
@@ -165,7 +165,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       } else {
         const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
 
-        setOrcamento(orc);
+        // setOrcamento(orc);
         setItensOrcamento(orc.ItensOrcamento);
         TableRef.current.onRefreshData(orc.ItensOrcamento);
       }
@@ -173,12 +173,12 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   };
 
   const UpdateItem = async (item: iItensOrcamento) => {
-    setItemOrcamento({ ...item, ORCAMENTO: NewOrcamento as iOrcamento });
+    setItemOrcamento({ ...item, ORCAMENTO: CurrentOrcamento });
   };
 
   const SalvarOrcamento = () => {
     OnCloseModal();
-    callback && callback(NewOrcamento as iOrcamento);
+    callback && callback(CurrentOrcamento);
   };
 
   const GerarPreVenda = (orc: iOrcamento) => {
@@ -251,18 +251,18 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
 
   return (
     <>
-      {Modal && NewOrcamento.CLIENTE && (
+      {Modal && (
         <Modal
           Title={
-            NewOrcamento.ORCAMENTO > 0
-              ? `ORÇAMENTO Nº ${NewOrcamento.ORCAMENTO.toString()}`
+            CurrentOrcamento.ORCAMENTO > 0
+              ? `ORÇAMENTO Nº ${CurrentOrcamento.ORCAMENTO.toString()}`
               : 'NOVO ORÇAMENTO'
           }
-          width='95%'
-          height='90vh'
+          width='100vw'
+          height='100vh'
           sm={{ width: '100%', height: '100vh' }}
           xs={{ width: '100%', height: '100vh' }}
-          OnCloseButtonClick={() => callback && callback(NewOrcamento)}
+          OnCloseButtonClick={() => callback && callback(CurrentOrcamento)}
         >
           <FormEditOrcamento>
             <FlexComponent direction='column' overflow='hidden auto'>
@@ -280,7 +280,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       labelPosition='top'
                       label='CÓDIGO'
                       name='CLIENTE.CLIENTE'
-                      value={NewOrcamento.CLIENTE.CLIENTE}
+                      value={CurrentOrcamento.CLIENTE.CLIENTE}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -291,7 +291,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='NOME'
                       name='CLIENTE.NOME'
-                      value={NewOrcamento.CLIENTE.NOME}
+                      value={CurrentOrcamento.CLIENTE.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -302,7 +302,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='CPF/CNPJ'
                       name='CLIENTE.CIC'
-                      value={MaskCnpjCpf(NewOrcamento.CLIENTE.CIC)}
+                      value={MaskCnpjCpf(CurrentOrcamento.CLIENTE.CIC)}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -324,7 +324,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='TELEFONE'
                       name='TELEFONE'
-                      value={NewOrcamento.CLIENTE.TELEFONE}
+                      value={CurrentOrcamento.CLIENTE.TELEFONE}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -335,7 +335,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='ENDEREÇO'
                       name='CLIENTE.ENDERECO'
-                      value={NewOrcamento.CLIENTE.ENDERECO}
+                      value={CurrentOrcamento.CLIENTE.ENDERECO}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -346,7 +346,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='BAIRRO'
                       name='CLIENTE.BAIRRO'
-                      value={NewOrcamento.CLIENTE.BAIRRO}
+                      value={CurrentOrcamento.CLIENTE.BAIRRO}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -357,7 +357,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='CIDADE'
                       name='CLIENTE.CIDADE'
-                      value={NewOrcamento.CLIENTE.CIDADE}
+                      value={CurrentOrcamento.CLIENTE.CIDADE}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -368,7 +368,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='UF'
                       name='CLIENTE.UF'
-                      value={NewOrcamento.CLIENTE.UF}
+                      value={CurrentOrcamento.CLIENTE.UF}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -379,7 +379,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='CEP'
                       name='CLIENTE.CEP'
-                      value={NewOrcamento.CLIENTE.CEP}
+                      value={CurrentOrcamento.CLIENTE.CEP}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -397,7 +397,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       <InputCustom
                         label='OBSERVAÇÃO 1'
                         name='OBS1'
-                        value={NewOrcamento.OBS1}
+                        value={CurrentOrcamento.OBS1}
                       />
                     </FlexComponent>
                     <FlexComponent
@@ -408,7 +408,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       <InputCustom
                         label='OBSERVAÇÃO 2'
                         name='OBS2'
-                        value={NewOrcamento.OBS2}
+                        value={CurrentOrcamento.OBS2}
                       />
                     </FlexComponent>
                   </FlexComponent>
@@ -472,7 +472,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     lg={{ width: '100%' }}
                   >
                     <Button
-                      onclick={() => GerarPreVenda(NewOrcamento)}
+                      onclick={() => GerarPreVenda(CurrentOrcamento)}
                       Text='PRÉ-VENDA'
                       Type='success'
                       Icon={faSave}
@@ -491,7 +491,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       name='TOTAL'
                       readOnly={true}
                       textAlign='right'
-                      value={NewOrcamento.TOTAL.toLocaleString('pt-br', {
+                      value={CurrentOrcamento.TOTAL.toLocaleString('pt-br', {
                         style: 'currency',
                         currency: 'BRL',
                       })}

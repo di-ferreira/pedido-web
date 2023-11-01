@@ -115,7 +115,7 @@ const useModal = () => {
     return isVisible ? Modal : null;
   }, [isVisible]);
 
-  const ShowModal = useCallback(() => setIsVisible(!isVisible), [isVisible]);
+  const ShowModal = useCallback(() => setIsVisible(true), [isVisible]);
 
   return {
     Modal: ResultModal,
