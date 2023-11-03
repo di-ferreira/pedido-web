@@ -19,6 +19,10 @@ interface iResultOrcamento {
 interface iUseOrcamento {
   CurrentOrcamento: iOrcamento;
   ListOrcamentos: iOrcamento[];
+  isError: boolean;
+  isLoading: boolean;
+  ErrorMessage: string;
+  Status: number;
   SetOrcamento: (IdOrcamento: number) => Promise<void>;
   ResetOrcamento: () => void;
   NewOrcamento: (orcamento: iOrcamento) => void;
@@ -177,6 +181,14 @@ const ResetOrcamento = (): iOrcamento => {
 };
 
 let CurOrc: iOrcamento = ResetOrcamento();
+let isErrorLocal: boolean = false;
+let isLoadingLocal: boolean = false;
+let ErrorMessageLocal: string = '';
+let StatusLocal: number = 200;
+
+const GetCurrentOrcamento = (): iOrcamento => {
+  return CurOrc;
+};
 
 const CreateFilter = (filter: iFilter<iOrcamento>): string => {
   let VendedorLocal: iVendedor = JSON.parse(
@@ -301,7 +313,7 @@ const RemoveItemOrcamento = (
 const SetOrcamento = async (IdOrcamento: number): Promise<void> => {
   const { data } = await GetOrcamento(IdOrcamento);
   CurOrc = data;
-  console.log('SetOrcamento', CurOrc);
+  console.log('setOrcamento', CurOrc);
 };
 
 const NewOrcamento = (orcamento: iOrcamento): iOrcamento => {
@@ -318,8 +330,16 @@ const NewOrcamento = (orcamento: iOrcamento): iOrcamento => {
 };
 
 const NewItemOrcamento = async (itemOrcamento: iItemInserir): Promise<void> => {
-  const { data } = await SaveItemOrcamento(itemOrcamento);
-  CurOrc = data.Data;
+  api
+    .post<iDataResult<iOrcamento>>(ROUTE_SAVE_ITEM_ORCAMENTO, itemOrcamento)
+    .then((res) => {
+      const { Data, StatusCode, StatusMessage } = res.data.data;
+      CurOrc = Data;
+      StatusLocal = StatusCode;
+    })
+    .catch((err) => {
+      ErrorMessageLocal = err.message;
+    });
 };
 
 const DeleteItemOrcamento = (itemOrcamento: iItemInserir): iOrcamento => {
@@ -339,28 +359,40 @@ const DeleteItemOrcamento = (itemOrcamento: iItemInserir): iOrcamento => {
   return ResultOrcamento;
 };
 
-const GetCurrentOrcamento = (): iOrcamento => {
-  console.log(CurOrc);
-
-  return CurOrc;
-};
-
 const useOrcamento = create<iUseOrcamento>((set) => ({
+  isError: false,
+  isLoading: false,
+  ErrorMessage: '',
+  Status: 200,
   CurrentOrcamento: GetCurrentOrcamento(),
   ListOrcamentos: [],
   ResetOrcamento: () =>
     set((state) => ({ CurrentOrcamento: ResetOrcamento() })),
   SetOrcamento: (IdOrcamento: number) => {
-    return SetOrcamento(IdOrcamento).then(() => {
-      set((state) => ({ CurrentOrcamento: CurOrc }));
-    });
+    return SetOrcamento(IdOrcamento)
+      .then(() => {
+        set((state) => ({ CurrentOrcamento: CurOrc, isLoading: true }));
+      })
+      .catch((err) => {
+        set((state) => ({ isError: true, ErrorMessage: err.message }));
+      })
+      .finally(() => {
+        set((state) => ({ isLoading: false }));
+      });
   },
   NewOrcamento: (orcamento: iOrcamento) =>
     set((state) => ({ CurrentOrcamento: NewOrcamento(orcamento) })),
   NewItemOrcamento: (itemOrcamento: iItemInserir) => {
-    return NewItemOrcamento(itemOrcamento).then(() => {
-      set((state) => ({ CurrentOrcamento: CurOrc }));
-    });
+    return NewItemOrcamento(itemOrcamento)
+      .then((res) => {
+        set((state) => ({ CurrentOrcamento: CurOrc }));
+      })
+      .catch((err) => {
+        set((state) => ({ isError: true, ErrorMessage: ErrorMessageLocal }));
+      })
+      .finally(() => {
+        set((state) => ({ isLoading: false }));
+      });
   },
   DeleteItemOrcamento: (item: iItemInserir) =>
     set((state) => ({ CurrentOrcamento: DeleteItemOrcamento(item) })),

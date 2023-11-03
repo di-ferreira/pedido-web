@@ -18,6 +18,12 @@ export const formatLocalDate = (date: string, pattern: string) => {
   return format(dtDateOnly, pattern);
 };
 
+export const formatLocalDateAsDate = (date: string, pattern: string) => {
+  const dt = new Date(date);
+  const dtDateOnly = new Date(dt.valueOf() + dt.getTimezoneOffset() * 60 * 100);
+  return new Date(format(dtDateOnly, pattern));
+};
+
 export const HEXToRGB = (HexColor: string): string => {
   let aRgbHex = HexColor.replace('#', '').match(/.{1,2}/g);
   if (aRgbHex?.length != 3) {

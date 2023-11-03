@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import {
   faEdit,
@@ -42,11 +42,16 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   const {
     AddItemOrcamento,
     GetOrcamento,
+    ErrorMessage,
+    Status,
+    isError,
+    isLoading,
+    NewItemOrcamento,
     RemoveItemOrcamento,
+    SetOrcamento,
     CurrentOrcamento,
   } = useOrcamento();
 
-  const [ItensOrcamento, setItensOrcamento] = useState<iItensOrcamento[]>([]);
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
     null
   );
@@ -57,16 +62,15 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
   const TableRef = useRef<iTableRef<iItensOrcamento>>(null!);
 
   useEffect(() => {
-    const OpenModal = () => {
-      showModal();
-
-      // SetOrcamento(Orcamento.ORCAMENTO);
-      setItensOrcamento(
-        CurrentOrcamento ? CurrentOrcamento.ItensOrcamento : []
-      );
-    };
-    return () => OpenModal();
+    return () => showModal();
   }, []);
+
+  const RefreshItemsList = useCallback(async () => {
+    await SetOrcamento(CurrentOrcamento.ORCAMENTO).then(() => {
+      TableRef.current.onRefreshData(CurrentOrcamento.ItensOrcamento);
+      console.log(CurrentOrcamento);
+    });
+  }, [CurrentOrcamento]);
 
   const onCloseModalPreVenda = async (value: iOrcamento) => {
     setNewPreVenda(null);
@@ -102,7 +106,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     }
   };
 
-  const AddItem = async (item: iItensOrcamento) => {
+  const AddItem = (item: iItensOrcamento) => {
     let saveItem: iItemInserir = {
       pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
       pItemOrcamento: {
@@ -117,29 +121,24 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       },
     };
 
-    AddItemOrcamento(saveItem).then(async (res) => {
-      const { StatusCode, Data, StatusMessage } = res.data;
-
-      if (StatusCode !== 200) {
-        toast.error(`Opps, ${StatusMessage} 🤯`, {
-          position: 'bottom-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: ThemeName,
-        });
-      } else {
-        GetOrcamento(Data.ORCAMENTO).then((result) => {
-          const orc = result.data;
-          // setOrcamento(orc);
-          setItensOrcamento(orc.ItensOrcamento);
-          TableRef.current.onRefreshData(orc.ItensOrcamento);
-        });
-      }
+    NewItemOrcamento(saveItem).finally(() => {
+      RefreshItemsList();
     });
+    console.log('Status', Status);
+    console.log('ErrorMessage', ErrorMessage);
+
+    if (Status !== 200) {
+      toast.error(`Opps, ${ErrorMessage} 🤯`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: ThemeName,
+      });
+    }
   };
 
   const DeleteItem = async (item: iItensOrcamento) => {
@@ -162,13 +161,10 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
           progress: undefined,
           theme: ThemeName,
         });
-      } else {
-        const orc: iOrcamento = (await GetOrcamento(Data.ORCAMENTO)).data;
-
-        // setOrcamento(orc);
-        setItensOrcamento(orc.ItensOrcamento);
-        TableRef.current.onRefreshData(orc.ItensOrcamento);
-      }
+      } else
+        SetOrcamento(Data.ORCAMENTO).then(() => {
+          TableRef.current.onRefreshData(CurrentOrcamento.ItensOrcamento);
+        });
     });
   };
 
@@ -430,7 +426,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 <FlexComponent height='60vh'>
                   <Table
                     columns={tableHeaders}
-                    TableData={ItensOrcamento}
+                    TableData={CurrentOrcamento.ItensOrcamento}
                     ref={TableRef}
                   />
                 </FlexComponent>

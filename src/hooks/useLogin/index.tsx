@@ -3,6 +3,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { iCurrentUser, iTokenPayload, iVendaLogin } from '../../@types/Login';
 import { iVendedor } from '../../@types/Vendedor';
 import api from '../../services';
+import { formatLocalDate } from '../../utils';
 import {
   ROUTE_GET_VENDEDOR,
   ROUTE_LOGIN,
@@ -78,16 +79,18 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
         );
       })
       .finally(async () => {
-        let DataVendedor = await api.get(
-          `${ROUTE_GET_VENDEDOR}(${VendedorLocal.VENDEDOR})`
-        );
-        let vendedor: iVendedor = DataVendedor.data;
-        vendedor.SENHA = '';
-        setCurrentUser({
-          ...currentUser,
-          vendedor,
-        });
-        localStorage.setItem(VENDEDOR_STORE, JSON.stringify(vendedor));
+        if (VendedorLocal.VENDEDOR) {
+          let DataVendedor = await api.get(
+            `${ROUTE_GET_VENDEDOR}(${VendedorLocal.VENDEDOR})`
+          );
+          let vendedor: iVendedor = DataVendedor.data;
+          vendedor.SENHA = '';
+          setCurrentUser({
+            ...currentUser,
+            vendedor,
+          });
+          localStorage.setItem(VENDEDOR_STORE, JSON.stringify(vendedor));
+        }
       });
   };
 
@@ -109,7 +112,10 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
       group: jwtDecode<iTokenPayload>(token).Grupo,
     });
 
-    return expirationDate >= today;
+    return (
+      formatLocalDate(expirationDate.toString(), 'dd/MM/yyyy') >=
+      formatLocalDate(today.toString(), 'dd/MM/yyyy')
+    );
   };
 
   useEffect(() => {
@@ -174,22 +180,20 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
                 vendedor: user.codigoVendedor,
               })
             );
-          })
-          .finally(async () => {
-            let DataVendedor = await api.get(
-              `${ROUTE_GET_VENDEDOR}(${parseInt(user.codigoVendedor)})`
-            );
-
-            let vendedor: iVendedor = DataVendedor.data;
-
-            vendedor.SENHA = '';
-
-            setCurrentUser({
-              ...currentUser,
-              vendedor,
-            });
-            localStorage.setItem(VENDEDOR_STORE, JSON.stringify(vendedor));
           });
+        let DataVendedor = await api.get(
+          `${ROUTE_GET_VENDEDOR}(${parseInt(user.codigoVendedor)})`
+        );
+
+        let vendedor: iVendedor = DataVendedor.data;
+
+        vendedor.SENHA = '';
+
+        setCurrentUser({
+          ...currentUser,
+          vendedor,
+        });
+        localStorage.setItem(VENDEDOR_STORE, JSON.stringify(vendedor));
       })
       .catch((error) => {
         if (!error?.response) {

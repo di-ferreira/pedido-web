@@ -85,6 +85,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   }, [Item]);
 
   const fetchProdutoList = async (filter?: iFilter<iProduto>) => {
+    console.log('fetch Products', filter?.filter);
     const response = await GetProdutosSuperBusca(filter);
 
     const { value } = response;

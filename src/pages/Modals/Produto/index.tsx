@@ -10,7 +10,6 @@ import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
 import useModal from '../../../hooks/useModal';
 import useProduto from '../../../hooks/useProduto';
-import { useTheme } from '../../../hooks/useTheme';
 import { FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalProduto {
@@ -24,7 +23,6 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   produtos,
   callback,
 }) => {
-  const { ThemeName } = useTheme();
   const { GetProdutosSuperBusca, GetProduto } = useProduto();
   const { Modal, showModal, OnCloseModal } = useModal();
   const [newProdutos, setProdutos] = useState<iProduto[]>({} as iProduto[]);
