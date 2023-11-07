@@ -25,7 +25,6 @@ import useOrcamento from '../../hooks/useOrcamento';
 import { useTheme } from '../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../utils';
 import { ModalCliente } from '../Modals/Cliente';
-import { ModalOrcamento } from '../Modals/Orcamento';
 import {
   Container,
   ContainerInput,
@@ -288,7 +287,7 @@ export const Clientes: React.FC = () => {
       </FilterContainer>
       {Cliente && <ModalCliente Cliente={Cliente} />}
 
-      {Orcamento && <ModalOrcamento Orcamento={Orcamento} />}
+      {/* {Orcamento && <ModalOrcamento Orcamento={Orcamento} />} */}
       <FlexComponent height='100%'>
         <Table
           columns={headers}

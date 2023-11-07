@@ -131,35 +131,33 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
     setIsError(false);
     setIsLoading(true);
     api
-      .post(ROUTE_LOGIN_VENDEDOR, {
-        codigo: parseInt(user.codigoVendedor),
-        senha: user.password,
+      .post(ROUTE_LOGIN, {
+        usuario: VENDA_LOGIN,
+        senha: VENDA_PASSWORD,
       })
-      .then(async (res) => {
-        if (res.data.value === 'erro') {
-          setIsError(true);
-          setErrorMsg('Usuario ou senha incorreta');
-          return;
-        }
+      .then(async (response) => {
+        const userLogin = response.data;
+        setIsLogged(VerifyToken(userLogin.value));
+        api.defaults.headers.common['cache-control'] =
+          ' no-cache, no-store, must-revalidate';
+        api.defaults.headers.common['pragma'] = 'no-cache';
+        api.defaults.headers.common['Expires'] = 0;
+        api.defaults.headers.common.Accept = '*/*';
+        api.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+        api.defaults.headers.common['Content-Type'] = 'application/json';
+        api.defaults.headers.common.Authorization = `bearer ${userLogin.value}`;
 
         api
-          .post(ROUTE_LOGIN, {
-            usuario: VENDA_LOGIN,
-            senha: VENDA_PASSWORD,
+          .post(ROUTE_LOGIN_VENDEDOR, {
+            codigo: parseInt(user.codigoVendedor),
+            senha: user.password,
           })
-          .then(async (response) => {
-            const userLogin = response.data;
-
-            setIsLogged(VerifyToken(userLogin.value));
-
-            api.defaults.headers.common['cache-control'] =
-              ' no-cache, no-store, must-revalidate';
-            api.defaults.headers.common['pragma'] = 'no-cache';
-            api.defaults.headers.common['Expires'] = 0;
-            api.defaults.headers.common.Accept = '*/*';
-            api.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
-            api.defaults.headers.common['Content-Type'] = 'application/json';
-            api.defaults.headers.common.Authorization = `bearer ${userLogin.value}`;
+          .then(async (res) => {
+            if (res.data.value === 'erro') {
+              setIsError(true);
+              setErrorMsg('Usuario ou senha incorreta');
+              return;
+            }
 
             setCurrentUser({
               username: jwtDecode<iTokenPayload>(userLogin.value).Usuario,
@@ -180,35 +178,37 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
                 vendedor: user.codigoVendedor,
               })
             );
+
+            let DataVendedor = await api.get(
+              `${ROUTE_GET_VENDEDOR}(${parseInt(user.codigoVendedor)})`
+            );
+
+            let vendedor: iVendedor = DataVendedor.data;
+
+            vendedor.SENHA = '';
+
+            setCurrentUser({
+              ...currentUser,
+              vendedor,
+            });
+
+            localStorage.setItem(VENDEDOR_STORE, JSON.stringify(vendedor));
+          })
+          .catch((error) => {
+            if (!error?.response) {
+              setErrorMsg('Sem resposta do servidor');
+            } else if (error.response?.status === 400) {
+              setErrorMsg('Usuario ou senha incorreta');
+            } else if (error.response?.status === 401) {
+              setErrorMsg(error.response.data.error.message);
+            } else {
+              setErrorMsg('Falha ao realizar login');
+            }
+            setIsError(true);
+          })
+          .finally(() => {
+            setIsLoading(false);
           });
-        let DataVendedor = await api.get(
-          `${ROUTE_GET_VENDEDOR}(${parseInt(user.codigoVendedor)})`
-        );
-
-        let vendedor: iVendedor = DataVendedor.data;
-
-        vendedor.SENHA = '';
-
-        setCurrentUser({
-          ...currentUser,
-          vendedor,
-        });
-        localStorage.setItem(VENDEDOR_STORE, JSON.stringify(vendedor));
-      })
-      .catch((error) => {
-        if (!error?.response) {
-          setErrorMsg('Sem resposta do servidor');
-        } else if (error.response?.status === 400) {
-          setErrorMsg('Usuario ou senha incorreta');
-        } else if (error.response?.status === 401) {
-          setErrorMsg(error.response.data.error.message);
-        } else {
-          setErrorMsg('Falha ao realizar login');
-        }
-        setIsError(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
   };
 

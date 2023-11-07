@@ -38,11 +38,11 @@ function TableWrap<T>(
   const [RowsPerPage, setRowsPerPage] = useState<number>(15);
   const [TotalPages, setTotalPages] = useState<number>(1);
   const [TotalRegisters, setTotalRegisters] = useState<number>(1);
+  const [IsLoading, setIsLoading] = useState<boolean>(false);
 
   const [Message, setMessage] = useState<string>('');
   const [Data, setData] = useState<T[]>([]);
   const [Headers, setHeaders] = useState<iColumnType<T>[]>([]);
-  const [IsLoading, setIsLoading] = useState<boolean>(false);
 
   useImperativeHandle(ref, () => ({
     onRefresh: (filter?: iFilter<T>) => {
@@ -141,23 +141,27 @@ function TableWrap<T>(
   const OnFetchDataTable = useCallback(
     async (filter?: iFilter<T>) => {
       setMessage('');
+      setIsLoading(true);
+      console.log('IsLoadingDataTable', IsLoading);
+
       try {
-        setIsLoading(true);
+        if (onDataFetch && IsLoading) {
+          onDataFetch(filter).then(({ Qtd_Registros, value }) => {
+            console.log('onDataFetch', value);
 
-        if (onDataFetch) {
-          const { Qtd_Registros, value } = await onDataFetch(filter);
-          setData(value);
-          setTotalPages(Math.ceil(Qtd_Registros / RowsPerPage));
-          setTotalRegisters(Qtd_Registros);
+            setData(value);
+            setTotalPages(Math.ceil(Qtd_Registros / RowsPerPage));
+            setTotalRegisters(Qtd_Registros);
 
-          if (Qtd_Registros === 0) {
-            setMessage('Nenhum registro encontrado');
-          }
-          if (!columns) {
-            ConvertColumnsHeders(value);
-          } else {
-            setHeaders(columns);
-          }
+            if (Qtd_Registros === 0) {
+              setMessage('Nenhum registro encontrado');
+            }
+            if (!columns) {
+              ConvertColumnsHeders(value);
+            } else {
+              setHeaders(columns);
+            }
+          });
         } else if (TableData) {
           setData(TableData);
 
@@ -170,9 +174,10 @@ function TableWrap<T>(
             setHeaders(columns);
           }
         }
+
+        setIsLoading(false);
       } catch (error: any) {
         setMessage(error.message);
-      } finally {
         setIsLoading(false);
       }
     },

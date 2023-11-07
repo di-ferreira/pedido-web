@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import {
   faEdit,
@@ -6,55 +6,31 @@ import {
   faSave,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { toast } from 'react-toastify';
-import {
-  iItemInserir,
-  iItemRemove,
-  iItensOrcamento,
-  iOrcamento,
-} from '../../../@types/Orcamento';
-import { iProduto } from '../../../@types/Produto';
+import { iItensOrcamento, iOrcamento } from '../../../@types/Orcamento';
 import { iColumnType, iTableRef } from '../../../@types/Table';
 import Button from '../../../components/Button';
 import { DetailContainer } from '../../../components/DetailContainer';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
 import Table from '../../../components/Table';
+import { useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
-import useOrcamento from '../../../hooks/useOrcamento';
 import { useTheme } from '../../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../../utils';
-import { ModalItemOrcamento, callback } from '../ItemOrcamento';
 import { ModalPreVenda } from '../PreVenda';
 import { FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalOrcamento {
-  // Orcamento?: iOrcamento;
   callback?: (value: iOrcamento) => void;
 }
 
-export const ModalOrcamento: React.FC<iModalOrcamento> = ({
-  // Orcamento,
-  callback,
-}) => {
+export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
   const { ThemeName } = useTheme();
 
-  const {
-    AddItemOrcamento,
-    GetOrcamento,
-    ErrorMessage,
-    Status,
-    isError,
-    isLoading,
-    NewItemOrcamento,
-    RemoveItemOrcamento,
-    SetOrcamento,
-    CurrentOrcamento,
-  } = useOrcamento();
-
-  const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
-    null
+  const { Current, errorMessage, isLoading } = useAppSelector(
+    (state) => state.orcamento
   );
+
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
   const { Modal, showModal, OnCloseModal } = useModal();
@@ -65,116 +41,109 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
     return () => showModal();
   }, []);
 
-  const RefreshItemsList = useCallback(async () => {
-    await SetOrcamento(CurrentOrcamento.ORCAMENTO).then(() => {
-      TableRef.current.onRefreshData(CurrentOrcamento.ItensOrcamento);
-      console.log(CurrentOrcamento);
-    });
-  }, [CurrentOrcamento]);
-
   const onCloseModalPreVenda = async (value: iOrcamento) => {
     setNewPreVenda(null);
   };
 
   const OpenModalItemOrcamento = () => {
-    setItemOrcamento({
-      // ORCAMENTO: Orcamento,
-      ORCAMENTO: CurrentOrcamento,
-      QTD: 1,
-      SUBTOTAL: 0.0,
-      TOTAL: 0.0,
-      VALOR: 0.0,
-      PRODUTO: {} as iProduto,
-      TABELA: '',
-      DESCONTO: 0,
-    });
+    // setItemOrcamento({
+    //   // ORCAMENTO: Orcamento,
+    //   ORCAMENTO: Current,
+    //   QTD: 1,
+    //   SUBTOTAL: 0.0,
+    //   TOTAL: 0.0,
+    //   VALOR: 0.0,
+    //   PRODUTO: {} as iProduto,
+    //   TABELA: '',
+    //   DESCONTO: 0,
+    // });
   };
 
-  const SaveOrUpdate = async (item: callback) => {
-    if (item.saveorupdate) {
-      let removeItem: iItemRemove = {
-        pIdOrcamento: Number(CurrentOrcamento.ORCAMENTO),
-        pProduto: item.itemOrcamento.PRODUTO
-          ? item.itemOrcamento.PRODUTO.PRODUTO
-          : '',
-      };
-      RemoveItemOrcamento(removeItem).finally(async () => {
-        await AddItem(item.itemOrcamento);
-      });
-    } else {
-      await AddItem(item.itemOrcamento);
-    }
-  };
+  // const SaveOrUpdate = async (item: callback) => {
+  //   if (item.saveorupdate) {
+  //     let removeItem: iItemRemove = {
+  //       pIdOrcamento: Number(Current.ORCAMENTO),
+  //       pProduto: item.itemOrcamento.PRODUTO
+  //         ? item.itemOrcamento.PRODUTO.PRODUTO
+  //         : '',
+  //     };
+  //     RemoveItemOrcamento(removeItem).finally(async () => {
+  //       await AddItem(item.itemOrcamento);
+  //     });
+  //   } else {
+  //     await AddItem(item.itemOrcamento);
+  //   }
+  // };
 
-  const AddItem = (item: iItensOrcamento) => {
-    let saveItem: iItemInserir = {
-      pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
-      pItemOrcamento: {
-        CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
-        Desconto: item.DESCONTO ? item.DESCONTO : 0,
-        Frete: 0,
-        Qtd: item.QTD,
-        Tabela: item.TABELA,
-        Total: item.TOTAL,
-        SubTotal: item.SUBTOTAL,
-        Valor: item.VALOR,
-      },
-    };
+  // const AddItem = (item: iItensOrcamento) => {
+  //   let saveItem: iItemInserir = {
+  //     pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
+  //     pItemOrcamento: {
+  //       CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+  //       Desconto: item.DESCONTO ? item.DESCONTO : 0,
+  //       Frete: 0,
+  //       Qtd: item.QTD,
+  //       Tabela: item.TABELA,
+  //       Total: item.TOTAL,
+  //       SubTotal: item.SUBTOTAL,
+  //       Valor: item.VALOR,
+  //     },
+  //   };
 
-    NewItemOrcamento(saveItem).finally(() => {
-      RefreshItemsList();
-    });
-    console.log('Status', Status);
-    console.log('ErrorMessage', ErrorMessage);
+  //   NewItemOrcamento(saveItem).finally(() => {
+  //     RefreshItemsList();
+  //   });
+  //   console.log('Status', Status);
+  //   console.log('ErrorMessage', ErrorMessage);
 
-    if (Status !== 200) {
-      toast.error(`Opps, ${ErrorMessage} 🤯`, {
-        position: 'bottom-right',
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: ThemeName,
-      });
-    }
-  };
+  //   if (Status !== 200) {
+  //     toast.error(`Opps, ${ErrorMessage} 🤯`, {
+  //       position: 'bottom-right',
+  //       autoClose: 5000,
+  //       hideProgressBar: false,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       progress: undefined,
+  //       theme: ThemeName,
+  //     });
+  //   }
+  // };
 
-  const DeleteItem = async (item: iItensOrcamento) => {
-    let removeItem: iItemRemove = {
-      pIdOrcamento: Number(CurrentOrcamento.ORCAMENTO),
-      pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
-    };
+  // const DeleteItem = async (item: iItensOrcamento) => {
+  //   let removeItem: iItemRemove = {
+  //     pIdOrcamento: Number(Current.ORCAMENTO),
+  //     pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+  //   };
 
-    RemoveItemOrcamento(removeItem).then(async (res) => {
-      const { StatusCode, Data, StatusMessage } = res.data;
+  //   RemoveItemOrcamento(removeItem).then(async (res) => {
+  //     const { StatusCode, Data, StatusMessage } = res.data;
 
-      if (StatusCode !== 200) {
-        toast.error(`Opps, ${StatusMessage} 🤯`, {
-          position: 'bottom-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: ThemeName,
-        });
-      } else
-        SetOrcamento(Data.ORCAMENTO).then(() => {
-          TableRef.current.onRefreshData(CurrentOrcamento.ItensOrcamento);
-        });
-    });
-  };
+  //     if (StatusCode !== 200) {
+  //       toast.error(`Opps, ${StatusMessage} 🤯`, {
+  //         position: 'bottom-right',
+  //         autoClose: 5000,
+  //         hideProgressBar: false,
+  //         closeOnClick: true,
+  //         pauseOnHover: true,
+  //         draggable: true,
+  //         progress: undefined,
+  //         theme: ThemeName,
+  //       });
+  //     } else
+  //       SetOrcamento(Data.ORCAMENTO).then(() => {
+  //         TableRef.current.onRefreshData(Current.ItensOrcamento);
+  //       });
+  //   });
+  // };
 
-  const UpdateItem = async (item: iItensOrcamento) => {
-    setItemOrcamento({ ...item, ORCAMENTO: CurrentOrcamento });
-  };
+  // const UpdateItem = async (item: iItensOrcamento) => {
+  //   setItemOrcamento({ ...item, ORCAMENTO: Current });
+  // };
 
   const SalvarOrcamento = () => {
     OnCloseModal();
-    callback && callback(CurrentOrcamento);
+    callback && callback(Current);
   };
 
   const GerarPreVenda = (orc: iOrcamento) => {
@@ -188,13 +157,16 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       width: '15%',
       action: [
         {
-          onclick: UpdateItem,
+          // onclick: UpdateItem,
+          onclick: () => console.log('update'),
+
           Icon: faEdit,
           Title: 'Editar',
           Type: 'warn',
         },
         {
-          onclick: DeleteItem,
+          // onclick: DeleteItem,
+          onclick: () => console.log('delete'),
           Icon: faTrashAlt,
           Title: 'Excluir',
           Type: 'danger',
@@ -250,15 +222,15 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
       {Modal && (
         <Modal
           Title={
-            CurrentOrcamento.ORCAMENTO > 0
-              ? `ORÇAMENTO Nº ${CurrentOrcamento.ORCAMENTO.toString()}`
+            Current.ORCAMENTO > 0
+              ? `ORÇAMENTO Nº ${Current.ORCAMENTO.toString()}`
               : 'NOVO ORÇAMENTO'
           }
           width='100vw'
           height='100vh'
           sm={{ width: '100%', height: '100vh' }}
           xs={{ width: '100%', height: '100vh' }}
-          OnCloseButtonClick={() => callback && callback(CurrentOrcamento)}
+          OnCloseButtonClick={() => callback && callback(Current)}
         >
           <FormEditOrcamento>
             <FlexComponent direction='column' overflow='hidden auto'>
@@ -276,7 +248,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       labelPosition='top'
                       label='CÓDIGO'
                       name='CLIENTE.CLIENTE'
-                      value={CurrentOrcamento.CLIENTE.CLIENTE}
+                      value={Current.CLIENTE.CLIENTE}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -287,7 +259,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='NOME'
                       name='CLIENTE.NOME'
-                      value={CurrentOrcamento.CLIENTE.NOME}
+                      value={Current.CLIENTE.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -298,7 +270,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='CPF/CNPJ'
                       name='CLIENTE.CIC'
-                      value={MaskCnpjCpf(CurrentOrcamento.CLIENTE.CIC)}
+                      value={MaskCnpjCpf(Current.CLIENTE.CIC)}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -320,7 +292,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='TELEFONE'
                       name='TELEFONE'
-                      value={CurrentOrcamento.CLIENTE.TELEFONE}
+                      value={Current.CLIENTE.TELEFONE}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -331,7 +303,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='ENDEREÇO'
                       name='CLIENTE.ENDERECO'
-                      value={CurrentOrcamento.CLIENTE.ENDERECO}
+                      value={Current.CLIENTE.ENDERECO}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -342,7 +314,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='BAIRRO'
                       name='CLIENTE.BAIRRO'
-                      value={CurrentOrcamento.CLIENTE.BAIRRO}
+                      value={Current.CLIENTE.BAIRRO}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -353,7 +325,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='CIDADE'
                       name='CLIENTE.CIDADE'
-                      value={CurrentOrcamento.CLIENTE.CIDADE}
+                      value={Current.CLIENTE.CIDADE}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -364,7 +336,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='UF'
                       name='CLIENTE.UF'
-                      value={CurrentOrcamento.CLIENTE.UF}
+                      value={Current.CLIENTE.UF}
                     />
                   </FlexComponent>
                   <FlexComponent
@@ -375,7 +347,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     <InputCustom
                       label='CEP'
                       name='CLIENTE.CEP'
-                      value={CurrentOrcamento.CLIENTE.CEP}
+                      value={Current.CLIENTE.CEP}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -393,7 +365,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       <InputCustom
                         label='OBSERVAÇÃO 1'
                         name='OBS1'
-                        value={CurrentOrcamento.OBS1}
+                        value={Current.OBS1}
                       />
                     </FlexComponent>
                     <FlexComponent
@@ -404,7 +376,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       <InputCustom
                         label='OBSERVAÇÃO 2'
                         name='OBS2'
-                        value={CurrentOrcamento.OBS2}
+                        value={Current.OBS2}
                       />
                     </FlexComponent>
                   </FlexComponent>
@@ -426,7 +398,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                 <FlexComponent height='60vh'>
                   <Table
                     columns={tableHeaders}
-                    TableData={CurrentOrcamento.ItensOrcamento}
+                    TableData={Current.ItensOrcamento}
                     ref={TableRef}
                   />
                 </FlexComponent>
@@ -468,7 +440,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                     lg={{ width: '100%' }}
                   >
                     <Button
-                      onclick={() => GerarPreVenda(CurrentOrcamento)}
+                      onclick={() => GerarPreVenda(Current)}
                       Text='PRÉ-VENDA'
                       Type='success'
                       Icon={faSave}
@@ -487,7 +459,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
                       name='TOTAL'
                       readOnly={true}
                       textAlign='right'
-                      value={CurrentOrcamento.TOTAL.toLocaleString('pt-br', {
+                      value={Current.TOTAL.toLocaleString('pt-br', {
                         style: 'currency',
                         currency: 'BRL',
                       })}
@@ -500,9 +472,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({
         </Modal>
       )}
 
-      {ItemOrcamento && (
+      {/* {ItemOrcamento && (
         <ModalItemOrcamento callback={SaveOrUpdate} Item={ItemOrcamento} />
-      )}
+      )} */}
       {NewPreVenda && (
         <ModalPreVenda
           Orcamento={NewPreVenda}
