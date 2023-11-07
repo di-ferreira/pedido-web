@@ -142,13 +142,10 @@ function TableWrap<T>(
     async (filter?: iFilter<T>) => {
       setMessage('');
       setIsLoading(true);
-      console.log('IsLoadingDataTable', IsLoading);
 
       try {
-        if (onDataFetch && IsLoading) {
+        if (onDataFetch) {
           onDataFetch(filter).then(({ Qtd_Registros, value }) => {
-            console.log('onDataFetch', value);
-
             setData(value);
             setTotalPages(Math.ceil(Qtd_Registros / RowsPerPage));
             setTotalRegisters(Qtd_Registros);

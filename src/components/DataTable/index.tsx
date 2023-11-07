@@ -1,21 +1,26 @@
-import { iColumnType, iTablePagination } from '../../@types/Table';
+import { iColumnType } from '../../@types/Table';
+import { Loading } from '../Loading';
 import TableHeader from './TableHeader';
 import { TablePagination } from './TablePagination';
 import TableRow from './TableRow';
 import { MessageNoData, TableBody, TableWrapper } from './styles';
 
 type iTableDataProps<T> = {
-  pagination?: iTablePagination;
   ErrorMessage: string;
   columns: iColumnType<T>[];
   TableData: T[];
+  QuantityRegiters: number;
+  IsLoading: boolean;
+  onFetchPagination?: (top: number, skip: number) => void;
 };
 
 export function DataTable<T>({
   columns,
-  pagination,
   TableData,
   ErrorMessage,
+  onFetchPagination,
+  QuantityRegiters,
+  IsLoading,
 }: iTableDataProps<T>): JSX.Element {
   return (
     <TableWrapper>
@@ -23,23 +28,19 @@ export function DataTable<T>({
         <TableHeader columns={columns} />
       </thead>
       <TableBody>
-        {ErrorMessage !== '' || TableData.length === 0 ? (
+        {IsLoading && <Loading />}
+
+        {!IsLoading && <TableRow data={TableData} columns={columns} />}
+
+        {ErrorMessage !== '' && TableData.length === 0 && (
           <MessageNoData>{ErrorMessage}</MessageNoData>
-        ) : (
-          <TableRow data={TableData} columns={columns} />
         )}
       </TableBody>
-      {pagination && (
+      {onFetchPagination && (
         <tfoot>
           <TablePagination
-            CurrentPage={pagination.CurrentPage}
-            TotalPages={pagination.TotalPages}
-            RowsPerPage={pagination.RowsPerPage}
-            onChange={pagination.onChange}
-            onFirstPage={pagination.onFirstPage}
-            onNextPage={pagination.onNextPage}
-            onPrevPage={pagination.onPrevPage}
-            onLastPage={pagination.onLastPage}
+            OnFetchData={onFetchPagination}
+            QuantityRegiters={QuantityRegiters}
           />
         </tfoot>
       )}

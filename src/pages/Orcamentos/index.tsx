@@ -6,7 +6,6 @@ import { iFilter } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
 import { iColumnType } from '../../@types/Table';
 import { DataTable } from '../../components/DataTable';
-import { Loading } from '../../components/Loading';
 import {
   GetListOrcamento,
   GetOrcamento,
@@ -31,10 +30,6 @@ export const Orcamentos: React.FC = () => {
   const handleListOrcamento = (filter?: iFilter<iOrcamento>) => {
     dispatch(GetListOrcamento(filter));
   };
-
-  useEffect(() => {
-    handleListOrcamento();
-  }, []);
 
   const onOpenModalPreVenda = async (value: iOrcamento) => {
     setNewPreVenda(value);
@@ -119,6 +114,14 @@ export const Orcamentos: React.FC = () => {
     },
   ];
 
+  const onFetchPagination = (top: number, skip: number) => {
+    handleListOrcamento({ top: top, skip: skip });
+  };
+
+  useEffect(() => {
+    handleListOrcamento();
+  }, []);
+
   return (
     <Container>
       {OpenModalOrc && <ModalOrcamento callback={onCloseModalOrcamento} />}
@@ -129,16 +132,14 @@ export const Orcamentos: React.FC = () => {
         />
       )}
 
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <DataTable
-          ErrorMessage={errorMessage}
-          TableData={ListOrcamento.value}
-          // TableData={ListOrcamento.value}
-          columns={headers}
-        />
-      )}
+      <DataTable
+        IsLoading={isLoading}
+        ErrorMessage={errorMessage}
+        TableData={ListOrcamento.value}
+        QuantityRegiters={ListOrcamento.Qtd_Registros}
+        onFetchPagination={onFetchPagination}
+        columns={headers}
+      />
     </Container>
   );
 };
