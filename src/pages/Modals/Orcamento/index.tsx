@@ -9,6 +9,7 @@ import {
 import { toast } from 'react-toastify';
 import {
   iItemInserir,
+  iItemRemove,
   iItensOrcamento,
   iOrcamento,
 } from '../../../@types/Orcamento';
@@ -19,7 +20,11 @@ import { DataTable } from '../../../components/DataTable';
 import { DetailContainer } from '../../../components/DetailContainer';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
-import { NewItemOrcamento } from '../../../features/orcamento/Orcamento-Thunk';
+import {
+  NewItemOrcamento,
+  RemoveItemOrcamento,
+  UpdateItemOrcamento,
+} from '../../../features/orcamento/Orcamento-Thunk';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
 import { useTheme } from '../../../hooks/useTheme';
@@ -63,7 +68,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
     setItemOrcamento(
       (oldItem) =>
         (oldItem = {
-          // ORCAMENTO: Orcamento,
           ORCAMENTO: Current,
           QTD: 1,
           SUBTOTAL: 0.0,
@@ -76,21 +80,12 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
     );
   };
 
-  const SaveOrUpdate = async (item: callback) => {
-    AddItem(item.itemOrcamento);
-    // if (item.saveorupdate) {
-    //   let removeItem: iItemRemove = {
-    //     pIdOrcamento: Number(Current.ORCAMENTO),
-    //     pProduto: item.itemOrcamento.PRODUTO
-    //       ? item.itemOrcamento.PRODUTO.PRODUTO
-    //       : '',
-    //   };
-    //   RemoveItemOrcamento(removeItem).finally(async () => {
-    //     await AddItem(item.itemOrcamento);
-    //   });
-    // } else {
-    //   await AddItem(item.itemOrcamento);
-    // }
+  const SaveOrUpdate = (item: callback) => {
+    if (item.update) {
+      UpdateItem(item.itemOrcamento);
+    } else {
+      AddItem(item.itemOrcamento);
+    }
   };
 
   const AddItem = (item: iItensOrcamento) => {
@@ -139,57 +134,64 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
         });
       }
     }
-
-    // NewItemOrcamento(saveItem).finally(() => {
-    //   RefreshItemsList();
-    // });
-    // console.log('Status', Status);
-    // console.log('ErrorMessage', ErrorMessage);
-
-    // if (Status !== 200) {
-    //   toast.error(`Opps, ${ErrorMessage} 🤯`, {
-    //     position: 'bottom-right',
-    //     autoClose: 5000,
-    //     hideProgressBar: false,
-    //     closeOnClick: true,
-    //     pauseOnHover: true,
-    //     draggable: true,
-    //     progress: undefined,
-    //     theme: ThemeName,
-    //   });
-    // }
   };
 
-  // const DeleteItem = async (item: iItensOrcamento) => {
-  //   let removeItem: iItemRemove = {
-  //     pIdOrcamento: Number(Current.ORCAMENTO),
-  //     pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
-  //   };
+  const DeleteItem = (item: iItensOrcamento) => {
+    let removeItem: iItemRemove = {
+      pIdOrcamento: Number(Current.ORCAMENTO),
+      pProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+    };
 
-  //   RemoveItemOrcamento(removeItem).then(async (res) => {
-  //     const { StatusCode, Data, StatusMessage } = res.data;
+    dispatch(RemoveItemOrcamento(removeItem));
 
-  //     if (StatusCode !== 200) {
-  //       toast.error(`Opps, ${StatusMessage} 🤯`, {
-  //         position: 'bottom-right',
-  //         autoClose: 5000,
-  //         hideProgressBar: false,
-  //         closeOnClick: true,
-  //         pauseOnHover: true,
-  //         draggable: true,
-  //         progress: undefined,
-  //         theme: ThemeName,
-  //       });
-  //     } else
-  //       SetOrcamento(Data.ORCAMENTO).then(() => {
-  //         TableRef.current.onRefreshData(Current.ItensOrcamento);
-  //       });
-  //   });
-  // };
+    if (errorMessage !== '' && !isLoading) {
+      toast.error(`Opps, ${errorMessage} 🤯`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: ThemeName,
+      });
+    }
+  };
 
-  // const UpdateItem = async (item: iItensOrcamento) => {
-  //   setItemOrcamento({ ...item, ORCAMENTO: Current });
-  // };
+  const UpdateItem = (item: iItensOrcamento) => {
+    let updateItem: iItemInserir = {
+      pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
+      pItemOrcamento: {
+        CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+        Desconto: item.DESCONTO ? item.DESCONTO : 0,
+        Frete: 0,
+        Qtd: item.QTD,
+        Tabela: item.TABELA,
+        Total: item.TOTAL,
+        SubTotal: item.SUBTOTAL,
+        Valor: item.VALOR,
+      },
+    };
+
+    dispatch(UpdateItemOrcamento(updateItem));
+
+    if (errorMessage !== '' && !isLoading) {
+      toast.error(`Opps, ${errorMessage} 🤯`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: ThemeName,
+      });
+    }
+  };
+
+  const OpenModalUpdateItem = async (item: iItensOrcamento) => {
+    setItemOrcamento({ ...item, ORCAMENTO: Current });
+  };
 
   const SalvarOrcamento = () => {
     OnCloseModal();
@@ -207,16 +209,13 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
       width: '15%',
       action: [
         {
-          // onclick: UpdateItem,
-          onclick: () => console.log('update'),
-
+          onclick: OpenModalUpdateItem,
           Icon: faEdit,
           Title: 'Editar',
           Type: 'warn',
         },
         {
-          // onclick: DeleteItem,
-          onclick: () => console.log('delete'),
+          onclick: DeleteItem,
           Icon: faTrashAlt,
           Title: 'Excluir',
           Type: 'danger',

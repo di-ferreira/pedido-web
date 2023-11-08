@@ -1,14 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { iApiResult } from '../../@types';
 import { iFilter } from '../../@types/Filter';
-import { iItemInserir, iOrcamento } from '../../@types/Orcamento';
+import { iItemInserir, iItemRemove, iOrcamento } from '../../@types/Orcamento';
 import { iDataResultTable } from '../../@types/Table';
 import { iVendedor } from '../../@types/Vendedor';
 import api from '../../services';
 import { VENDEDOR_STORE } from '../../utils/Constants';
 const ROUTE_GET_ALL_ORCAMENTO = '/Orcamento';
 // const ROUTE_SAVE_ORCAMENTO = '/ServiceVendas/NovoOrcamento';
-// const ROUTE_REMOVE_ITEM_ORCAMENTO = '/ServiceVendas/ExcluirItemOrcamento';
+const ROUTE_REMOVE_ITEM_ORCAMENTO = '/ServiceVendas/ExcluirItemOrcamento';
 const ROUTE_SAVE_ITEM_ORCAMENTO = '/ServiceVendas/NovoItemOrcamento';
 
 const CreateFilter = (filter: iFilter<iOrcamento>): string => {
@@ -99,7 +99,6 @@ export const NewItemOrcamento = createAsyncThunk(
         )
       ).data;
 
-      console.log('NewItemOrcamento', res);
       const { Data, StatusCode, StatusMessage } = res;
 
       if (StatusCode !== 200) {
@@ -111,6 +110,79 @@ export const NewItemOrcamento = createAsyncThunk(
           )
         ).data;
         return result;
+      }
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(`error: ${error.message}`);
+    }
+  }
+);
+
+export const RemoveItemOrcamento = createAsyncThunk(
+  'Orcamento/RemoveItem',
+  async (itemOrcamento: iItemRemove, thunkAPI) => {
+    try {
+      const res: iApiResult<iOrcamento> = (
+        await api.post<iApiResult<iOrcamento>>(
+          ROUTE_REMOVE_ITEM_ORCAMENTO,
+          itemOrcamento
+        )
+      ).data;
+
+      const { Data, StatusCode, StatusMessage } = res;
+
+      if (StatusCode !== 200) {
+        return thunkAPI.rejectWithValue(`error: ${StatusMessage}`);
+      } else {
+        const result = (
+          await api.get<iOrcamento>(
+            `${ROUTE_GET_ALL_ORCAMENTO}(${Data.ORCAMENTO})?$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`
+          )
+        ).data;
+        return result;
+      }
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(`error: ${error.message}`);
+    }
+  }
+);
+
+export const UpdateItemOrcamento = createAsyncThunk(
+  'Orcamento/UpdateItem',
+  async (itemOrcamento: iItemInserir, thunkAPI) => {
+    try {
+      //inicia remoção do item
+      const removeRestult: iApiResult<iOrcamento> = (
+        await api.post<iApiResult<iOrcamento>>(ROUTE_REMOVE_ITEM_ORCAMENTO, {
+          pIdOrcamento: itemOrcamento.pIdOrcamento,
+          pProduto: itemOrcamento.pItemOrcamento.CodigoProduto,
+        })
+      ).data;
+
+      if (removeRestult.StatusCode !== 200) {
+        return thunkAPI.rejectWithValue(
+          `error: ${removeRestult.StatusMessage}`
+        );
+      } else {
+        //inicia inserção do item
+        const res: iApiResult<iOrcamento> = (
+          await api.post<iApiResult<iOrcamento>>(
+            ROUTE_SAVE_ITEM_ORCAMENTO,
+            itemOrcamento
+          )
+        ).data;
+
+        const { Data, StatusCode, StatusMessage } = res;
+
+        if (StatusCode !== 200) {
+          return thunkAPI.rejectWithValue(`error: ${StatusMessage}`);
+        } else {
+          const result = (
+            await api.get<iOrcamento>(
+              `${ROUTE_GET_ALL_ORCAMENTO}(${Data.ORCAMENTO})?$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`
+            )
+          ).data;
+          return result;
+        }
       }
     } catch (error: any) {
       return thunkAPI.rejectWithValue(`error: ${error.message}`);

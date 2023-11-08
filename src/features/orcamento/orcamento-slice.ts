@@ -5,6 +5,8 @@ import {
   GetListOrcamento,
   GetOrcamento,
   NewItemOrcamento,
+  RemoveItemOrcamento,
+  UpdateItemOrcamento,
 } from './Orcamento-Thunk';
 
 interface iOrcamentoState {
@@ -209,7 +211,6 @@ export const orcamentoSlice = createSlice({
       .addCase(
         NewItemOrcamento.fulfilled,
         (state, action: PayloadAction<iOrcamento>) => {
-          console.log('Add Item Payload', action.payload);
           state.errorMessage = '';
           state.isLoading = false;
           state.Current = action.payload;
@@ -217,6 +218,48 @@ export const orcamentoSlice = createSlice({
       )
       .addCase(
         NewItemOrcamento.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.isLoading = false;
+          state.errorMessage = action.payload;
+        }
+      );
+
+    builder
+      .addCase(RemoveItemOrcamento.pending, (state) => {
+        state.errorMessage = '';
+        state.isLoading = true;
+      })
+      .addCase(
+        RemoveItemOrcamento.fulfilled,
+        (state, action: PayloadAction<iOrcamento>) => {
+          state.errorMessage = '';
+          state.isLoading = false;
+          state.Current = action.payload;
+        }
+      )
+      .addCase(
+        RemoveItemOrcamento.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.isLoading = false;
+          state.errorMessage = action.payload;
+        }
+      );
+
+    builder
+      .addCase(UpdateItemOrcamento.pending, (state) => {
+        state.errorMessage = '';
+        state.isLoading = true;
+      })
+      .addCase(
+        UpdateItemOrcamento.fulfilled,
+        (state, action: PayloadAction<iOrcamento>) => {
+          state.errorMessage = '';
+          state.isLoading = false;
+          state.Current = action.payload;
+        }
+      )
+      .addCase(
+        UpdateItemOrcamento.rejected,
         (state, action: PayloadAction<any>) => {
           state.isLoading = false;
           state.errorMessage = action.payload;

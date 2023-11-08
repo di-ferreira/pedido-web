@@ -24,7 +24,7 @@ import { ModalProduto } from '../Produto';
 
 export interface callback {
   itemOrcamento: iItensOrcamento;
-  saveorupdate: boolean;
+  update: boolean;
 }
 
 interface iModalItemOrcamento {
@@ -232,7 +232,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
         TOTAL: ItemOrcamento.TOTAL,
         SUBTOTAL: ItemOrcamento.TOTAL,
       },
-      saveorupdate: SaveOrUpdateItem,
+      update: SaveOrUpdateItem,
     };
     setItemOrcamento(result.itemOrcamento);
     callback(result);
