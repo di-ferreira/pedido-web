@@ -153,12 +153,9 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     [Tabelas, ItemOrcamento, Price, Total]
   );
 
-  const OnProdutoPalavras = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setProdutoPalavras(e.target.value.toUpperCase());
-    },
-    [ProdutoPalavras]
-  );
+  const OnProdutoPalavras = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setProdutoPalavras((old) => (old = e.target.value.toUpperCase()));
+  };
 
   const OnSearchProduto = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {

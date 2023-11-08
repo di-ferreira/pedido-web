@@ -5,6 +5,7 @@ import {
   GetListOrcamento,
   GetOrcamento,
   NewItemOrcamento,
+  NewOrcamento,
   RemoveItemOrcamento,
   UpdateItemOrcamento,
 } from './Orcamento-Thunk';
@@ -164,6 +165,24 @@ export const orcamentoSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers(builder) {
+    builder
+      .addCase(NewOrcamento.pending, (state) => {
+        state.isLoading = true;
+        state.errorMessage = '';
+      })
+      .addCase(
+        NewOrcamento.fulfilled,
+        (state, action: PayloadAction<iOrcamento>) => {
+          state.isLoading = false;
+          state.Current = action.payload;
+          state.errorMessage = '';
+        }
+      )
+      .addCase(NewOrcamento.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.errorMessage = action.payload;
+      });
+
     builder
       .addCase(GetOrcamento.pending, (state) => {
         state.isLoading = true;

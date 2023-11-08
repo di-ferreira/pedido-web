@@ -18,13 +18,15 @@ import { FlexComponent } from '../../components/FlexComponent';
 import { Icon } from '../../components/Icon';
 import { InputCustom } from '../../components/InputCustom';
 import Table from '../../components/Table';
+import { NewOrcamento } from '../../features/orcamento/Orcamento-Thunk';
 import useSelect from '../../hooks/UseSelect';
+import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import useClientes from '../../hooks/useClientes';
 import { useLogin } from '../../hooks/useLogin';
-import useOrcamento from '../../hooks/useOrcamento';
 import { useTheme } from '../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../utils';
 import { ModalCliente } from '../Modals/Cliente';
+import { ModalOrcamento } from '../Modals/Orcamento';
 import {
   Container,
   ContainerInput,
@@ -41,8 +43,12 @@ interface iSearchCliente {
 export const Clientes: React.FC = () => {
   const { GetClientes } = useClientes();
   const { currentUser } = useLogin();
-  const { SaveOrcamento } = useOrcamento();
   const { ThemeName } = useTheme();
+
+  const { errorMessage, isLoading } = useAppSelector(
+    (state) => state.orcamento
+  );
+  const dispatch = useAppDispatch();
 
   const OptionsSelect: iOption[] = [
     { label: 'NOME', value: 'NOME' },
@@ -55,7 +61,7 @@ export const Clientes: React.FC = () => {
 
   const [Cliente, setCliente] = useState<iCliente | null>(null);
 
-  const [Orcamento, setOrcamento] = useState<iOrcamento | null>(null);
+  const [OpenModalOrc, setOpenModalOrc] = useState<boolean>(false);
 
   /* OUTROS */
   const [SearchCliente, setSearchCliente] = useState<iSearchCliente>({
@@ -131,8 +137,8 @@ export const Clientes: React.FC = () => {
     setCliente(value);
   };
 
-  const onOpenModalOrcamento = async (value: iCliente) => {
-    let NewOrcamento: iOrcamento = {
+  const onOpenModalOrcamento = (value: iCliente) => {
+    let NewAddOrcamento: iOrcamento = {
       ORCAMENTO: 0,
       TOTAL: 0.0,
       CLIENTE: value,
@@ -141,24 +147,20 @@ export const Clientes: React.FC = () => {
       ItensOrcamento: [],
     };
 
-    await SaveOrcamento(NewOrcamento)
-      .then((result) => {
-        const { Data } = result.data;
-        NewOrcamento = { ...NewOrcamento, ...Data };
-        setOrcamento(NewOrcamento);
-      })
-      .catch((error) => {
-        toast.error(`Opps, ${error.message} 🤯`, {
-          position: 'bottom-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: ThemeName,
-        });
+    dispatch(NewOrcamento(NewAddOrcamento));
+
+    if (errorMessage !== '' && !isLoading) {
+      toast.error(`Opps, ${errorMessage} 🤯`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: ThemeName,
       });
+    } else setOpenModalOrc(true);
   };
 
   const headers: iColumnType<iCliente>[] = [
@@ -287,7 +289,7 @@ export const Clientes: React.FC = () => {
       </FilterContainer>
       {Cliente && <ModalCliente Cliente={Cliente} />}
 
-      {/* {Orcamento && <ModalOrcamento Orcamento={Orcamento} />} */}
+      {OpenModalOrc && <ModalOrcamento />}
       <FlexComponent height='100%'>
         <Table
           columns={headers}

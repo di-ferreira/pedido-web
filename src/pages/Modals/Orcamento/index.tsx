@@ -48,8 +48,6 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
 
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
-  const [ItemModalIsOpen, setItemModalIsOpen] = useState<boolean>(false);
-
   const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
     null
   );
