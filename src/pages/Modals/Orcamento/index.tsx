@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import {
   faEdit,
@@ -6,17 +6,25 @@ import {
   faSave,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import { iItensOrcamento, iOrcamento } from '../../../@types/Orcamento';
-import { iColumnType, iTableRef } from '../../../@types/Table';
+import { toast } from 'react-toastify';
+import {
+  iItemInserir,
+  iItensOrcamento,
+  iOrcamento,
+} from '../../../@types/Orcamento';
+import { iProduto } from '../../../@types/Produto';
+import { iColumnType } from '../../../@types/Table';
 import Button from '../../../components/Button';
+import { DataTable } from '../../../components/DataTable';
 import { DetailContainer } from '../../../components/DetailContainer';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
-import Table from '../../../components/Table';
-import { useAppSelector } from '../../../hooks/useAppSelector';
+import { NewItemOrcamento } from '../../../features/orcamento/Orcamento-Thunk';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
 import { useTheme } from '../../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../../utils';
+import { ModalItemOrcamento, callback } from '../ItemOrcamento';
 import { ModalPreVenda } from '../PreVenda';
 import { FormEditOrcamento, FormFooter } from './styles';
 
@@ -27,15 +35,21 @@ interface iModalOrcamento {
 export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
   const { ThemeName } = useTheme();
 
+  const dispatch = useAppDispatch();
+
   const { Current, errorMessage, isLoading } = useAppSelector(
     (state) => state.orcamento
   );
 
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
-  const { Modal, showModal, OnCloseModal } = useModal();
+  const [ItemModalIsOpen, setItemModalIsOpen] = useState<boolean>(false);
 
-  const TableRef = useRef<iTableRef<iItensOrcamento>>(null!);
+  const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
+    null
+  );
+
+  const { Modal, showModal, OnCloseModal } = useModal();
 
   useEffect(() => {
     return () => showModal();
@@ -46,69 +60,105 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
   };
 
   const OpenModalItemOrcamento = () => {
-    // setItemOrcamento({
-    //   // ORCAMENTO: Orcamento,
-    //   ORCAMENTO: Current,
-    //   QTD: 1,
-    //   SUBTOTAL: 0.0,
-    //   TOTAL: 0.0,
-    //   VALOR: 0.0,
-    //   PRODUTO: {} as iProduto,
-    //   TABELA: '',
-    //   DESCONTO: 0,
-    // });
+    setItemOrcamento(
+      (oldItem) =>
+        (oldItem = {
+          // ORCAMENTO: Orcamento,
+          ORCAMENTO: Current,
+          QTD: 1,
+          SUBTOTAL: 0.0,
+          TOTAL: 0.0,
+          VALOR: 0.0,
+          PRODUTO: {} as iProduto,
+          TABELA: '',
+          DESCONTO: 0,
+        })
+    );
   };
 
-  // const SaveOrUpdate = async (item: callback) => {
-  //   if (item.saveorupdate) {
-  //     let removeItem: iItemRemove = {
-  //       pIdOrcamento: Number(Current.ORCAMENTO),
-  //       pProduto: item.itemOrcamento.PRODUTO
-  //         ? item.itemOrcamento.PRODUTO.PRODUTO
-  //         : '',
-  //     };
-  //     RemoveItemOrcamento(removeItem).finally(async () => {
-  //       await AddItem(item.itemOrcamento);
-  //     });
-  //   } else {
-  //     await AddItem(item.itemOrcamento);
-  //   }
-  // };
+  const SaveOrUpdate = async (item: callback) => {
+    AddItem(item.itemOrcamento);
+    // if (item.saveorupdate) {
+    //   let removeItem: iItemRemove = {
+    //     pIdOrcamento: Number(Current.ORCAMENTO),
+    //     pProduto: item.itemOrcamento.PRODUTO
+    //       ? item.itemOrcamento.PRODUTO.PRODUTO
+    //       : '',
+    //   };
+    //   RemoveItemOrcamento(removeItem).finally(async () => {
+    //     await AddItem(item.itemOrcamento);
+    //   });
+    // } else {
+    //   await AddItem(item.itemOrcamento);
+    // }
+  };
 
-  // const AddItem = (item: iItensOrcamento) => {
-  //   let saveItem: iItemInserir = {
-  //     pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
-  //     pItemOrcamento: {
-  //       CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
-  //       Desconto: item.DESCONTO ? item.DESCONTO : 0,
-  //       Frete: 0,
-  //       Qtd: item.QTD,
-  //       Tabela: item.TABELA,
-  //       Total: item.TOTAL,
-  //       SubTotal: item.SUBTOTAL,
-  //       Valor: item.VALOR,
-  //     },
-  //   };
+  const AddItem = (item: iItensOrcamento) => {
+    let saveItem: iItemInserir = {
+      pIdOrcamento: item.ORCAMENTO.ORCAMENTO,
+      pItemOrcamento: {
+        CodigoProduto: item.PRODUTO ? item.PRODUTO.PRODUTO : '',
+        Desconto: item.DESCONTO ? item.DESCONTO : 0,
+        Frete: 0,
+        Qtd: item.QTD,
+        Tabela: item.TABELA,
+        Total: item.TOTAL,
+        SubTotal: item.SUBTOTAL,
+        Valor: item.VALOR,
+      },
+    };
 
-  //   NewItemOrcamento(saveItem).finally(() => {
-  //     RefreshItemsList();
-  //   });
-  //   console.log('Status', Status);
-  //   console.log('ErrorMessage', ErrorMessage);
+    const itemsVerify = Current.ItensOrcamento.filter(
+      (i) => i.PRODUTO.PRODUTO === saveItem.pItemOrcamento.CodigoProduto
+    );
 
-  //   if (Status !== 200) {
-  //     toast.error(`Opps, ${ErrorMessage} 🤯`, {
-  //       position: 'bottom-right',
-  //       autoClose: 5000,
-  //       hideProgressBar: false,
-  //       closeOnClick: true,
-  //       pauseOnHover: true,
-  //       draggable: true,
-  //       progress: undefined,
-  //       theme: ThemeName,
-  //     });
-  //   }
-  // };
+    if (itemsVerify.length > 0) {
+      toast.warning(`Opps, Produto já se encontra na lista 🤯`, {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: ThemeName,
+      });
+    } else {
+      dispatch(NewItemOrcamento(saveItem));
+
+      if (errorMessage !== '' && !isLoading) {
+        toast.error(`Opps, ${errorMessage} 🤯`, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: ThemeName,
+        });
+      }
+    }
+
+    // NewItemOrcamento(saveItem).finally(() => {
+    //   RefreshItemsList();
+    // });
+    // console.log('Status', Status);
+    // console.log('ErrorMessage', ErrorMessage);
+
+    // if (Status !== 200) {
+    //   toast.error(`Opps, ${ErrorMessage} 🤯`, {
+    //     position: 'bottom-right',
+    //     autoClose: 5000,
+    //     hideProgressBar: false,
+    //     closeOnClick: true,
+    //     pauseOnHover: true,
+    //     draggable: true,
+    //     progress: undefined,
+    //     theme: ThemeName,
+    //   });
+    // }
+  };
 
   // const DeleteItem = async (item: iItensOrcamento) => {
   //   let removeItem: iItemRemove = {
@@ -222,7 +272,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
       {Modal && (
         <Modal
           Title={
-            Current.ORCAMENTO > 0
+            Current.ORCAMENTO !== undefined || Current.ORCAMENTO > 0
               ? `ORÇAMENTO Nº ${Current.ORCAMENTO.toString()}`
               : 'NOVO ORÇAMENTO'
           }
@@ -396,10 +446,10 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
                   />
                 </FlexComponent>
                 <FlexComponent height='60vh'>
-                  <Table
+                  <DataTable
                     columns={tableHeaders}
                     TableData={Current.ItensOrcamento}
-                    ref={TableRef}
+                    IsLoading={isLoading}
                   />
                 </FlexComponent>
               </FlexComponent>
@@ -472,9 +522,9 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
         </Modal>
       )}
 
-      {/* {ItemOrcamento && (
+      {ItemOrcamento && (
         <ModalItemOrcamento callback={SaveOrUpdate} Item={ItemOrcamento} />
-      )} */}
+      )}
       {NewPreVenda && (
         <ModalPreVenda
           Orcamento={NewPreVenda}

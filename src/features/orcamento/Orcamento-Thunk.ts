@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import { iApiResult } from '../../@types';
 import { iFilter } from '../../@types/Filter';
-import { iOrcamento } from '../../@types/Orcamento';
+import { iItemInserir, iOrcamento } from '../../@types/Orcamento';
 import { iDataResultTable } from '../../@types/Table';
 import { iVendedor } from '../../@types/Vendedor';
 import api from '../../services';
@@ -8,7 +9,7 @@ import { VENDEDOR_STORE } from '../../utils/Constants';
 const ROUTE_GET_ALL_ORCAMENTO = '/Orcamento';
 // const ROUTE_SAVE_ORCAMENTO = '/ServiceVendas/NovoOrcamento';
 // const ROUTE_REMOVE_ITEM_ORCAMENTO = '/ServiceVendas/ExcluirItemOrcamento';
-// const ROUTE_SAVE_ITEM_ORCAMENTO = '/ServiceVendas/NovoItemOrcamento';
+const ROUTE_SAVE_ITEM_ORCAMENTO = '/ServiceVendas/NovoItemOrcamento';
 
 const CreateFilter = (filter: iFilter<iOrcamento>): string => {
   let VendedorLocal: iVendedor = JSON.parse(
@@ -79,11 +80,40 @@ export const GetListOrcamento = createAsyncThunk(
         Qtd_Registros: res.data['@xdata.count'],
         value: res.data.value,
       };
-      console.log('Thunk Orcamento', result);
 
       return result;
     } catch (error: any) {
       return thunkApi.rejectWithValue(`error: ${error.message}`);
+    }
+  }
+);
+
+export const NewItemOrcamento = createAsyncThunk(
+  'Orcamento/NewItem',
+  async (itemOrcamento: iItemInserir, thunkAPI) => {
+    try {
+      const res: iApiResult<iOrcamento> = (
+        await api.post<iApiResult<iOrcamento>>(
+          ROUTE_SAVE_ITEM_ORCAMENTO,
+          itemOrcamento
+        )
+      ).data;
+
+      console.log('NewItemOrcamento', res);
+      const { Data, StatusCode, StatusMessage } = res;
+
+      if (StatusCode !== 200) {
+        return thunkAPI.rejectWithValue(`error: ${StatusMessage}`);
+      } else {
+        const result = (
+          await api.get<iOrcamento>(
+            `${ROUTE_GET_ALL_ORCAMENTO}(${Data.ORCAMENTO})?$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`
+          )
+        ).data;
+        return result;
+      }
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   }
 );

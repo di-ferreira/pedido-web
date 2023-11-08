@@ -17,6 +17,12 @@ export interface iDataResult<T> {
     StatusMessage: string;
   };
 }
+export interface iApiResult<T> {
+  Data: T;
+  RecordCount: number;
+  StatusCode: number;
+  StatusMessage: string;
+}
 export interface iUniqueResult<T> {
   data: T;
 }

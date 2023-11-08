@@ -23,9 +23,6 @@ export const Orcamentos: React.FC = () => {
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
   const dispatch = useAppDispatch();
-  const handleSetOrcamento = (idOrcamento: number) => {
-    dispatch(GetOrcamento(idOrcamento));
-  };
 
   const handleListOrcamento = (filter?: iFilter<iOrcamento>) => {
     dispatch(GetListOrcamento(filter));
@@ -42,7 +39,7 @@ export const Orcamentos: React.FC = () => {
 
   const onOpenModalOrcamento = useCallback(
     (value: iOrcamento) => {
-      handleSetOrcamento(value.ORCAMENTO);
+      dispatch(GetOrcamento(value.ORCAMENTO));
       setOpenModalOrc(true);
     },
     [setOpenModalOrc]

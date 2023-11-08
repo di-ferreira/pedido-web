@@ -1,7 +1,11 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { iOrcamento } from '../../@types/Orcamento';
 import { iDataResultTable } from '../../@types/Table';
-import { GetListOrcamento, GetOrcamento } from './Orcamento-Thunk';
+import {
+  GetListOrcamento,
+  GetOrcamento,
+  NewItemOrcamento,
+} from './Orcamento-Thunk';
 
 interface iOrcamentoState {
   Current: iOrcamento;
@@ -174,7 +178,9 @@ export const orcamentoSlice = createSlice({
       .addCase(GetOrcamento.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.errorMessage = action.payload;
-      })
+      });
+
+    builder
       .addCase(GetListOrcamento.pending, (state) => {
         state.isLoading = true;
         state.errorMessage = '';
@@ -189,6 +195,28 @@ export const orcamentoSlice = createSlice({
       )
       .addCase(
         GetListOrcamento.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.isLoading = false;
+          state.errorMessage = action.payload;
+        }
+      );
+
+    builder
+      .addCase(NewItemOrcamento.pending, (state) => {
+        state.errorMessage = '';
+        state.isLoading = true;
+      })
+      .addCase(
+        NewItemOrcamento.fulfilled,
+        (state, action: PayloadAction<iOrcamento>) => {
+          console.log('Add Item Payload', action.payload);
+          state.errorMessage = '';
+          state.isLoading = false;
+          state.Current = action.payload;
+        }
+      )
+      .addCase(
+        NewItemOrcamento.rejected,
         (state, action: PayloadAction<any>) => {
           state.isLoading = false;
           state.errorMessage = action.payload;

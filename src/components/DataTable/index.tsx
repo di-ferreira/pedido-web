@@ -6,10 +6,10 @@ import TableRow from './TableRow';
 import { MessageNoData, TableBody, TableWrapper } from './styles';
 
 type iTableDataProps<T> = {
-  ErrorMessage: string;
+  ErrorMessage?: string;
   columns: iColumnType<T>[];
   TableData: T[];
-  QuantityRegiters: number;
+  QuantityRegiters?: number;
   IsLoading: boolean;
   onFetchPagination?: (top: number, skip: number) => void;
 };
@@ -36,7 +36,7 @@ export function DataTable<T>({
           <MessageNoData>{ErrorMessage}</MessageNoData>
         )}
       </TableBody>
-      {onFetchPagination && (
+      {onFetchPagination && QuantityRegiters && (
         <tfoot>
           <TablePagination
             OnFetchData={onFetchPagination}
