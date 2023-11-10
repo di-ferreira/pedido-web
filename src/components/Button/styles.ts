@@ -80,7 +80,7 @@ export const Container = styled.button<ContainerProps>`
     cursor: not-allowed;
   }
 
-  @media only screen and ${devices.sm} {
+  ${`@media only screen and ${devices.sm}`} {
     font-size: 1.9rem;
     width: ${(props) =>
       props.width ? props.width : props.rounded ? 'auto' : '100%'};
