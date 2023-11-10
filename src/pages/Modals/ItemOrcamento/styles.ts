@@ -12,12 +12,12 @@ interface iRow {
 
 export const FormEditOrcamento = styled.form`
   width: 100%;
-  height: 77vh;
+  height: 100%;
   padding: 0rem 0rem 0.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   overflow: hidden auto;
+  row-gap: 2rem;
 `;
 
 export const FormEditOrcamentoRow = styled.div<iRow>`
@@ -35,7 +35,7 @@ export const FormEditOrcamentoRow = styled.div<iRow>`
     margin-bottom: 0;
   }
 
-  @media screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     margin: 0.5rem 0;
   }
 `;
@@ -54,7 +54,7 @@ export const FormEditOrcamentoInputContainer = styled.div<iInputContainer>`
     font-size: 1.7rem;
   }
 
-  @media screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     width: ${(props) => (props.width ? '45%' : '100%')};
 
     & * input {
@@ -75,7 +75,10 @@ export const FormEditOrcamentoSwitchContainer = styled.div<iInputContainer>`
 `;
 
 export const FormFooter = styled.footer`
-  margin-top: 1.5rem;
+  margin: 1.5rem 0 0 0;
   width: 100%;
   display: flex;
+  ${`@media screen and ${devices.sm}`} {
+    margin: 0 0 1rem 0;
+  }
 `;

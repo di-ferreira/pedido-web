@@ -1,16 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { faPlus, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { iFilter } from '../../../@types/Filter';
 import { iProduto } from '../../../@types/Produto';
-import { iColumnType, iTableRef } from '../../../@types/Table';
+import { iColumnType } from '../../../@types/Table';
 import Button from '../../../components/Button';
+import { DataTable } from '../../../components/DataTable';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
-import Table from '../../../components/Table';
+import { SuperFindProducts } from '../../../features/produto/Produto-Thunk';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
-import useProduto from '../../../hooks/useProduto';
-import { FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalProduto {
   produtos: iProduto[];
@@ -23,20 +23,28 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   produtos,
   callback,
 }) => {
-  const { GetProdutosSuperBusca, GetProduto } = useProduto();
+  const { ListProduto, errorMessage, isLoading } = useAppSelector(
+    (state) => state.produto
+  );
+  const dispatch = useAppDispatch();
+
   const { Modal, showModal, OnCloseModal } = useModal();
-  const [newProdutos, setProdutos] = useState<iProduto[]>({} as iProduto[]);
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
-  const TableRef = useRef<iTableRef<iProduto>>(null!);
 
   useEffect(() => {
-    setProdutos(produtos);
     setProdutoPalavras(produtoPalavras);
     showModal();
   }, [produtos]);
 
-  const fetchProdutoList = async (filter?: iFilter<iProduto>) => {
-    return await GetProdutosSuperBusca(filter);
+  const fetchProdutoList = (top: number, skip: number) => {
+    dispatch(
+      SuperFindProducts({
+        top,
+        skip,
+        orderBy: 'PRODUTO',
+        filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
+      })
+    );
   };
 
   const ListProdutos = async (
@@ -47,7 +55,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
       filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
     }
   ) => {
-    TableRef.current.onRefresh(filter);
+    dispatch(SuperFindProducts(filter));
   };
 
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,18 +67,19 @@ export const ModalProduto: React.FC<iModalProduto> = ({
   const OnSearchProduto = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      fetchProdutoList({
-        top: 15,
-        skip: 0,
-        orderBy: 'PRODUTO',
-        filter: [{ key: 'PRODUTO', value: e.currentTarget.value }],
-      });
+      dispatch(
+        SuperFindProducts({
+          top: 15,
+          skip: 0,
+          orderBy: 'PRODUTO',
+          filter: [{ key: 'PRODUTO', value: e.currentTarget.value }],
+        })
+      );
     }
   };
 
   const AddProduto = async (produto: iProduto) => {
-    const prod = await GetProduto(produto.PRODUTO);
-    callback(prod.data);
+    callback(produto);
     OnCloseModal();
   };
 
@@ -138,60 +147,59 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     <>
       {Modal && (
         <Modal
-          Title={`Buscar Produto`}
-          width='95%'
-          height='90vh'
+          Title={`\n Buscar Produto \n`}
+          width='100vw'
+          height='100vh'
           sm={{ width: '100%', height: '100vh' }}
           xs={{ width: '100%', height: '100vh' }}
         >
-          <FormEditOrcamento>
-            <FlexComponent direction='column' height='100%'>
-              <FlexComponent
-                alignItems='flex-end'
-                sm={{ direction: 'column' }}
-                gapRow='1rem'
-              >
-                <FlexComponent width='85%' sm={{ width: '100%' }}>
-                  <InputCustom
-                    onChange={OnChangeInput}
-                    onKeydown={OnSearchProduto}
-                    label='BUSCAR PRODUTO'
-                    name='SEARCH'
-                    value={ProdutoPalavras}
-                  />
-                </FlexComponent>
-                <FlexComponent width='15%' sm={{ width: '100%' }}>
-                  <Button
-                    Icon={faSearch}
-                    onclick={() => ListProdutos()}
-                    Text='BUSCAR'
-                    Height='3.5rem'
-                    Type='primary'
-                    style={{ marginTop: '0.5rem' }}
-                  />
-                </FlexComponent>
-              </FlexComponent>
-              <FlexComponent height='65vh'>
-                <Table
-                  columns={tableHeaders}
-                  onDataFetch={fetchProdutoList}
-                  pagination
-                  ref={TableRef}
+          <FlexComponent gapRow='1.5rem' direction='column' height='100%'>
+            <FlexComponent
+              alignItems='flex-end'
+              sm={{ direction: 'column' }}
+              gapRow='1rem'
+              gapColumn='1rem'
+            >
+              <FlexComponent width='85%' sm={{ width: '100%' }}>
+                <InputCustom
+                  onChange={OnChangeInput}
+                  onKeydown={OnSearchProduto}
+                  label='BUSCAR PRODUTO'
+                  name='SEARCH'
+                  value={ProdutoPalavras}
                 />
               </FlexComponent>
-              <FlexComponent margin='1rem 0rem'>
-                <FormFooter>
-                  <Button
-                    Text='CANCELAR'
-                    Type='danger'
-                    Icon={faTimes}
-                    Height='3.5rem'
-                    onclick={() => OnCloseModal()}
-                  />
-                </FormFooter>
+              <FlexComponent width='fit-content' sm={{ width: '100%' }}>
+                <Button
+                  Icon={faSearch}
+                  onclick={() => ListProdutos()}
+                  Text='BUSCAR'
+                  Height='3.5rem'
+                  Type='primary'
+                  style={{ marginTop: '0.5rem' }}
+                />
+              </FlexComponent>
+              <FlexComponent width='fit-content' sm={{ width: '100%' }}>
+                <Button
+                  Text='CANCELAR'
+                  Type='danger'
+                  Icon={faTimes}
+                  Height='3.5rem'
+                  onclick={() => OnCloseModal()}
+                />
               </FlexComponent>
             </FlexComponent>
-          </FormEditOrcamento>
+            <FlexComponent height='90vh'>
+              <DataTable
+                IsLoading={isLoading}
+                TableData={ListProduto.value}
+                ErrorMessage={errorMessage}
+                QuantityRegiters={ListProduto.Qtd_Registros}
+                columns={tableHeaders}
+                onFetchPagination={fetchProdutoList}
+              />
+            </FlexComponent>
+          </FlexComponent>
         </Modal>
       )}
     </>

@@ -15,7 +15,7 @@ export const Container = styled.div<iContainer>`
   margin-top: -0.5rem;
   height: ${(props) => (props.height ? props.height : 'auto')};
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     width: 100%;
   }
 `;
@@ -27,7 +27,7 @@ export const LabelInput = styled.label`
   text-transform: lowercase;
   padding: 0 0.2rem;
   width: 100%;
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     font-size: 1.9rem;
   }
 `;
@@ -61,7 +61,7 @@ export const TextArea = styled.textarea`
     background: rgba(${(props) => HEXToRGB(props.theme.colors.onGray)}, 0.3);
   }
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     font-size: 1.9rem;
   }
 `;

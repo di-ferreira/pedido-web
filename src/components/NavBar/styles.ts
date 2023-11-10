@@ -103,7 +103,7 @@ export const Container = styled.nav<iNavBarStyle>`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
   }
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     width: ${(props) => (props.isOpen ? '45rem' : '0rem')};
   }
 `;

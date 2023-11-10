@@ -11,7 +11,7 @@ export const Container = styled.div`
   background-color: ${(props) => props.theme.colors.onSurface};
   border-top: solid 1px ${(props) => props.theme.colors.secondary};
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     flex-direction: column;
     height: 20rem;
   }
@@ -28,7 +28,7 @@ export const ContainerInfo = styled.div`
     width: auto;
   }
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     flex-direction: column;
     padding: 0 25%;
     width: 100%;
@@ -48,7 +48,7 @@ export const ContainerButtons = styled.div`
   width: 50%;
   height: 100%;
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     width: 100%;
     height: 40%;
   }

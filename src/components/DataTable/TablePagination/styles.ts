@@ -11,9 +11,9 @@ export const Container = styled.div`
   background-color: ${(props) => props.theme.colors.onSurface};
   border-top: solid 1px ${(props) => props.theme.colors.secondary};
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     flex-direction: column;
-    height: 20rem;
+    height: fit-content;
   }
 `;
 
@@ -28,7 +28,7 @@ export const ContainerInfo = styled.div`
     width: auto;
   }
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     flex-direction: column;
     padding: 0 25%;
     width: 100%;
@@ -42,15 +42,25 @@ export const ContainerInfo = styled.div`
 
 export const ContainerButtons = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   column-gap: 1rem;
+  row-gap: 0rem;
   width: 50%;
   height: 100%;
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
+    flex-wrap: wrap;
+    column-gap: 1rem;
+    row-gap: 1rem;
     width: 100%;
-    height: 40%;
+    height: auto;
+    padding-bottom: 5%;
+    & > button {
+      width: 45% !important;
+      height: 3.5rem;
+    }
   }
 `;
 

@@ -343,3 +343,8 @@ export interface iTabelaVenda {
   PRECO: number;
   BLOQUEADO: string;
 }
+
+export interface iProdutoWithTables {
+  produto: iProduto;
+  tables: iTabelaVenda[];
+}

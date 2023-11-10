@@ -7,7 +7,8 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   html,body{height: 100%;}
-  html{font-size: 62.5%;}
+  html{font-size: 62.5%;
+    overflow: hidden;}
   ul,
   ol,
   li {
@@ -55,3 +56,4 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default GlobalStyle;
+

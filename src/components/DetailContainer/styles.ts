@@ -21,7 +21,7 @@ export const Container = styled.details<iContainerDetails>`
     margin-bottom: 0;
   }
 
-  @media screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     margin: 0.5rem 0;
   }
 `;

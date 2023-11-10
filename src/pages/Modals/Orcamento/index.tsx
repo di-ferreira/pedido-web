@@ -25,6 +25,7 @@ import {
   RemoveItemOrcamento,
   UpdateItemOrcamento,
 } from '../../../features/orcamento/Orcamento-Thunk';
+import { SetCurrentItem } from '../../../features/orcamento/orcamento-slice';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
 import { useTheme } from '../../../hooks/useTheme';
@@ -48,9 +49,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
 
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
-  const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento | null>(
-    null
-  );
+  const [ItemModalIsOpen, setItemModalIsOpen] = useState<boolean>(false);
 
   const { Modal, showModal, OnCloseModal } = useModal();
 
@@ -63,27 +62,30 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
   };
 
   const OpenModalItemOrcamento = () => {
-    setItemOrcamento(
-      (oldItem) =>
-        (oldItem = {
-          ORCAMENTO: Current,
-          QTD: 1,
-          SUBTOTAL: 0.0,
-          TOTAL: 0.0,
-          VALOR: 0.0,
-          PRODUTO: {} as iProduto,
-          TABELA: '',
-          DESCONTO: 0,
-        })
+    dispatch(
+      SetCurrentItem({
+        ORCAMENTO: Current,
+        QTD: 1,
+        SUBTOTAL: 0.0,
+        TOTAL: 0.0,
+        VALOR: 0.0,
+        PRODUTO: {} as iProduto,
+        TABELA: '',
+        DESCONTO: 0,
+      })
     );
+    setItemModalIsOpen(true);
   };
 
-  const SaveOrUpdate = (item: callback) => {
-    if (item.update) {
-      UpdateItem(item.itemOrcamento);
-    } else {
-      AddItem(item.itemOrcamento);
+  const SaveOrUpdate = (item: callback | null) => {
+    if (item !== null) {
+      if (item.update) {
+        UpdateItem(item.itemOrcamento);
+      } else {
+        AddItem(item.itemOrcamento);
+      }
     }
+    setItemModalIsOpen(false);
   };
 
   const AddItem = (item: iItensOrcamento) => {
@@ -188,7 +190,8 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
   };
 
   const OpenModalUpdateItem = async (item: iItensOrcamento) => {
-    setItemOrcamento({ ...item, ORCAMENTO: Current });
+    dispatch(SetCurrentItem({ ...item, ORCAMENTO: Current }));
+    setItemModalIsOpen(true);
   };
 
   const SalvarOrcamento = () => {
@@ -454,7 +457,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
             <FormFooter>
               <FlexComponent
                 padding='.5rem 0'
-                sm={{ direction: 'column', gapRow: '1rem', height: '30vh' }}
+                sm={{ direction: 'column', gapRow: '1rem', height: '23vh' }}
               >
                 <FlexComponent
                   width='50%'
@@ -498,7 +501,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
                 <FlexComponent
                   width='50%'
                   justifyContent='flex-end'
-                  sm={{ width: '100%', order: 0 }}
+                  sm={{ width: '100%', order: 0, padding: '1.5rem 0 0 0' }}
                 >
                   <FlexComponent width='30%' sm={{ width: '100%' }}>
                     <InputCustom
@@ -519,9 +522,7 @@ export const ModalOrcamento: React.FC<iModalOrcamento> = ({ callback }) => {
         </Modal>
       )}
 
-      {ItemOrcamento && (
-        <ModalItemOrcamento callback={SaveOrUpdate} Item={ItemOrcamento} />
-      )}
+      {ItemModalIsOpen && <ModalItemOrcamento callback={SaveOrUpdate} />}
       {NewPreVenda && (
         <ModalPreVenda
           Orcamento={NewPreVenda}

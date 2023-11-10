@@ -8,16 +8,25 @@ import { SingleValue } from 'react-select';
 import { toast } from 'react-toastify';
 import { iFilter } from '../../../@types/Filter';
 import { iItensOrcamento } from '../../../@types/Orcamento';
-import { iListaChave, iProduto, iTabelaVenda } from '../../../@types/Produto';
+import { iListaChave, iProduto } from '../../../@types/Produto';
 import { iColumnType, iOption } from '../../../@types/Table';
 import Button from '../../../components/Button';
+import { DataTable } from '../../../components/DataTable';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
-import Table from '../../../components/Table';
 import { TextAreaCustom } from '../../../components/TextAreaCustom';
+import {
+  ResetCurrentItem,
+  SetCurrentItem,
+} from '../../../features/orcamento/orcamento-slice';
+import {
+  SetProduct,
+  SuperFindProducts,
+} from '../../../features/produto/Produto-Thunk';
+import { ResetProduct } from '../../../features/produto/produto-slice';
 import useSelect from '../../../hooks/UseSelect';
+import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
-import useProduto from '../../../hooks/useProduto';
 import { useTheme } from '../../../hooks/useTheme';
 import { ObjectIsEmpty } from '../../../utils';
 import { ModalProduto } from '../Produto';
@@ -28,29 +37,28 @@ export interface callback {
 }
 
 interface iModalItemOrcamento {
-  Item: iItensOrcamento;
-  callback: (item: callback) => void;
+  callback: (item: callback | null) => void;
 }
 
 export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
-  Item,
   callback,
 }) => {
-  const { GetTabelasFromProduto, GetProdutosSuperBusca } = useProduto();
+  const { ListProduto, errorMessage, isLoading, Current } = useAppSelector(
+    (state) => state.produto
+  );
+  const CurrentProduct = useAppSelector((state) => state.produto.Current);
+  const CurrentItem = useAppSelector((state) => state.orcamento.CurrentItem);
+  const IsLoadingItem = useAppSelector((state) => state.orcamento.isLoading);
+  const dispatch = useAppDispatch();
+
   const { Select } = useSelect();
   const { Modal, showModal, OnCloseModal } = useModal();
   const { ThemeName } = useTheme();
-  const [ItemOrcamento, setItemOrcamento] = useState<iItensOrcamento>(
-    {} as iItensOrcamento
-  );
 
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
-  const [Produtos, setProdutos] = useState<iProduto[]>([]);
-  const [Chaves, setChaves] = useState<iListaChave[]>([]);
-  const [Price, setPrice] = useState<number>(0.0);
-  const [Total, setTotal] = useState<number>(0.0);
-  const [QTDProduto, setQTDProduto] = useState<number>(1);
+
   const [SaveOrUpdateItem, setSaveOrUpdateItem] = useState<boolean>(false);
+
   const [Tabelas, setTabelas] = useState<iOption[]>([]);
   const [TabelaSelected, setTabelaSelected] = useState<iOption>({} as iOption);
 
@@ -58,48 +66,35 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     showModal();
     setSaveOrUpdateItem(false);
 
-    setItemOrcamento({
-      ...Item,
-      PRODUTO: Item.PRODUTO,
-      TOTAL: Item.TOTAL,
-    });
-
-    if (!ObjectIsEmpty(Item.PRODUTO)) {
-      GetTabelas(Item.PRODUTO);
+    if (!ObjectIsEmpty(CurrentItem.PRODUTO)) {
+      GetTabelas();
       setSaveOrUpdateItem(true);
-      setProdutoPalavras(Item.PRODUTO.PRODUTO);
-      if (Item.PRODUTO.ListaChaves !== undefined)
-        setChaves(Item.PRODUTO.ListaChaves);
+      setProdutoPalavras((old) => (old = CurrentItem.PRODUTO.PRODUTO));
+
+      dispatch(SetProduct(CurrentItem.PRODUTO.PRODUTO));
+      setTabelaSelected({
+        label: `${CurrentItem.TABELA} - ${CurrentItem.VALOR.toLocaleString(
+          'pt-br',
+          {
+            style: 'currency',
+            currency: 'BRL',
+          }
+        )}`,
+        value: CurrentItem.VALOR,
+      });
     }
-    setTabelaSelected({
-      label: `${Item.TABELA} - ${Item.VALOR.toLocaleString('pt-br', {
-        style: 'currency',
-        currency: 'BRL',
-      })}`,
-      value: Item.VALOR,
-    });
-    setPrice(Item.TOTAL / Item.QTD);
-    setTotal(Item.TOTAL);
-    setQTDProduto(Item.QTD);
-    setProdutos([]);
-  }, [Item]);
+  }, []);
 
-  const fetchProdutoList = async (filter?: iFilter<iProduto>) => {
-    console.log('fetch Products', filter?.filter);
-    const response = await GetProdutosSuperBusca(filter);
+  const fetchProdutoList = (filter?: iFilter<iProduto>) => {
+    dispatch(ResetProduct());
+    dispatch(SuperFindProducts(filter));
 
-    const { value } = response;
+    if (ListProduto.Qtd_Registros == 1) {
+      ProdutoToItem(ListProduto.value[0]);
+    }
 
-    let ProdutosList: iProduto[] = value;
-
-    if (ProdutosList.length > 1) {
-      setProdutos(ProdutosList);
-    } else if (ProdutosList[0]) {
-      ProdutoToItem(ProdutosList[0]);
-      setProdutoPalavras(ProdutosList[0].PRODUTO);
-      setChaves(ProdutosList[0].ListaChaves);
-    } else {
-      toast.error('Opps, Não encontrou nenhum PRODUTO 🤯', {
+    if (errorMessage !== '')
+      toast.error(`Opps, ${errorMessage} 🤯`, {
         position: 'bottom-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -108,50 +103,39 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
         draggable: true,
         theme: ThemeName,
       });
-    }
   };
 
-  const OnChangeInputQTD = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      e.preventDefault();
+  const OnChangeInputQTD = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
 
-      const { value } = e.target;
+    const { value } = e.target;
 
-      let newQTD: number = parseInt(value) <= 0 ? 1 : parseInt(value);
+    let newQTD: number = parseInt(value) <= 0 ? 1 : parseInt(value);
 
-      setQTDProduto(newQTD);
-
-      setItemOrcamento({
-        ...ItemOrcamento,
+    dispatch(
+      SetCurrentItem({
+        ...CurrentItem,
         QTD: newQTD,
         VALOR: Number(TabelaSelected?.value),
         TOTAL: Number(TabelaSelected?.value) * newQTD,
-      });
+      })
+    );
+  };
 
-      setPrice(Number(TabelaSelected?.value));
-      setTotal(Number(TabelaSelected?.value) * newQTD);
-    },
-    [QTDProduto, ItemOrcamento, Price, Total]
-  );
+  const CalcTabela = (value: SingleValue<iOption>) => {
+    setTabelaSelected({
+      label: String(value?.label),
+      value: Number(value?.value),
+    });
 
-  const CalcTabela = useCallback(
-    (value: SingleValue<iOption>) => {
-      setTabelaSelected({
-        label: String(value?.label),
-        value: Number(value?.value),
-      });
-
-      setItemOrcamento({
-        ...ItemOrcamento,
+    dispatch(
+      SetCurrentItem({
+        ...CurrentItem,
         VALOR: Number(value?.value),
-        TOTAL: Number(value?.value) * QTDProduto,
-      });
-
-      setPrice(Number(value?.value));
-      setTotal(Number(value?.value) * QTDProduto);
-    },
-    [Tabelas, ItemOrcamento, Price, Total]
-  );
+        TOTAL: Number(value?.value) * CurrentItem.QTD,
+      })
+    );
+  };
 
   const OnProdutoPalavras = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProdutoPalavras((old) => (old = e.target.value.toUpperCase()));
@@ -172,49 +156,63 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     });
   };
 
-  const GetTabelas = async (produto: iProduto) => {
-    let tabelas: iTabelaVenda[] = [];
-    await GetTabelasFromProduto(produto).then((tabs) => {
-      tabelas = [...tabs];
-      let tabOptions: iOption[] = [];
-      tabelas.map((tab) =>
-        tabOptions.push({
-          label: `${tab.TABELA} - ${tab.PRECO.toLocaleString('pt-br', {
-            style: 'currency',
-            currency: 'BRL',
-          })}`,
-          value: tab.PRECO,
-        })
-      );
-      setTabelas(tabOptions);
-      setTabelaSelected(tabOptions[0]);
-      setItemOrcamento((old) => {
-        return {
-          ...old,
-          PRODUTO: produto,
-          SUBTOTAL: Number(tabOptions[0]?.value) * QTDProduto,
-          TOTAL: Number(tabOptions[0]?.value) * QTDProduto,
-          VALOR: Number(tabOptions[0]?.value),
-        };
-      });
-      setTotal(Number(tabOptions[0]?.value) * QTDProduto);
-      setPrice(Number(tabOptions[0]?.value));
-    });
+  const GetTabelas = () => {
+    let tabOptions: iOption[] = [];
+
+    Current.tables.map((tab) =>
+      tabOptions.push({
+        label: `${tab.TABELA} - ${tab.PRECO.toLocaleString('pt-br', {
+          style: 'currency',
+          currency: 'BRL',
+        })}`,
+        value: tab.PRECO,
+      })
+    );
+    setTabelas(tabOptions);
+    setTabelaSelected(tabOptions[0]);
+    dispatch(
+      SetCurrentItem({
+        ...CurrentItem,
+        PRODUTO: Current.produto,
+        SUBTOTAL: Number(tabOptions[0]?.value) * CurrentItem.QTD,
+        TOTAL: Number(tabOptions[0]?.value) * CurrentItem.QTD,
+        VALOR: Number(tabOptions[0]?.value),
+      })
+    );
   };
 
-  const ProdutoToItem = async (produto: iProduto) => {
-    setProdutoPalavras(produto.PRODUTO);
+  const ProdutoToItem = useCallback(
+    (produto: iProduto) => {
+      dispatch(SetProduct(produto.PRODUTO));
 
-    await GetTabelas(produto);
-    setItemOrcamento((old) => {
-      return {
-        ...old,
-        PRODUTO: produto,
-      };
-    });
+      if (!isLoading) {
+        dispatch(
+          SetCurrentItem({
+            ...CurrentItem,
+            PRODUTO: produto,
+          })
+        );
 
-    setChaves(produto.ListaChaves);
-  };
+        if (!IsLoadingItem) {
+          setProdutoPalavras((old) => (old = produto.PRODUTO));
+          GetTabelas();
+        }
+      }
+
+      if (!isLoading && errorMessage !== '') {
+        toast.error(`Opps, ${errorMessage} 🤯`, {
+          position: 'bottom-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: ThemeName,
+        });
+      }
+    },
+    [Current, CurrentItem, isLoading, IsLoadingItem]
+  );
 
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     const tabelaSplited = TabelaSelected.label.split('-');
@@ -223,20 +221,26 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     e.preventDefault();
     let result: callback = {
       itemOrcamento: {
-        ...ItemOrcamento,
+        ...CurrentItem,
         TABELA: tabela,
-        VALOR: ItemOrcamento.VALOR,
-        TOTAL: ItemOrcamento.TOTAL,
-        SUBTOTAL: ItemOrcamento.TOTAL,
+        VALOR: CurrentItem.VALOR,
+        TOTAL: CurrentItem.TOTAL,
+        SUBTOTAL: CurrentItem.TOTAL,
       },
       update: SaveOrUpdateItem,
     };
-    setItemOrcamento(result.itemOrcamento);
+
+    dispatch(SetCurrentItem(result.itemOrcamento));
+    ResetForm();
     callback(result);
-    setProdutoPalavras('');
-    setProdutos([]);
-    setItemOrcamento({} as iItensOrcamento);
     OnCloseModal();
+  };
+
+  const ResetForm = () => {
+    setProdutoPalavras('');
+    dispatch(ResetCurrentItem());
+    dispatch(ResetProduct());
+    callback(null);
   };
 
   const tableChavesHeaders: iColumnType<iListaChave>[] = [
@@ -264,30 +268,32 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     <>
       {Modal && (
         <Modal
-          Title={`ADD ITEM AO ORÇAMENTO Nº ${ItemOrcamento?.ORCAMENTO.ORCAMENTO}`}
-          width='95vw'
-          height='95vh'
+          Title={`ADD ITEM AO ORÇAMENTO Nº ${CurrentItem?.ORCAMENTO.ORCAMENTO}`}
+          width='80vw'
+          height='60vh'
           sm={{ width: '100%', height: '100vh' }}
           xs={{ width: '100%', height: '100vh' }}
-          OnCloseButtonClick={() => setProdutoPalavras('')}
+          OnCloseButtonClick={() => ResetForm()}
         >
           <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
             <FlexComponent
+              height='40vh'
               gapColumn='2rem'
+              gapRow='2rem'
               sm={{ direction: 'column' }}
               overflow='hidden auto'
             >
               <FlexComponent
                 width='70%'
                 direction='column'
-                gapRow='1rem'
+                gapRow='1.5rem'
                 sm={{ width: '100%' }}
               >
                 <FlexComponent
-                  gapColumn='1rem'
+                  gapColumn='1.5rem'
                   sm={{ direction: 'column', gapRow: '1rem' }}
                 >
-                  <FlexComponent flexGrow={1} alignItems='flex-end'>
+                  <FlexComponent alignItems='flex-end'>
                     <FlexComponent width='85%'>
                       <InputCustom
                         onChange={OnProdutoPalavras}
@@ -309,12 +315,12 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       />
                     </FlexComponent>
                   </FlexComponent>
-                  <FlexComponent flexGrow={1}>
+                  <FlexComponent margin='0 0 0 .5rem' flexGrow={1}>
                     <InputCustom
                       readOnly={true}
                       label='REFERÊNCIA'
                       name='REFERENCIA'
-                      value={ItemOrcamento.PRODUTO?.REFERENCIA}
+                      value={CurrentItem.PRODUTO?.REFERENCIA}
                     />
                   </FlexComponent>
                   <FlexComponent flexGrow={1}>
@@ -322,7 +328,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='FABRICANTE'
                       readOnly={true}
                       name='FABRICANTE'
-                      value={ItemOrcamento.PRODUTO?.FABRICANTE?.NOME}
+                      value={CurrentItem.PRODUTO?.FABRICANTE?.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent flexGrow={1}>
@@ -330,17 +336,17 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='LOCALIZAÇÃO'
                       readOnly={true}
                       name='LOCALIZACAO'
-                      value={ItemOrcamento.PRODUTO?.LOCAL}
+                      value={CurrentItem.PRODUTO?.LOCAL}
                     />
                   </FlexComponent>
                 </FlexComponent>
-                <FlexComponent direction='column' gapRow='1rem'>
+                <FlexComponent direction='column' gapRow='1.5rem'>
                   <FlexComponent>
                     <InputCustom
                       label='NOME DO PRODUTO'
                       readOnly={true}
                       name='PRODUTO.NOME'
-                      value={ItemOrcamento.PRODUTO?.NOME}
+                      value={CurrentItem.PRODUTO?.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent>
@@ -348,7 +354,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='APLICAÇÃO PRODUTO'
                       readOnly={true}
                       name='APLICACAO'
-                      value={ItemOrcamento.PRODUTO?.APLICACOES}
+                      value={CurrentItem.PRODUTO?.APLICACOES}
                     />
                   </FlexComponent>
                   <FlexComponent>
@@ -356,7 +362,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='INFORMACOES'
                       readOnly={true}
                       name='INFORMACOES.PRODUTO'
-                      value={ItemOrcamento.PRODUTO?.INSTRUCOES}
+                      value={CurrentItem.PRODUTO?.INSTRUCOES}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -365,7 +371,12 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                 width='30%'
                 sm={{ width: '100%', height: '20vh', margin: '1rem 0' }}
               >
-                <Table columns={tableChavesHeaders} TableData={Chaves} />
+                <DataTable
+                  columns={tableChavesHeaders}
+                  IsLoading={IsLoadingItem}
+                  ErrorMessage={errorMessage}
+                  TableData={Current.produto.ListaChaves}
+                />
               </FlexComponent>
             </FlexComponent>
             <FlexComponent
@@ -385,7 +396,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   name='ESTOQUE'
                   type='number'
                   textAlign='right'
-                  value={ItemOrcamento.PRODUTO?.QTDATUAL}
+                  value={CurrentItem.PRODUTO?.QTDATUAL}
                 />
               </FlexComponent>
               <FlexComponent width='10%' sm={{ width: '49%' }}>
@@ -394,7 +405,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   label='QTD'
                   name='QTD'
                   type='number'
-                  value={QTDProduto}
+                  value={CurrentItem.QTD}
                 />
               </FlexComponent>
               <FlexComponent width='40%' sm={{ width: '99%' }}>
@@ -410,7 +421,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   label='VALOR'
                   name='VALOR'
                   textAlign='right'
-                  value={Price.toLocaleString('pt-br', {
+                  value={CurrentItem.VALOR.toLocaleString('pt-br', {
                     style: 'currency',
                     currency: 'BRL',
                   })}
@@ -421,7 +432,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   label='TOTAL'
                   name='TOTAL'
                   textAlign='right'
-                  value={Total.toLocaleString('pt-br', {
+                  value={CurrentItem.TOTAL.toLocaleString('pt-br', {
                     style: 'currency',
                     currency: 'BRL',
                   })}
@@ -440,11 +451,11 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
           </FormEditOrcamento>
         </Modal>
       )}
-      {Produtos.length > 1 && (
+      {ListProduto.Qtd_Registros > 0 && (
         <ModalProduto
           produtoPalavras={ProdutoPalavras}
           callback={ProdutoToItem}
-          produtos={Produtos}
+          produtos={ListProduto.value}
         />
       )}
     </>

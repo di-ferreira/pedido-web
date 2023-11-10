@@ -61,8 +61,6 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
 
   const GoToNextPage = () => {
     CurrentPage < TotalPages && setCurrentPage((oldPage) => oldPage + 1);
-    console.log('RowsperPage', RowsPerPage);
-    console.log('SkipPage', SkipPage());
 
     OnFetchData(RowsPerPage, SkipPage());
   };

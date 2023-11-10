@@ -7,7 +7,7 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     overflow: hidden auto;
   }
 `;
@@ -25,7 +25,7 @@ export const FilterContainer = styled.div`
     width: auto;
   }
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     flex-direction: column;
     min-height: 25rem;
     align-items: center;

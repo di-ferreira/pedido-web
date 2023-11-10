@@ -20,7 +20,7 @@ export const TableCell = styled.td<iTableCell>`
   display: none;
   font-weight: bold;
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     display: ${(props) => (props.isHideMobile ? 'none' : 'flex')};
     width: 50%;
     align-items: center;

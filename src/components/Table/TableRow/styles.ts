@@ -20,7 +20,7 @@ export const TableRowItem = styled.tr`
     border-bottom-right-radius: 1.2rem;
   }
 
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     flex-direction: column;
     & > td {
       display: none;
@@ -30,7 +30,7 @@ export const TableRowItem = styled.tr`
 
 export const TableCellContainer = styled.div<iTableRow>`
   display: none;
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     display: ${(props) => (props.isHideMobile ? 'none' : 'flex')};
     padding: 0rem 2.5rem;
     border-bottom: solid 0.1rem ${(props) => props.theme.colors.onSurface};

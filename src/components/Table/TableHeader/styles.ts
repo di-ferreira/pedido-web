@@ -24,7 +24,7 @@ export const TableHeaderCell = styled.th<iTableCell>`
   &:first-child {
     width: ${(props) => (props.min_width ? props.min_width : 'auto')};
   }
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
 `;
@@ -33,7 +33,7 @@ export const TableHeaderRow = styled.tr`
   display: flex;
   position: relative;
   height: 5rem;
-  @media only screen and ${devices.sm} {
+  ${`@media screen and ${devices.sm}`} {
     display: none;
     overflow: auto hidden;
     height: 100%;
