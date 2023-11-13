@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FormEditOrcamento, FormFooter } from './styles';
@@ -181,39 +181,32 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
     );
   };
 
-  const ProdutoToItem = useCallback(
-    (produto: iProduto) => {
-      dispatch(SetProduct(produto.PRODUTO));
+  const ProdutoToItem = (produto: iProduto) => {
+    dispatch(SetProduct(produto.PRODUTO));
+    dispatch(
+      SetCurrentItem({
+        ...CurrentItem,
+        PRODUTO: produto,
+      })
+    );
 
-      if (!isLoading) {
-        dispatch(
-          SetCurrentItem({
-            ...CurrentItem,
-            PRODUTO: produto,
-          })
-        );
+    setProdutoPalavras((old) => (old = produto.PRODUTO));
+    if (!isLoading && errorMessage !== '') {
+      toast.error(`Opps, ${errorMessage} 🤯`, {
+        position: 'bottom-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: ThemeName,
+      });
+    }
+  };
 
-        if (!IsLoadingItem) {
-          setProdutoPalavras((old) => (old = produto.PRODUTO));
-          GetTabelas();
-        }
-      }
-
-      if (!isLoading && errorMessage !== '') {
-        toast.error(`Opps, ${errorMessage} 🤯`, {
-          position: 'bottom-right',
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          theme: ThemeName,
-        });
-      }
-    },
-    [Current, CurrentItem, isLoading, IsLoadingItem]
-  );
-
+  useEffect(() => {
+    GetTabelas();
+  }, [Current]);
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     const tabelaSplited = TabelaSelected.label.split('-');
     let tabela: string = tabelaSplited[0].replace(/\s/g, '');
@@ -269,8 +262,8 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       {Modal && (
         <Modal
           Title={`ADD ITEM AO ORÇAMENTO Nº ${CurrentItem?.ORCAMENTO.ORCAMENTO}`}
-          width='80vw'
-          height='60vh'
+          width='75vw'
+          height='75vh'
           sm={{ width: '100%', height: '100vh' }}
           xs={{ width: '100%', height: '100vh' }}
           OnCloseButtonClick={() => ResetForm()}
@@ -320,7 +313,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       readOnly={true}
                       label='REFERÊNCIA'
                       name='REFERENCIA'
-                      value={CurrentItem.PRODUTO?.REFERENCIA}
+                      value={Current.produto.REFERENCIA}
                     />
                   </FlexComponent>
                   <FlexComponent flexGrow={1}>
@@ -328,7 +321,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='FABRICANTE'
                       readOnly={true}
                       name='FABRICANTE'
-                      value={CurrentItem.PRODUTO?.FABRICANTE?.NOME}
+                      value={Current.produto.FABRICANTE?.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent flexGrow={1}>
@@ -336,7 +329,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='LOCALIZAÇÃO'
                       readOnly={true}
                       name='LOCALIZACAO'
-                      value={CurrentItem.PRODUTO?.LOCAL}
+                      value={Current.produto.LOCAL}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -346,7 +339,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='NOME DO PRODUTO'
                       readOnly={true}
                       name='PRODUTO.NOME'
-                      value={CurrentItem.PRODUTO?.NOME}
+                      value={Current.produto.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent>
@@ -354,7 +347,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='APLICAÇÃO PRODUTO'
                       readOnly={true}
                       name='APLICACAO'
-                      value={CurrentItem.PRODUTO?.APLICACOES}
+                      value={Current.produto.APLICACOES}
                     />
                   </FlexComponent>
                   <FlexComponent>
@@ -362,7 +355,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                       label='INFORMACOES'
                       readOnly={true}
                       name='INFORMACOES.PRODUTO'
-                      value={CurrentItem.PRODUTO?.INSTRUCOES}
+                      value={Current.produto.INSTRUCOES}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -396,7 +389,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   name='ESTOQUE'
                   type='number'
                   textAlign='right'
-                  value={CurrentItem.PRODUTO?.QTDATUAL}
+                  value={Current.produto.QTDATUAL}
                 />
               </FlexComponent>
               <FlexComponent width='10%' sm={{ width: '49%' }}>
@@ -421,10 +414,14 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   label='VALOR'
                   name='VALOR'
                   textAlign='right'
-                  value={CurrentItem.VALOR.toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
+                  value={
+                    isNaN(CurrentItem.VALOR)
+                      ? 0
+                      : CurrentItem.VALOR.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })
+                  }
                 />
               </FlexComponent>
               <FlexComponent width='20%' sm={{ width: '100%' }}>
@@ -432,10 +429,14 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   label='TOTAL'
                   name='TOTAL'
                   textAlign='right'
-                  value={CurrentItem.TOTAL.toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
+                  value={
+                    isNaN(CurrentItem.TOTAL)
+                      ? 0
+                      : CurrentItem.TOTAL.toLocaleString('pt-br', {
+                          style: 'currency',
+                          currency: 'BRL',
+                        })
+                  }
                 />
               </FlexComponent>
             </FlexComponent>

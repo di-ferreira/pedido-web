@@ -147,7 +147,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     <>
       {Modal && (
         <Modal
-          Title={`\n Buscar Produto \n`}
+          Title={`Buscar Produto`}
           width='100vw'
           height='100vh'
           sm={{ width: '100%', height: '100vh' }}
