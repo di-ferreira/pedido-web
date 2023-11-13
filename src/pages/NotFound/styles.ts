@@ -20,4 +20,3 @@ export const Title = styled.h1`
 export const Image = styled.img`
   width: 40%;
 `;
-

@@ -8,10 +8,7 @@ interface iTableCellProps<T> {
   column: iColumnType<T>;
 }
 
-export function TableRowCell<T>({
-  item,
-  column,
-}: iTableCellProps<T>): JSX.Element {
+export function TableRowCell<T>({ item, column }: iTableCellProps<T>): JSX.Element {
   const value = get(item, column.key);
   return (
     <>
@@ -44,4 +41,3 @@ export function TableRowCell<T>({
     </>
   );
 }
-

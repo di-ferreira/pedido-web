@@ -3,13 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { iModal, iModalRender } from '../../@types/Modal';
 import { Icon } from '../../components/Icon';
-import {
-  Backdrop,
-  CloseButton,
-  ModalBody,
-  ModalContainer,
-  ModalHeader,
-} from './styles';
+import { Backdrop, CloseButton, ModalBody, ModalContainer, ModalHeader } from './styles';
 
 const RenderLayout: React.FC<iModalRender> = ({
   Title,
@@ -38,7 +32,7 @@ const RenderLayout: React.FC<iModalRender> = ({
           fn();
         }
       },
-      [fn]
+      [fn],
     );
 
     useEffect(() => {
@@ -51,15 +45,7 @@ const RenderLayout: React.FC<iModalRender> = ({
 
   return (
     <Backdrop>
-      <ModalContainer
-        width={width}
-        height={height}
-        xs={xs}
-        sm={sm}
-        lg={lg}
-        md={md}
-        xl={xl}
-      >
+      <ModalContainer width={width} height={height} xs={xs} sm={sm} lg={lg} md={md} xl={xl}>
         <CloseButton onClick={BtnClose}>
           <Icon Icon={faTimes} />
         </CloseButton>
@@ -108,7 +94,7 @@ const useModal = () => {
         xl,
         xs,
       }),
-      document.body
+      document.body,
     );
 
   const ResultModal = useMemo(() => {
@@ -125,4 +111,3 @@ const useModal = () => {
 };
 
 export default useModal;
-

@@ -576,14 +576,11 @@ export const orcamentoSlice = createSlice({
         state.isLoading = true;
         state.errorMessage = '';
       })
-      .addCase(
-        NewOrcamento.fulfilled,
-        (state, action: PayloadAction<iOrcamento>) => {
-          state.isLoading = false;
-          state.Current = action.payload;
-          state.errorMessage = '';
-        }
-      )
+      .addCase(NewOrcamento.fulfilled, (state, action: PayloadAction<iOrcamento>) => {
+        state.isLoading = false;
+        state.Current = action.payload;
+        state.errorMessage = '';
+      })
       .addCase(NewOrcamento.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.errorMessage = action.payload;
@@ -594,14 +591,11 @@ export const orcamentoSlice = createSlice({
         state.isLoading = true;
         state.errorMessage = '';
       })
-      .addCase(
-        GetOrcamento.fulfilled,
-        (state, action: PayloadAction<iOrcamento>) => {
-          state.isLoading = false;
-          state.Current = action.payload;
-          state.errorMessage = '';
-        }
-      )
+      .addCase(GetOrcamento.fulfilled, (state, action: PayloadAction<iOrcamento>) => {
+        state.isLoading = false;
+        state.Current = action.payload;
+        state.errorMessage = '';
+      })
       .addCase(GetOrcamento.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.errorMessage = action.payload;
@@ -618,82 +612,60 @@ export const orcamentoSlice = createSlice({
           state.isLoading = false;
           state.ListOrcamento = action.payload;
           state.errorMessage = '';
-        }
+        },
       )
-      .addCase(
-        GetListOrcamento.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.isLoading = false;
-          state.errorMessage = action.payload;
-        }
-      );
+      .addCase(GetListOrcamento.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.errorMessage = action.payload;
+      });
 
     builder
       .addCase(NewItemOrcamento.pending, (state) => {
         state.errorMessage = '';
         state.isLoading = true;
       })
-      .addCase(
-        NewItemOrcamento.fulfilled,
-        (state, action: PayloadAction<iOrcamento>) => {
-          state.errorMessage = '';
-          state.isLoading = false;
-          state.Current = action.payload;
-        }
-      )
-      .addCase(
-        NewItemOrcamento.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.isLoading = false;
-          state.errorMessage = action.payload;
-        }
-      );
+      .addCase(NewItemOrcamento.fulfilled, (state, action: PayloadAction<iOrcamento>) => {
+        state.errorMessage = '';
+        state.isLoading = false;
+        state.Current = action.payload;
+      })
+      .addCase(NewItemOrcamento.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.errorMessage = action.payload;
+      });
 
     builder
       .addCase(RemoveItemOrcamento.pending, (state) => {
         state.errorMessage = '';
         state.isLoading = true;
       })
-      .addCase(
-        RemoveItemOrcamento.fulfilled,
-        (state, action: PayloadAction<iOrcamento>) => {
-          state.errorMessage = '';
-          state.isLoading = false;
-          state.Current = action.payload;
-        }
-      )
-      .addCase(
-        RemoveItemOrcamento.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.isLoading = false;
-          state.errorMessage = action.payload;
-        }
-      );
+      .addCase(RemoveItemOrcamento.fulfilled, (state, action: PayloadAction<iOrcamento>) => {
+        state.errorMessage = '';
+        state.isLoading = false;
+        state.Current = action.payload;
+      })
+      .addCase(RemoveItemOrcamento.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.errorMessage = action.payload;
+      });
 
     builder
       .addCase(UpdateItemOrcamento.pending, (state) => {
         state.errorMessage = '';
         state.isLoading = true;
       })
-      .addCase(
-        UpdateItemOrcamento.fulfilled,
-        (state, action: PayloadAction<iOrcamento>) => {
-          state.errorMessage = '';
-          state.isLoading = false;
-          state.Current = action.payload;
-        }
-      )
-      .addCase(
-        UpdateItemOrcamento.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.isLoading = false;
-          state.errorMessage = action.payload;
-        }
-      );
+      .addCase(UpdateItemOrcamento.fulfilled, (state, action: PayloadAction<iOrcamento>) => {
+        state.errorMessage = '';
+        state.isLoading = false;
+        state.Current = action.payload;
+      })
+      .addCase(UpdateItemOrcamento.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.errorMessage = action.payload;
+      });
   },
 });
 
 export const { ResetCurrentItem, SetCurrentItem } = orcamentoSlice.actions;
 
 export const orcamentoReducer = orcamentoSlice.reducer;
-

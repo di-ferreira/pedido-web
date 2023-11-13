@@ -27,4 +27,3 @@ function TableHeader<T>({ columns }: iHeaderProps<T>): JSX.Element {
 }
 
 export default TableHeader;
-

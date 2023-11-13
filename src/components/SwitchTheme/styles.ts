@@ -11,4 +11,3 @@ export const IconSwitch = styled(FontAwesomeIcon)`
   width: 100%;
   height: 70%;
 `;
-

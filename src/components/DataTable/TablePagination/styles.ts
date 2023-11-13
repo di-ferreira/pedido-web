@@ -77,4 +77,3 @@ export const Label = styled.label`
     margin: 0 0.5rem;
   }
 `;
-

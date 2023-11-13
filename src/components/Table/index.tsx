@@ -1,16 +1,6 @@
-import React, {
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useImperativeHandle, useState } from 'react';
 import { iFilter } from '../../@types/Filter';
-import {
-  iColumnType,
-  iDataResultTable,
-  iOption,
-  iTableRef,
-} from '../../@types/Table';
+import { iColumnType, iDataResultTable, iOption, iTableRef } from '../../@types/Table';
 import { Loading } from '../Loading';
 import TableHeader from './TableHeader';
 import { TablePagination } from './TablePagination';
@@ -27,7 +17,7 @@ type iTableDataProps<T> = {
 
 function TableWrap<T>(
   { onDataFetch, columns, pagination, filter, TableData }: iTableDataProps<T>,
-  ref: React.Ref<iTableRef<T>>
+  ref: React.Ref<iTableRef<T>>,
 ): JSX.Element {
   const [FilterConfig, setFilterConfig] = useState<iFilter<T>>({
     skip: 0,
@@ -69,7 +59,7 @@ function TableWrap<T>(
   const ConvertColumnsHeders = (column: T[]) => {
     const keyNames = Object.keys(column[0] as {});
 
-    let headers: iColumnType<T>[] = [];
+    const headers: iColumnType<T>[] = [];
 
     keyNames.forEach((keyName) => {
       headers.push({
@@ -80,11 +70,8 @@ function TableWrap<T>(
     setHeaders(headers);
   };
 
-  const SkipPage = (
-    NextPage: boolean = true,
-    RegPerPage: number = RowsPerPage
-  ): number => {
-    let CurPage = NextPage ? CurrentPage + 1 : CurrentPage - 1;
+  const SkipPage = (NextPage: boolean = true, RegPerPage: number = RowsPerPage): number => {
+    const CurPage = NextPage ? CurrentPage + 1 : CurrentPage - 1;
     const Skip = RegPerPage * CurPage - RegPerPage;
     return Skip;
   };
@@ -178,7 +165,7 @@ function TableWrap<T>(
         setIsLoading(false);
       }
     },
-    [setData, setRowsPerPage, onDataFetch, setTotalRegisters, setFilterConfig]
+    [setData, setRowsPerPage, onDataFetch, setTotalRegisters, setFilterConfig],
   );
 
   useEffect(() => {

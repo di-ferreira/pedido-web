@@ -15,22 +15,14 @@ function TableRow<T>({ data, columns }: iTableRowProps<T>): JSX.Element {
         <TableRowItem key={`${idx}`}>
           {columns.map((column, columnIndex) => (
             <>
-              <TableRowCell
-                key={`table-row-cell-${columnIndex}`}
-                item={item}
-                column={column}
-              />
+              <TableRowCell key={`table-row-cell-${columnIndex}`} item={item} column={column} />
               <TableCellContainer isHideMobile={column.isHideMobile}>
                 <TableRowHeaderCell
                   key={`table-row-header-cell-${columnIndex}`}
                   item={item}
                   column={column}
                 />
-                <TableRowCell
-                  key={`table-row-cell-${columnIndex}`}
-                  item={item}
-                  column={column}
-                />
+                <TableRowCell key={`table-row-cell-${columnIndex}`} item={item} column={column} />
               </TableCellContainer>
             </>
           ))}
@@ -41,4 +33,3 @@ function TableRow<T>({ data, columns }: iTableRowProps<T>): JSX.Element {
 }
 
 export default TableRow;
-

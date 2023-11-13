@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, IconButton, TypeToColor } from './styles';
 import { iButton } from '../../@types/Button';
+import { Container, IconButton, TypeToColor } from './styles';
 
 const Button: React.FC<iButton> = ({
   Type,
@@ -20,21 +20,21 @@ const Button: React.FC<iButton> = ({
   AnimationPulse,
   AnimationSpin,
 }) => {
-  const { bgColor, color, hoverColor } = TypeToColor[Type ? Type : 'default'];
+  const { bgColor, color, hoverColor } = TypeToColor[Type || 'default'];
 
   return (
     <Container
       style={style}
-      type={TypeButton ? TypeButton : 'button'}
+      type={TypeButton || 'button'}
       height={Height}
       width={Width}
-      bgColor={background ? background : bgColor}
+      bgColor={background || bgColor}
       hoverColor={hoverColor}
-      color={textColor ? textColor : color}
+      color={textColor || color}
       rounded={Rounded}
       title={Title}
       onClick={() => onclick && onclick()}
-      disabled={disabled ? true : false}
+      disabled={!!disabled}
     >
       {Icon && (
         <IconButton
@@ -51,4 +51,3 @@ const Button: React.FC<iButton> = ({
 };
 
 export default Button;
-

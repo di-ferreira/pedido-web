@@ -103,11 +103,7 @@ export const NavBar: React.FC<iNavBar> = memo(({ Open }) => {
       </OpenCloseButton>
       <ContainerNav>
         <Top>
-          <img
-            src={ThemeName === 'light' ? LogoLight : LogoDark}
-            alt='Logo EMSoft'
-          />{' '}
-          Pedido Web
+          <img src={ThemeName === 'light' ? LogoLight : LogoDark} alt='Logo EMSoft' /> Pedido Web
         </Top>
         <Profile>
           <BorderImage>
@@ -115,9 +111,7 @@ export const NavBar: React.FC<iNavBar> = memo(({ Open }) => {
           </BorderImage>
           <ProfileName>
             {currentUser.vendedor?.NOME}
-            <ProfileGroup>
-              {currentUser.group && currentUser.group}
-            </ProfileGroup>
+            <ProfileGroup>{currentUser.group && currentUser.group}</ProfileGroup>
           </ProfileName>
         </Profile>
         <NavigationContainer>

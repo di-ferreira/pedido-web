@@ -8,8 +8,7 @@ interface iTableCell {
 }
 
 export const TableHeaderCell = styled.th<iTableCell>`
-  background-color: ${(props) =>
-    props.theme.name === 'light' ? Light.surface : Black.text};
+  background-color: ${(props) => (props.theme.name === 'light' ? Light.surface : Black.text)};
   font-weight: 500;
   text-align: center;
   font-size: 1.4rem;

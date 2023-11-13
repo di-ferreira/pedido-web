@@ -1,15 +1,7 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import {
-  iProduto,
-  iProdutoWithTables,
-  iTabelaVenda,
-} from '../../@types/Produto';
+import { iProduto, iProdutoWithTables, iTabelaVenda } from '../../@types/Produto';
 import { iDataResultTable } from '../../@types/Table';
-import {
-  SetProduct,
-  SuperFindProducts,
-  TableFromProduct,
-} from './Produto-Thunk';
+import { SetProduct, SuperFindProducts, TableFromProduct } from './Produto-Thunk';
 
 interface iProdutoState {
   Current: iProdutoWithTables;
@@ -314,51 +306,39 @@ export const produtoSlice = createSlice({
           state.ListProduto = action.payload;
           state.errorMessage = '';
           state.isLoading = false;
-        }
+        },
       )
-      .addCase(
-        SuperFindProducts.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.errorMessage = action.payload;
-          state.isLoading = false;
-        }
-      );
+      .addCase(SuperFindProducts.rejected, (state, action: PayloadAction<any>) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
+      });
 
     builder
       .addCase(TableFromProduct.pending, (state) => {
         state.errorMessage = '';
         state.isLoading = true;
       })
-      .addCase(
-        TableFromProduct.fulfilled,
-        (state, action: PayloadAction<iTabelaVenda[]>) => {
-          state.errorMessage = '';
-          state.isLoading = false;
-          state.TableList = action.payload;
-        }
-      )
-      .addCase(
-        TableFromProduct.rejected,
-        (state, action: PayloadAction<any>) => {
-          state.isLoading = false;
-          state.errorMessage = action.payload;
-        }
-      );
+      .addCase(TableFromProduct.fulfilled, (state, action: PayloadAction<iTabelaVenda[]>) => {
+        state.errorMessage = '';
+        state.isLoading = false;
+        state.TableList = action.payload;
+      })
+      .addCase(TableFromProduct.rejected, (state, action: PayloadAction<any>) => {
+        state.isLoading = false;
+        state.errorMessage = action.payload;
+      });
 
     builder
       .addCase(SetProduct.pending, (state) => {
         state.errorMessage = '';
         state.isLoading = true;
       })
-      .addCase(
-        SetProduct.fulfilled,
-        (state, action: PayloadAction<iProdutoWithTables>) => {
-          state.errorMessage = '';
-          state.isLoading = false;
-          state.Current = action.payload;
-          state.TableList = action.payload.tables;
-        }
-      )
+      .addCase(SetProduct.fulfilled, (state, action: PayloadAction<iProdutoWithTables>) => {
+        state.errorMessage = '';
+        state.isLoading = false;
+        state.Current = action.payload;
+        state.TableList = action.payload.tables;
+      })
       .addCase(SetProduct.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.errorMessage = action.payload;
@@ -369,4 +349,3 @@ export const produtoSlice = createSlice({
 export const { ResetProduct } = produtoSlice.actions;
 
 export const produtoReducer = produtoSlice.reducer;
-

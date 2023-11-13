@@ -44,8 +44,8 @@ export const Container = styled.div<iFlexComponentStyle>`
     margin,
     padding,
   }) => `
-    ${width ? `width:${width};` : `width:100%;`}
-    ${height ? `height:${height};` : `height:auto;`}
+    ${width ? `width:${width};` : 'width:100%;'}
+    ${height ? `height:${height};` : 'height:auto;'}
     ${order ? `order:${order};` : ''}
     ${flexGrow ? `flex-grow:${flexGrow};` : ''}
     ${flexShrink ? `flex-shrink:${flexShrink};` : ''}
@@ -70,7 +70,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     container &&
     `
         display:${isHide ? 'none' : 'flex'};
-        flex-direction: ${direction ? direction : 'row'};
+        flex-direction: ${direction || 'row'};
         ${wrap ? `flex-wrap: ${wrap};` : ''}
         ${justifyContent ? `justify-content:${justifyContent};` : ''}
         ${alignItems ? `align-items: ${alignItems};` : ''}
@@ -84,7 +84,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     sm &&
     `
         @media only screen and ${devices.sm} {
-          ${sm.isHide === true ? `display:none` : 'display:flex'};
+          ${sm.isHide === true ? 'display:none' : 'display:flex'};
           ${sm.direction ? `flex-direction:${sm.direction}` : ''};
           ${sm.wrap ? `flex-wrap: ${sm.wrap};` : ''}
           ${sm.justifyContent ? `justify-content:${sm.justifyContent};` : ''}
@@ -109,7 +109,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     xs &&
     `
         @media only screen and ${devices.xs} {
-          ${xs.isHide ? `display:none` : 'display:flex'};
+          ${xs.isHide ? 'display:none' : 'display:flex'};
           ${xs.direction ? `flex-direction:${xs.direction}` : ''};
           ${xs.wrap ? `flex-wrap: ${xs.wrap};` : ''}
           ${xs.justifyContent ? `justify-content:${xs.justifyContent};` : ''}
@@ -134,7 +134,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     md &&
     `
         @media only screen and ${devices.md} {
-          ${md.isHide ? `display:none` : 'display:flex'};
+          ${md.isHide ? 'display:none' : 'display:flex'};
           ${md.direction ? `flex-direction:${md.direction}` : ''};
           ${md.wrap ? `flex-wrap: ${md.wrap};` : ''}
           ${md.justifyContent ? `justify-content:${md.justifyContent};` : ''}
@@ -159,7 +159,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     lg &&
     `
         @media only screen and ${devices.lg} {
-          ${lg.isHide ? `display:none` : 'display:flex'};
+          ${lg.isHide ? 'display:none' : 'display:flex'};
           ${lg.direction ? `flex-direction:${lg.direction}` : ''};
           ${lg.wrap ? `flex-wrap: ${lg.wrap};` : ''}
           ${lg.justifyContent ? `justify-content:${lg.justifyContent};` : ''}
@@ -184,7 +184,7 @@ export const Container = styled.div<iFlexComponentStyle>`
     xl &&
     `
         @media only screen and ${devices.xl} {
-         ${xl.isHide ? `display:none` : 'display:flex'};
+         ${xl.isHide ? 'display:none' : 'display:flex'};
            ${xl.direction ? `flex-direction:${xl.direction}` : ''};
           ${xl.wrap ? `flex-wrap: ${xl.wrap};` : ''}
           ${xl.justifyContent ? `justify-content:${xl.justifyContent};` : ''}
@@ -215,4 +215,3 @@ export const Container = styled.div<iFlexComponentStyle>`
     background: ${(props) => props.theme.colors.onSurface};
   }
 `;
-

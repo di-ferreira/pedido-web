@@ -9,8 +9,7 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: ${(props) =>
-    props.theme.name === 'light' ? Light.surface : Black.text};
+  background: ${(props) => (props.theme.name === 'light' ? Light.surface : Black.text)};
 `;
 export const LoginContainer = styled.section`
   display: flex;
@@ -19,8 +18,7 @@ export const LoginContainer = styled.section`
   padding: 1.5rem;
   overflow: hidden;
   border-radius: 0.5rem;
-  background: ${(props) =>
-    props.theme.name === 'light' ? Light.main : Dark.text};
+  background: ${(props) => (props.theme.name === 'light' ? Light.main : Dark.text)};
   box-shadow: 0px 0px 6px 2px
     rgba(
       ${(props) => HEXToRGB(props.theme.colors.onBackground)},
@@ -84,8 +82,7 @@ export const ErrorLoginMsg = styled.span`
   width: 90%;
   font-size: 1.2rem;
   text-align: center;
-  color: ${(props) =>
-    props.theme.name === 'light' ? DarkRed.dark : DarkRed.light};
+  color: ${(props) => (props.theme.name === 'light' ? DarkRed.dark : DarkRed.light)};
 `;
 
 export const ContainerInput = styled.div`
@@ -98,15 +95,9 @@ export const LineDivisor = styled.div`
   height: 100%;
   background: ${(props) => `linear-gradient(
     180deg,
-    rgba(${
-      props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)
-    }, 1) 0%,
-    rgba(${
-      props.theme.name === 'light' ? HEXToRGB(Dark.text) : HEXToRGB(Light.main)
-    }, 1) 49%,
-    rgba(${
-      props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)
-    }, 1) 100%
+    rgba(${props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)}, 1) 0%,
+    rgba(${props.theme.name === 'light' ? HEXToRGB(Dark.text) : HEXToRGB(Light.main)}, 1) 49%,
+    rgba(${props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)}, 1) 100%
   )`};
 
   ${`@media screen and ${devices.sm}`} {
@@ -115,16 +106,9 @@ export const LineDivisor = styled.div`
     margin: 4rem 0 0.5rem 0;
     background: ${(props) => `linear-gradient(
     90deg,
-    rgba(${
-      props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)
-    }, 1) 0%,
-    rgba(${
-      props.theme.name === 'light' ? HEXToRGB(Dark.text) : HEXToRGB(Light.main)
-    }, 1) 49%,
-    rgba(${
-      props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)
-    }, 1) 100%
+    rgba(${props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)}, 1) 0%,
+    rgba(${props.theme.name === 'light' ? HEXToRGB(Dark.text) : HEXToRGB(Light.main)}, 1) 49%,
+    rgba(${props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)}, 1) 100%
   )`};
   }
 `;
-

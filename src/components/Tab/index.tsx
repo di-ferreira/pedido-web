@@ -12,13 +12,7 @@ interface iTab {
   onClose?: () => void;
 }
 
-export const Tab: React.FC<iTab> = ({
-  Icon,
-  Closable,
-  Link,
-  TitleTab,
-  onClose,
-}) => {
+export const Tab: React.FC<iTab> = ({ Icon, Closable, Link, TitleTab, onClose }) => {
   return (
     <Container active={isActiveLink(Link)} title={TitleTab}>
       <TabLink to={Link}>
@@ -29,4 +23,3 @@ export const Tab: React.FC<iTab> = ({
     </Container>
   );
 };
-

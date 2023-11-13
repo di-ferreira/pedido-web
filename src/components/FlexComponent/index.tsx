@@ -30,13 +30,7 @@ interface iFlexStyle {
   flexGrow?: number;
   flexShrink?: number;
   flexBasis?: number | 'auto' | 'max-content' | 'min-content' | 'fit-content';
-  alignSelf?:
-    | 'auto'
-    | 'flex-start'
-    | 'flex-end'
-    | 'center'
-    | 'baseline'
-    | 'stretch';
+  alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
   width?: string;
   height?: string;
   overflow?:
@@ -89,8 +83,8 @@ export const FlexComponent: React.FC<iFlexComponent> = ({
 }) => {
   return (
     <Container
-      isHide={isHide ? isHide : false}
-      container={container ? container : true}
+      isHide={isHide || false}
+      container={container || true}
       direction={direction}
       alignItems={alignItems}
       alignSelf={alignSelf}
@@ -118,4 +112,3 @@ export const FlexComponent: React.FC<iFlexComponent> = ({
     </Container>
   );
 };
-

@@ -26,17 +26,13 @@ export const Backdrop = styled.div`
   z-index: 500;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(
-    ${(props) => HEXToRGB(props.theme.colors.background)},
-    0.7
-  );
+  background-color: rgba(${(props) => HEXToRGB(props.theme.colors.background)}, 0.7);
 `;
 
 export const ModalContainer = styled.section<iModalContainerStyle>`
   position: relative;
   overflow: hidden;
-  border: 1px solid
-    rgba(${(props) => HEXToRGB(props.theme.colors.onBackground)}, 0.2);
+  border: 1px solid rgba(${(props) => HEXToRGB(props.theme.colors.onBackground)}, 0.2);
   border-radius: 0.8rem;
   background-color: ${(props) => props.theme.colors.background};
   box-shadow: 6px 5px 5px 0px rgba(${HEXToRGB(Black.main)}, 0.5);
@@ -45,8 +41,8 @@ export const ModalContainer = styled.section<iModalContainerStyle>`
   max-height: 100vh;
 
   ${({ width, height }) => `
-    width: ${width ? width : '100vw'};
-    height: ${height ? height : '100vh'};
+    width: ${width || '100vw'};
+    height: ${height || '100vh'};
   `}
 
   ${({ xs }) =>
@@ -125,8 +121,7 @@ export const ModalHeader = styled.header`
 export const ModalBody = styled.article<iStyle>`
   position: relative;
   width: ${(props) => (props.width ? props.width : '100%')};
-  height: ${(props) =>
-    props.height ? `calc(${props.height} - 3.5rem)` : 'calc(100vh - 3.5rem)'};
+  height: ${(props) => (props.height ? `calc(${props.height} - 3.5rem)` : 'calc(100vh - 3.5rem)')};
   padding: 1rem;
 
   ${`@media screen and (${devices.xl})`} {

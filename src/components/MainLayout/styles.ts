@@ -13,4 +13,3 @@ export const Main = styled.main`
   height: 100vh;
   overflow: hidden auto;
 `;
-

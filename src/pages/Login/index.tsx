@@ -73,10 +73,7 @@ export const Login: React.FC = () => {
       <LoginContainer>
         <LoginHeader>
           <LoginTitle>
-            <img
-              src={ThemeName === 'light' ? LogoLight : LogoDark}
-              alt='Logo EMSoft'
-            />
+            <img src={ThemeName === 'light' ? LogoLight : LogoDark} alt='Logo EMSoft' />
             PEDIDO WEB
           </LoginTitle>
           <ImageLogin src={LoginIllustration} />
@@ -120,4 +117,3 @@ export const Login: React.FC = () => {
     </Container>
   );
 };
-

@@ -27,4 +27,3 @@ export const Label = styled.label`
   left: 0.5rem;
   z-index: 500;
 `;
-

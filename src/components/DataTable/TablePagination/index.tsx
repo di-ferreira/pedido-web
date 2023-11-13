@@ -33,11 +33,8 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
   const [TotalPages, setTotalPages] = useState<number>(1);
   const [TotalRegisters, setTotalRegisters] = useState<number>(1);
 
-  const SkipPage = (
-    NextPage: boolean = true,
-    RegPerPage: number = RowsPerPage
-  ): number => {
-    let CurPage = NextPage ? CurrentPage + 1 : CurrentPage - 1;
+  const SkipPage = (NextPage: boolean = true, RegPerPage: number = RowsPerPage): number => {
+    const CurPage = NextPage ? CurrentPage + 1 : CurrentPage - 1;
     const Skip = RegPerPage * CurPage - RegPerPage;
     return Skip;
   };
@@ -48,10 +45,7 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
       return oldValue;
     });
 
-    OnFetchData(
-      value ? Number(value.value) : RowsPerPage,
-      RowsPerPage * CurrentPage - RowsPerPage
-    );
+    OnFetchData(value ? Number(value.value) : RowsPerPage, RowsPerPage * CurrentPage - RowsPerPage);
   };
 
   const GoToFirstPage = () => {
@@ -78,8 +72,8 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
   useEffect(() => {
     setTotalPages(Math.ceil(QuantityRegiters / RowsPerPage));
     setTotalRegisters(QuantityRegiters);
-    let NewOption = OptionsSelect.find((opt) => opt.value === RowsPerPage);
-    setCurrentOption(NewOption ? NewOption : OptionsSelect[0]);
+    const NewOption = OptionsSelect.find((opt) => opt.value === RowsPerPage);
+    setCurrentOption(NewOption || OptionsSelect[0]);
   }, [RowsPerPage]);
 
   /*
@@ -115,7 +109,7 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === 1 ? true : false}
+          disabled={CurrentPage === 1}
           onclick={() => GoToFirstPage()}
         />
         <Button
@@ -124,7 +118,7 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === 1 ? true : false}
+          disabled={CurrentPage === 1}
           onclick={() => GoToPrevPage()}
         />
         <Button
@@ -133,7 +127,7 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === TotalPages ? true : false}
+          disabled={CurrentPage === TotalPages}
           onclick={() => GoToNextPage()}
         />
         <Button
@@ -142,7 +136,7 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === TotalPages ? true : false}
+          disabled={CurrentPage === TotalPages}
           onclick={() => GoToLastPage()}
         />
       </ContainerButtons>

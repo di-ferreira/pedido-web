@@ -1,12 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import styled from 'styled-components';
-import {
-  Danger,
-  Gray,
-  Primary,
-  Secondary,
-  Success,
-  Warn,
-} from '../../../colors';
+import { Danger, Gray, Primary, Secondary, Success, Warn } from '../../../colors';
 
 export const TypeToColor = {
   default: {
@@ -50,7 +44,7 @@ export const CheckboxContainer = styled.div<iContainerCheckbox>`
   cursor: pointer;
   ${(props) => props.width && `width: ${props.width}`};
 
-  height: ${(props) => (props.height ? props.height : `4rem`)};
+  height: ${(props) => (props.height ? props.height : '4rem')};
   padding: 0.8rem;
   border-radius: 0.5rem;
 

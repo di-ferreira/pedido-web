@@ -60,4 +60,3 @@ export const Vendas: React.FC = () => {
     </Container>
   );
 };
-

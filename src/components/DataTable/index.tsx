@@ -38,10 +38,7 @@ export function DataTable<T>({
       </TableBody>
       {onFetchPagination && QuantityRegiters && (
         <tfoot>
-          <TablePagination
-            OnFetchData={onFetchPagination}
-            QuantityRegiters={QuantityRegiters}
-          />
+          <TablePagination OnFetchData={onFetchPagination} QuantityRegiters={QuantityRegiters} />
         </tfoot>
       )}
     </TableWrapper>

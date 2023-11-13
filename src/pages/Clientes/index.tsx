@@ -1,10 +1,4 @@
-import {
-  faBan,
-  faCheck,
-  faEdit,
-  faFileLines,
-  faSearch,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCheck, faEdit, faFileLines, faSearch } from '@fortawesome/free-solid-svg-icons';
 import React, { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { iCliente } from '../../@types/Cliente';
@@ -27,12 +21,7 @@ import { useTheme } from '../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../utils';
 import { ModalCliente } from '../Modals/Cliente';
 import { ModalOrcamento } from '../Modals/Orcamento';
-import {
-  Container,
-  ContainerInput,
-  FilterContainer,
-  SwitchContainer,
-} from './styles';
+import { Container, ContainerInput, FilterContainer, SwitchContainer } from './styles';
 
 interface iSearchCliente {
   filterBy: string;
@@ -45,9 +34,7 @@ export const Clientes: React.FC = () => {
   const { currentUser } = useLogin();
   const { ThemeName } = useTheme();
 
-  const { errorMessage, isLoading } = useAppSelector(
-    (state) => state.orcamento
-  );
+  const { errorMessage, isLoading } = useAppSelector((state) => state.orcamento);
   const dispatch = useAppDispatch();
 
   const OptionsSelect: iOption[] = [
@@ -79,9 +66,7 @@ export const Clientes: React.FC = () => {
     return <Icon Icon={faCheck} Type='success' key={value} />;
   };
 
-  const MountQueryFilter = (
-    filter: iSearchCliente
-  ): iFilterQuery<iCliente>[] => {
+  const MountQueryFilter = (filter: iSearchCliente): iFilterQuery<iCliente>[] => {
     let listFilter: iFilterQuery<iCliente>[] = [];
 
     if (filter.value !== '') {
@@ -128,7 +113,7 @@ export const Clientes: React.FC = () => {
       skip: 0,
       orderBy: 'CLIENTE',
       filter: MountQueryFilter(SearchCliente),
-    }
+    },
   ) => {
     return await GetClientes(filter);
   };
@@ -138,7 +123,7 @@ export const Clientes: React.FC = () => {
   };
 
   const onOpenModalOrcamento = (value: iCliente) => {
-    let NewAddOrcamento: iOrcamento = {
+    const NewAddOrcamento: iOrcamento = {
       ORCAMENTO: 0,
       TOTAL: 0.0,
       CLIENTE: value,
@@ -179,8 +164,7 @@ export const Clientes: React.FC = () => {
       title: 'BLOQUEADO',
       width: '11rem',
       isHideMobile: true,
-      render: (_, item) =>
-        item.BLOQUEADO && <>{RenderIconBloqueado(String(item.BLOQUEADO))}</>,
+      render: (_, item) => item.BLOQUEADO && <>{RenderIconBloqueado(String(item.BLOQUEADO))}</>,
     },
     {
       key: 'CIC',
@@ -291,12 +275,7 @@ export const Clientes: React.FC = () => {
 
       {OpenModalOrc && <ModalOrcamento />}
       <FlexComponent height='100%'>
-        <Table
-          columns={headers}
-          onDataFetch={ListClientes}
-          ref={TableRef}
-          pagination
-        />
+        <Table columns={headers} onDataFetch={ListClientes} ref={TableRef} pagination />
       </FlexComponent>
     </Container>
   );

@@ -13,17 +13,14 @@ export const Container = styled.li<isActiveLink>`
   display: flex;
   align-items: center;
   background: ${(props) =>
-    props.active
-      ? `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)`
-      : 'transparent'};
+    props.active ? `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)` : 'transparent'};
   padding-left: ${(props) => (props.active ? '0rem' : '0.6rem')};
   padding-top: 3%;
   transition: all 0.3s ease;
   &:hover {
     padding-left: 0rem;
     border-left-width: 0.6rem;
-    background: ${(props) =>
-      `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)`};
+    background: ${(props) => `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)`};
     transition: all 0.3s ease;
   }
 `;
@@ -33,8 +30,7 @@ export const NavButtonLink = styled(Link)<isActiveLink>`
   height: 100%;
   display: flex;
   align-items: baseline;
-  color: ${(props) =>
-    props.active ? props.theme.colors.secondary : props.theme.colors.onSurface};
+  color: ${(props) => (props.active ? props.theme.colors.secondary : props.theme.colors.onSurface)};
   font-weight: ${(props) => (props.active ? '700' : '400')};
   text-decoration: none;
   text-transform: capitalize;
@@ -65,8 +61,7 @@ export const ContainerButton = styled.button`
   &:hover {
     padding-left: 0rem;
     border-left-width: 0.6rem;
-    background: ${(props) =>
-      `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)`};
+    background: ${(props) => `rgba(${HEXToRGB(props.theme.colors.onSurface)}, 0.1)`};
     transition: all 0.3s ease;
   }
 `;

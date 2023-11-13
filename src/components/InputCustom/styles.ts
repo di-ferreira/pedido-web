@@ -22,16 +22,10 @@ interface iInput {
 
 export const Container = styled.div<iContainer>`
   display: flex;
-  flex-direction: ${(props) =>
-    props.labelPosition !== 'top' ? 'row' : 'column'};
+  flex-direction: ${(props) => (props.labelPosition !== 'top' ? 'row' : 'column')};
   width: ${(props) =>
-    props.widht
-      ? props.widht
-      : props.type === 'radio'
-      ? 'fit-content'
-      : '100%'};
-  margin: ${(props) =>
-    props.label ? '-0.5rem 0.5rem 0rem 0rem' : '0rem 0.5rem 0rem 0rem'};
+    props.widht ? props.widht : props.type === 'radio' ? 'fit-content' : '100%'};
+  margin: ${(props) => (props.label ? '-0.5rem 0.5rem 0rem 0rem' : '0rem 0.5rem 0rem 0rem')};
   height: ${(props) => (props.height ? props.height : 'auto')};
   ${(props) => (props.labelPosition !== 'top' ? 'align-items: center' : '')};
 
@@ -71,8 +65,7 @@ export const Input = styled.input<iInput>`
   }
   &:focus {
     border-color: ${(props) => props.theme.colors.secondary};
-    box-shadow: 0px 0px 3px 1px
-      rgba(${(props) => HEXToRGB(props.theme.colors.secondary)}, 0.7);
+    box-shadow: 0px 0px 3px 1px rgba(${(props) => HEXToRGB(props.theme.colors.secondary)}, 0.7);
     transition: all ease 0.5s;
   }
   &:read-only {

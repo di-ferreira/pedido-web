@@ -60,4 +60,3 @@ export const PreVendas: React.FC = () => {
     </Container>
   );
 };
-

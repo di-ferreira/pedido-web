@@ -25,21 +25,21 @@ export const formatLocalDateAsDate = (date: string, pattern: string) => {
 };
 
 export const HEXToRGB = (HexColor: string): string => {
-  let aRgbHex = HexColor.replace('#', '').match(/.{1,2}/g);
+  const aRgbHex = HexColor.replace('#', '').match(/.{1,2}/g);
   if (aRgbHex?.length != 3) {
     throw 'Only six-digit hex colors are allowed.';
   }
 
-  let aR = aRgbHex ? parseInt(aRgbHex[0], 16) : '0';
-  let aG = aRgbHex ? parseInt(aRgbHex[1], 16) : '0';
-  let aB = aRgbHex ? parseInt(aRgbHex[2], 16) : '0';
+  const aR = aRgbHex ? parseInt(aRgbHex[0], 16) : '0';
+  const aG = aRgbHex ? parseInt(aRgbHex[1], 16) : '0';
+  const aB = aRgbHex ? parseInt(aRgbHex[2], 16) : '0';
 
-  let Result = aR.toString() + ',' + aG.toString() + ',' + aB.toString();
+  const Result = aR.toString() + ',' + aG.toString() + ',' + aB.toString();
 
   return Result;
 };
 
-export const MaskFone = (value: String | undefined) => {
+export const MaskFone = (value: string | undefined) => {
   if (!value) return '';
 
   return value
@@ -49,7 +49,7 @@ export const MaskFone = (value: String | undefined) => {
     .replace(/(-\d{4})(\d+?)/, '$1');
 };
 
-const MaskCpf = (value: String | undefined) => {
+const MaskCpf = (value: string | undefined) => {
   if (!value) return '';
   return value
     .replace(/\D/g, '') // substitui qualquer caracter que nao seja numero por nada
@@ -60,28 +60,28 @@ const MaskCpf = (value: String | undefined) => {
 };
 
 export const FormatToCurrency = (value: string): string => {
-  let BrlValue = Intl.NumberFormat('pt-BR', {
+  const BrlValue = Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
     minimumFractionDigits: 2,
     maximumFractionDigits: 3,
   });
-  let result = BrlValue.format(parseFloat(value));
+  const result = BrlValue.format(parseFloat(value));
   return result;
 };
 
 export const FormatToNumber = (value: string): number => {
-  let BrlValue = Intl.NumberFormat('pt-BR', {
+  const BrlValue = Intl.NumberFormat('pt-BR', {
     // style: 'currency',
     // currency: 'BRL',
     minimumFractionDigits: 2,
     maximumFractionDigits: 3,
   });
-  let result = BrlValue.format(parseFloat(value));
+  const result = BrlValue.format(parseFloat(value));
   return parseFloat(result);
 };
 
-const MaskCnpj = (value: String | undefined) => {
+const MaskCnpj = (value: string | undefined) => {
   if (!value) return '';
 
   return value
@@ -93,7 +93,7 @@ const MaskCnpj = (value: String | undefined) => {
     .replace(/(-\d{2})\d+?$/, '$1');
 };
 
-export const MaskCnpjCpf = (value: String | undefined) => {
+export const MaskCnpjCpf = (value: string | undefined) => {
   if (!value) return '';
   if (value.length <= 12)
     return value
@@ -113,7 +113,7 @@ export const MaskCnpjCpf = (value: String | undefined) => {
       .replace(/(-\d{2})\d+?$/, '$1');
 };
 
-export const MaskCEP = (value: String | undefined) => {
+export const MaskCEP = (value: string | undefined) => {
   if (!value) return '';
   return value
     .replace(/\D/g, '')
@@ -122,7 +122,7 @@ export const MaskCEP = (value: String | undefined) => {
 };
 
 export const ObjectIsEmpty = (obj: Object): boolean => {
-  for (let prop in obj) {
+  for (const prop in obj) {
     if (obj.hasOwnProperty(prop)) return false;
   }
   return true;

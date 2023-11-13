@@ -44,32 +44,29 @@ export const InputCustom = forwardRef<Ref, iInputCustom>(
       widht,
       autofocus,
     },
-    ref
+    ref,
   ) => {
     return (
       <Container
-        labelPosition={labelPosition ? labelPosition : 'top'}
+        labelPosition={labelPosition || 'top'}
         height={height}
         widht={widht}
         label={label}
         type={type}
       >
         {label && (
-          <LabelInput
-            labelPosition={labelPosition ? labelPosition : 'top'}
-            align={labelAlign}
-          >
+          <LabelInput labelPosition={labelPosition || 'top'} align={labelAlign}>
             {label}
           </LabelInput>
         )}
         <Input
-          autoFocus={autofocus ? autofocus : false}
+          autoFocus={autofocus || false}
           align={textAlign}
-          readOnly={readOnly ? readOnly : false}
+          readOnly={readOnly || false}
           value={value}
           name={name}
           ref={ref}
-          type={type ? type : 'text'}
+          type={type || 'text'}
           placeholder={placeholder}
           onKeyDown={(e) => onKeydown && onKeydown(e)}
           onChange={(e) => onChange && onChange(e)}
@@ -79,6 +76,5 @@ export const InputCustom = forwardRef<Ref, iInputCustom>(
         />
       </Container>
     );
-  }
+  },
 );
-

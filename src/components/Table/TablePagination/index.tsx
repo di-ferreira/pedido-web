@@ -32,8 +32,8 @@ export const TablePagination: React.FC<iTablePagination> = ({
   const [CurrentOption, setCurrentOption] = useState<iOption>(OptionsSelect[1]);
 
   useEffect(() => {
-    let NewOption = OptionsSelect.find((opt) => opt.value === RowsPerPage);
-    setCurrentOption(NewOption ? NewOption : OptionsSelect[0]);
+    const NewOption = OptionsSelect.find((opt) => opt.value === RowsPerPage);
+    setCurrentOption(NewOption || OptionsSelect[0]);
   }, [RowsPerPage]);
   /*
   top = qtd registros por página
@@ -68,7 +68,7 @@ export const TablePagination: React.FC<iTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === 1 ? true : false}
+          disabled={CurrentPage === 1}
           onclick={() => onFirstPage()}
         />
         <Button
@@ -77,7 +77,7 @@ export const TablePagination: React.FC<iTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === 1 ? true : false}
+          disabled={CurrentPage === 1}
           onclick={() => onPrevPage()}
         />
         <Button
@@ -86,7 +86,7 @@ export const TablePagination: React.FC<iTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === TotalPages ? true : false}
+          disabled={CurrentPage === TotalPages}
           onclick={() => onNextPage()}
         />
         <Button
@@ -95,11 +95,10 @@ export const TablePagination: React.FC<iTablePagination> = ({
           Type='secondary'
           Height='50%'
           Width='12rem'
-          disabled={CurrentPage === TotalPages ? true : false}
+          disabled={CurrentPage === TotalPages}
           onclick={() => onLastPage()}
         />
       </ContainerButtons>
     </Container>
   );
 };
-

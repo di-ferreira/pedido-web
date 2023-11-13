@@ -51,8 +51,7 @@ export const TextArea = styled.textarea`
   }
   &:focus {
     border-color: ${(props) => props.theme.colors.secondary};
-    box-shadow: 0px 0px 3px 1px
-      rgba(${(props) => HEXToRGB(props.theme.colors.secondary)}, 0.7);
+    box-shadow: 0px 0px 3px 1px rgba(${(props) => HEXToRGB(props.theme.colors.secondary)}, 0.7);
     transition: all ease 0.5s;
   }
   &:read-only {

@@ -7,10 +7,7 @@ interface iDetailComponent {
   children: React.ReactNode;
 }
 
-export const DetailContainer: React.FC<iDetailComponent> = ({
-  children,
-  summary,
-}) => {
+export const DetailContainer: React.FC<iDetailComponent> = ({ children, summary }) => {
   return (
     <Container>
       <Summary>{summary}</Summary>
@@ -18,4 +15,3 @@ export const DetailContainer: React.FC<iDetailComponent> = ({
     </Container>
   );
 };
-

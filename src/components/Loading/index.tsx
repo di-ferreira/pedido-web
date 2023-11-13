@@ -10,4 +10,3 @@ export const Loading: React.FC = () => {
     </Container>
   );
 };
-

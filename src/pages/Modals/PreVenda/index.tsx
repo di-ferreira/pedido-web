@@ -36,12 +36,8 @@ interface iParcelasPgto {
   VALOR: number;
 }
 
-export const ModalPreVenda: React.FC<iModalPreVenda> = ({
-  Orcamento,
-  callback,
-}) => {
-  const { GetCondicaoPgto, GetFormaPgto, GetTransportadora, SavePreVenda } =
-    usePreVenda();
+export const ModalPreVenda: React.FC<iModalPreVenda> = ({ Orcamento, callback }) => {
+  const { GetCondicaoPgto, GetFormaPgto, GetTransportadora, SavePreVenda } = usePreVenda();
   const { ThemeName } = useTheme();
   const { Select } = useSelect();
 
@@ -61,15 +57,12 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   const [valueFreteNumero, setvalueFreteNumero] = useState<number>(0);
   const [valueObsPedido1, setvalueObsPedido1] = useState('');
   const [valueObsNotaFiscal, setvalueObsNotaFiscal] = useState('');
-  const [valueNumeroOrdemCompraCliente, setvalueNumeroOrdemCompraCliente] =
-    useState('');
+  const [valueNumeroOrdemCompraCliente, setvalueNumeroOrdemCompraCliente] = useState('');
   const [FretePorConta, setFretePorConta] = useState<number>(0);
 
   const [OptFormasPgtoSelected, setOptFormasPgtoSelected] = useState<iOption>();
-  const [OptTransportadorasSelected, setOptTransportadorasSelected] =
-    useState<iOption>();
-  const [OptCondicaoPgtoSelected, setOptCondicaoPgtoSelected] =
-    useState<iOption>();
+  const [OptTransportadorasSelected, setOptTransportadorasSelected] = useState<iOption>();
+  const [OptCondicaoPgtoSelected, setOptCondicaoPgtoSelected] = useState<iOption>();
   const [CondicoesPgto, setCondicoesPgto] = useState<iCondicaoPgto[]>([]);
   const [OptVeiculos, _] = useState<iOption[]>([
     { label: 'CARRO', value: 'CARRO' },
@@ -112,15 +105,14 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   const OnChangeFrete = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
 
-    if (inputValue.match(/^([0-9]{1,})?(\.)?([0-9]{1,})?$/))
-      setvalueFrete(inputValue);
+    if (inputValue.match(/^([0-9]{1,})?(\.)?([0-9]{1,})?$/)) setvalueFrete(inputValue);
 
     if (inputValue.match(/^([0-9]{1,})?(\,)?([0-9]{1,})?$/))
       setvalueFrete(inputValue.replace(',', '.'));
   };
 
   const OnBlurFrete = (e: React.FocusEvent<HTMLInputElement, Element>) => {
-    let newValueFrete = parseFloat(e.target.value) || 0;
+    const newValueFrete = parseFloat(e.target.value) || 0;
 
     setvalueFreteNumero(newValueFrete);
     setvalueFrete(String(newValueFrete));
@@ -136,8 +128,8 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
         value: newValue ? newValue.value : 0,
       });
 
-      let Condicao: iCondicaoPgto = CondicoesPgto.filter(
-        (Condicao) => Condicao.ID === newValue.value
+      const Condicao: iCondicaoPgto = CondicoesPgto.filter(
+        (Condicao) => Condicao.ID === newValue.value,
       )[0];
       ListarParcelas(Condicao);
     }
@@ -150,12 +142,12 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   };
 
   const ListarParcelas = (condicao: iCondicaoPgto) => {
-    let parcelas: iParcelasPgto[] = [];
-    let DataVencimento = dayjs();
+    const parcelas: iParcelasPgto[] = [];
+    const DataVencimento = dayjs();
     type KeyCondicao = keyof typeof condicao;
 
     for (let i = 0; i < condicao.PARCELAS; i++) {
-      let ParcelaNameKey: KeyCondicao = ('PZ0' + String(i + 1)) as KeyCondicao;
+      const ParcelaNameKey: KeyCondicao = ('PZ0' + String(i + 1)) as KeyCondicao;
       const DiaParcela: number = Number(condicao[ParcelaNameKey]);
 
       parcelas.push({
@@ -170,10 +162,10 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   };
 
   const ListarCondicaoPgto = async () => {
-    let opt: iOption[] = [];
+    const opt: iOption[] = [];
     const { data } = await GetCondicaoPgto(Orcamento.TOTAL);
 
-    let Condicoes: iCondicaoPgto[] = data.Data;
+    const Condicoes: iCondicaoPgto[] = data.Data;
 
     for (let i = 0; i < Condicoes.length; i++) {
       opt.push({ label: Condicoes[i].NOME, value: Condicoes[i].ID });
@@ -191,10 +183,10 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   };
 
   const ListarFormaPgto = async () => {
-    let opt: iOption[] = [];
+    const opt: iOption[] = [];
     const { data } = await GetFormaPgto();
 
-    let FormasPgto: iFormaPgto[] = data.Data;
+    const FormasPgto: iFormaPgto[] = data.Data;
 
     for (let i = 0; i < FormasPgto.length; i++) {
       opt.push({ label: FormasPgto[i].CARTAO, value: FormasPgto[i].CARTAO });
@@ -204,18 +196,16 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   };
 
   const ListarTransportadoras = async () => {
-    let opt: iOption[] = [];
+    const opt: iOption[] = [];
     const { data } = await GetTransportadora();
 
-    let Transp: iTransportadora[] = data.Data;
+    const Transp: iTransportadora[] = data.Data;
 
     for (let i = 0; i < Transp.length; i++) {
       opt.push({ label: Transp[i].NOME, value: Transp[i].FORNECEDOR });
     }
 
-    let optSelected: iOption = opt.filter(
-      (o) => o.value === Orcamento.CLIENTE.TRANSPORTADORA
-    )[0];
+    let optSelected: iOption = opt.filter((o) => o.value === Orcamento.CLIENTE.TRANSPORTADORA)[0];
 
     if (!optSelected) {
       optSelected = opt[0];
@@ -258,9 +248,9 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
   ];
 
   const GerarPV = async () => {
-    let ItensPV: iItemPreVenda[] = [];
+    const ItensPV: iItemPreVenda[] = [];
 
-    for (let item in Orcamento.ItensOrcamento) {
+    for (const item in Orcamento.ItensOrcamento) {
       ItensPV.push({
         CodigoProduto: Orcamento.ItensOrcamento[item].PRODUTO.PRODUTO,
         Qtd: Orcamento.ItensOrcamento[item].QTD,
@@ -331,11 +321,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
           xs={{ width: '100%', height: '100vh' }}
         >
           <FormEditOrcamento>
-            <FlexComponent
-              height='100%'
-              direction='column'
-              overflow='hidden auto'
-            >
+            <FlexComponent height='100%' direction='column' overflow='hidden auto'>
               <FlexComponent width='100%' sm={{ direction: 'column' }}>
                 <FlexComponent
                   width='69%'
@@ -356,11 +342,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                     sm={{ gapRow: '2.5rem' }}
                   >
                     <FlexComponent width='10%' sm={{ flexShrink: 2 }}>
-                      <InputCustom
-                        name='ID_CONDICAO'
-                        value={IdCondicaoPgto}
-                        height='3.5rem'
-                      />
+                      <InputCustom name='ID_CONDICAO' value={IdCondicaoPgto} height='3.5rem' />
                     </FlexComponent>
                     <FlexComponent width='45%' sm={{ flexGrow: 1 }}>
                       <Select
@@ -400,10 +382,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                       direction: 'column',
                     }}
                   >
-                    <FlexComponent
-                      width='100%'
-                      sm={{ margin: '1rem 0rem 0rem 0rem' }}
-                    >
+                    <FlexComponent width='100%' sm={{ margin: '1rem 0rem 0rem 0rem' }}>
                       <h4>TRANSPORTADORA</h4>
                     </FlexComponent>
                     <FlexComponent
@@ -418,17 +397,12 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                           height='3.5rem'
                         />
                       </FlexComponent>
-                      <FlexComponent
-                        width='93%'
-                        sm={{ flexGrow: 1, width: '90%' }}
-                      >
+                      <FlexComponent width='93%' sm={{ flexGrow: 1, width: '90%' }}>
                         <Select
                           options={OptTransportadoras}
                           menuPosition='bottom'
                           value={OptTransportadorasSelected}
-                          onChange={(SingleValue) =>
-                            OnChangeTransp(SingleValue)
-                          }
+                          onChange={(SingleValue) => OnChangeTransp(SingleValue)}
                         />
                       </FlexComponent>
                     </FlexComponent>
@@ -446,11 +420,9 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         labelColor='#fff'
                         label='ENTREGAR'
                         checkedOnColor={Secondary.main}
-                        checked={SwitchEntrega === 'S' ? true : false}
+                        checked={SwitchEntrega === 'S'}
                         onClick={() =>
-                          SwitchEntrega === 'S'
-                            ? setSwitchEntrega('N')
-                            : setSwitchEntrega('S')
+                          SwitchEntrega === 'S' ? setSwitchEntrega('N') : setSwitchEntrega('S')
                         }
                       />
                     </FlexComponent>
@@ -505,10 +477,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                     gapRow='1rem'
                     sm={{ gapRow: '2.5rem' }}
                   >
-                    <FlexComponent
-                      width='32%'
-                      sm={{ flexGrow: 1, width: '100%' }}
-                    >
+                    <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
                       <InputCustom
                         readOnly={true}
                         onChange={() => {}}
@@ -522,10 +491,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         height='3.5rem'
                       />
                     </FlexComponent>
-                    <FlexComponent
-                      width='32%'
-                      sm={{ flexGrow: 1, width: '100%' }}
-                    >
+                    <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
                       <InputCustom
                         onChange={(e) => OnChangeFrete(e)}
                         onBlur={(e) => OnBlurFrete(e)}
@@ -536,10 +502,7 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                         height='3.5rem'
                       />
                     </FlexComponent>
-                    <FlexComponent
-                      width='32%'
-                      sm={{ flexGrow: 1, width: '100%' }}
-                    >
+                    <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
                       <InputCustom
                         readOnly={true}
                         label='TOTAL'
@@ -554,16 +517,8 @@ export const ModalPreVenda: React.FC<iModalPreVenda> = ({
                     </FlexComponent>
                   </FlexComponent>
                 </FlexComponent>
-                <FlexComponent
-                  width='31%'
-                  height='100%'
-                  sm={{ width: '100%', height: '40vh' }}
-                >
-                  <Table
-                    columns={tableHeaders}
-                    TableData={ListaParcelas}
-                    ref={TableRef}
-                  />
+                <FlexComponent width='31%' height='100%' sm={{ width: '100%', height: '40vh' }}>
+                  <Table columns={tableHeaders} TableData={ListaParcelas} ref={TableRef} />
                 </FlexComponent>
               </FlexComponent>
             </FlexComponent>

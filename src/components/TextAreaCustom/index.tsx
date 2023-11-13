@@ -28,7 +28,7 @@ export const TextAreaCustom: React.FC<iTextAreaCustom> = ({
       {label && <LabelInput>{label}</LabelInput>}
       <TextArea
         value={value}
-        readOnly={readOnly ? readOnly : false}
+        readOnly={readOnly || false}
         name={name}
         placeholder={placeholder}
         onChange={(e) => onChange && onChange(e)}
@@ -37,4 +37,3 @@ export const TextAreaCustom: React.FC<iTextAreaCustom> = ({
     </Container>
   );
 };
-

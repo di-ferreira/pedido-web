@@ -6,10 +6,7 @@ interface iTableCellProps<T> {
   column: iColumnType<T>;
 }
 
-export function TableRowHeaderCell<T>({
-  item,
-  column,
-}: iTableCellProps<T>): JSX.Element {
+export function TableRowHeaderCell<T>({ item, column }: iTableCellProps<T>): JSX.Element {
   return (
     <>
       {
@@ -20,4 +17,3 @@ export function TableRowHeaderCell<T>({
     </>
   );
 }
-

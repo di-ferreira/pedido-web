@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useMemo,
-  useContext,
-  useState,
-} from 'react';
+import { createContext, useCallback, useMemo, useContext, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { DarkTheme, LightTheme } from '../../themes';
 
@@ -21,18 +15,13 @@ export const useTheme = () => {
   return useContext(ThemeContext);
 };
 
-export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const isBrowserDefaultDark = () =>
-    window.matchMedia('(prefers-color-scheme: dark)').matches;
+export const AppThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const isBrowserDefaultDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   const getDefaultTheme = (): string => {
     const localStorageTheme = localStorage.getItem('theme');
     const browserDefault = isBrowserDefaultDark() ? 'dark' : 'light';
-    let themeResult: Mode = localStorageTheme
-      ? (localStorageTheme as Mode)
-      : browserDefault;
+    const themeResult: Mode = localStorageTheme ? (localStorageTheme as Mode) : browserDefault;
     return themeResult;
   };
 

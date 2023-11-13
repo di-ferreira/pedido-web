@@ -12,8 +12,8 @@ export const Container = styled(FontAwesomeIcon)<iStyleIcon>`
     props.type === 'danger'
       ? Danger.main
       : props.type === 'warn'
-      ? Warn.main
-      : props.type === 'success'
-      ? Success.main
-      : Gray.Medium};
+        ? Warn.main
+        : props.type === 'success'
+          ? Success.main
+          : Gray.Medium};
 `;

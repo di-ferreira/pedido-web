@@ -4,19 +4,14 @@ import useTabListStore from '../../hooks/useTabList';
 import { isActiveLink } from '../../utils';
 import { Container, IconButton, NavButtonLink } from './styles';
 
-export const NavButton: React.FC<iNavButton> = ({
-  Text,
-  Icon,
-  Link,
-  onClick,
-}) => {
+export const NavButton: React.FC<iNavButton> = ({ Text, Icon, Link, onClick }) => {
   const { openTab } = useTabListStore((state) => state);
 
   const verifyHome = (tabLink: string) => {
     openTab({
       Icon,
       Link: tabLink,
-      Closable: tabLink === 'home' ? false : true,
+      Closable: tabLink !== 'home',
       TitleTab: Text,
       isActive: true,
     });
@@ -36,4 +31,3 @@ export const NavButton: React.FC<iNavButton> = ({
     </Container>
   );
 };
-

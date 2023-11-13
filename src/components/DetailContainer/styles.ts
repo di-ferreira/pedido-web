@@ -27,4 +27,3 @@ export const Container = styled.details<iContainerDetails>`
 `;
 
 export const Summary = styled.summary``;
-

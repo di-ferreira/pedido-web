@@ -94,15 +94,4 @@ export interface iSelectSQL {
   pPar: iSelectParam[];
 }
 
-export {
-  Button,
-  Cliente,
-  Empresa,
-  Filter,
-  Login,
-  Modal,
-  Orcamento,
-  Produto,
-  Table,
-  Vendedor,
-};
+export { Button, Cliente, Empresa, Filter, Login, Modal, Orcamento, Produto, Table, Vendedor };

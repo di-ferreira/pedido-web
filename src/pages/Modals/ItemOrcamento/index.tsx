@@ -15,14 +15,8 @@ import { DataTable } from '../../../components/DataTable';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
 import { TextAreaCustom } from '../../../components/TextAreaCustom';
-import {
-  ResetCurrentItem,
-  SetCurrentItem,
-} from '../../../features/orcamento/orcamento-slice';
-import {
-  SetProduct,
-  SuperFindProducts,
-} from '../../../features/produto/Produto-Thunk';
+import { ResetCurrentItem, SetCurrentItem } from '../../../features/orcamento/orcamento-slice';
+import { SetProduct, SuperFindProducts } from '../../../features/produto/Produto-Thunk';
 import { ResetProduct } from '../../../features/produto/produto-slice';
 import useSelect from '../../../hooks/UseSelect';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
@@ -40,11 +34,9 @@ interface iModalItemOrcamento {
   callback: (item: callback | null) => void;
 }
 
-export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
-  callback,
-}) => {
+export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) => {
   const { ListProduto, errorMessage, isLoading, Current } = useAppSelector(
-    (state) => state.produto
+    (state) => state.produto,
   );
   const CurrentProduct = useAppSelector((state) => state.produto.Current);
   const CurrentItem = useAppSelector((state) => state.orcamento.CurrentItem);
@@ -73,13 +65,10 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
       dispatch(SetProduct(CurrentItem.PRODUTO.PRODUTO));
       setTabelaSelected({
-        label: `${CurrentItem.TABELA} - ${CurrentItem.VALOR.toLocaleString(
-          'pt-br',
-          {
-            style: 'currency',
-            currency: 'BRL',
-          }
-        )}`,
+        label: `${CurrentItem.TABELA} - ${CurrentItem.VALOR.toLocaleString('pt-br', {
+          style: 'currency',
+          currency: 'BRL',
+        })}`,
         value: CurrentItem.VALOR,
       });
     }
@@ -110,7 +99,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
 
     const { value } = e.target;
 
-    let newQTD: number = parseInt(value) <= 0 ? 1 : parseInt(value);
+    const newQTD: number = parseInt(value) <= 0 ? 1 : parseInt(value);
 
     dispatch(
       SetCurrentItem({
@@ -118,7 +107,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
         QTD: newQTD,
         VALOR: Number(TabelaSelected?.value),
         TOTAL: Number(TabelaSelected?.value) * newQTD,
-      })
+      }),
     );
   };
 
@@ -133,7 +122,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
         ...CurrentItem,
         VALOR: Number(value?.value),
         TOTAL: Number(value?.value) * CurrentItem.QTD,
-      })
+      }),
     );
   };
 
@@ -157,7 +146,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   };
 
   const GetTabelas = () => {
-    let tabOptions: iOption[] = [];
+    const tabOptions: iOption[] = [];
 
     Current.tables.map((tab) =>
       tabOptions.push({
@@ -166,7 +155,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
           currency: 'BRL',
         })}`,
         value: tab.PRECO,
-      })
+      }),
     );
     setTabelas(tabOptions);
     setTabelaSelected(tabOptions[0]);
@@ -177,7 +166,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
         SUBTOTAL: Number(tabOptions[0]?.value) * CurrentItem.QTD,
         TOTAL: Number(tabOptions[0]?.value) * CurrentItem.QTD,
         VALOR: Number(tabOptions[0]?.value),
-      })
+      }),
     );
   };
 
@@ -187,7 +176,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
       SetCurrentItem({
         ...CurrentItem,
         PRODUTO: produto,
-      })
+      }),
     );
 
     setProdutoPalavras((old) => (old = produto.PRODUTO));
@@ -209,10 +198,10 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
   }, [Current]);
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     const tabelaSplited = TabelaSelected.label.split('-');
-    let tabela: string = tabelaSplited[0].replace(/\s/g, '');
+    const tabela: string = tabelaSplited[0].replace(/\s/g, '');
 
     e.preventDefault();
-    let result: callback = {
+    const result: callback = {
       itemOrcamento: {
         ...CurrentItem,
         TABELA: tabela,
@@ -263,29 +252,21 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
         <Modal
           Title={`ADD ITEM AO ORÇAMENTO Nº ${CurrentItem?.ORCAMENTO.ORCAMENTO}`}
           width='75vw'
-          height='75vh'
+          height='80vh'
           sm={{ width: '100%', height: '100vh' }}
           xs={{ width: '100%', height: '100vh' }}
           OnCloseButtonClick={() => ResetForm()}
         >
           <FormEditOrcamento onSubmit={(e) => onSubmitForm(e)}>
             <FlexComponent
-              height='40vh'
+              height='50vh'
               gapColumn='2rem'
               gapRow='2rem'
               sm={{ direction: 'column' }}
               overflow='hidden auto'
             >
-              <FlexComponent
-                width='70%'
-                direction='column'
-                gapRow='1.5rem'
-                sm={{ width: '100%' }}
-              >
-                <FlexComponent
-                  gapColumn='1.5rem'
-                  sm={{ direction: 'column', gapRow: '1rem' }}
-                >
+              <FlexComponent width='70%' direction='column' gapRow='1.5rem' sm={{ width: '100%' }}>
+                <FlexComponent gapColumn='1.5rem' sm={{ direction: 'column', gapRow: '1rem' }}>
                   <FlexComponent alignItems='flex-end'>
                     <FlexComponent width='85%'>
                       <InputCustom
@@ -360,10 +341,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({
                   </FlexComponent>
                 </FlexComponent>
               </FlexComponent>
-              <FlexComponent
-                width='30%'
-                sm={{ width: '100%', height: '20vh', margin: '1rem 0' }}
-              >
+              <FlexComponent width='30%' sm={{ width: '100%', height: '20vh', margin: '1rem 0' }}>
                 <DataTable
                   columns={tableChavesHeaders}
                   IsLoading={IsLoadingItem}

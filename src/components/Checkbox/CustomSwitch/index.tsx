@@ -1,12 +1,6 @@
 import React from 'react';
 import { iSwitchType } from '../../../@types/Button';
-import {
-  Container,
-  Label,
-  LabelSwitch,
-  SliderSwitch,
-  TypeToColor,
-} from './styles';
+import { Container, Label, LabelSwitch, SliderSwitch, TypeToColor } from './styles';
 
 export interface iCustomSwitch {
   label?: string;
@@ -35,23 +29,19 @@ export const CustomSwitch: React.FC<iCustomSwitch> = ({
   style,
   width,
 }) => {
-  const { switcherOff, switcherOn } = TypeToColor[style ? style : 'default'];
+  const { switcherOff, switcherOn } = TypeToColor[style || 'default'];
   return (
-    <Container
-      onClick={() => onClick && onClick()}
-      width={width}
-      height={height}
-    >
+    <Container onClick={() => onClick && onClick()} width={width} height={height}>
       {label && (
-        <Label TextColor={labelColor} hasLabel={label ? true : false}>
+        <Label TextColor={labelColor} hasLabel={!!label}>
           {label}
         </Label>
       )}
       <LabelSwitch>
         <SliderSwitch
-          hasLabel={label ? true : false}
-          handdleSwitchOn={checkedOnColor ? checkedOnColor : switcherOn}
-          handdleSwitchOff={checkedOffColor ? checkedOffColor : switcherOff}
+          hasLabel={!!label}
+          handdleSwitchOn={checkedOnColor || switcherOn}
+          handdleSwitchOff={checkedOffColor || switcherOff}
           handdleSwitchOffBackground={checkedOffBackground}
           handdleSwitchOnBackground={checkedOnBackground}
           checked={checked}
@@ -60,4 +50,3 @@ export const CustomSwitch: React.FC<iCustomSwitch> = ({
     </Container>
   );
 };
-

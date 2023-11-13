@@ -12,4 +12,3 @@ interface iIconProps {
 export const Icon: React.FC<iIconProps> = ({ Icon, Type }) => {
   return <Container icon={Icon} type={Type} />;
 };
-

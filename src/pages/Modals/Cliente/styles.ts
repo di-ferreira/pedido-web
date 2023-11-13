@@ -13,4 +13,3 @@ export const FormFooter = styled.footer`
   display: flex;
   margin-top: 1.5rem;
 `;
-

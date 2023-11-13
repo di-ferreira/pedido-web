@@ -23,4 +23,3 @@ export const SwitchTheme: React.FC = () => {
     </Container>
   );
 };
-

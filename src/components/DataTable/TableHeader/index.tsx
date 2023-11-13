@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { JSX } from 'react';
 import { iColumnType } from '../../../@types/Table';
 import { TableHeaderCell, TableHeaderRow } from './styles';
 
@@ -27,4 +27,3 @@ function TableHeader<T>({ columns }: iHeaderProps<T>): JSX.Element {
 }
 
 export default TableHeader;
-

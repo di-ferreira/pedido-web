@@ -52,10 +52,9 @@ export const TabBar: React.FC = () => {
                   closeCurrentTab(t);
                 }}
               />
-            )
+            ),
         )}
       </TabList>
     </Container>
   );
 };
-

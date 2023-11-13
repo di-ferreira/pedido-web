@@ -1,15 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled from 'styled-components';
-import {
-  Black,
-  Danger,
-  Gray,
-  Light,
-  Primary,
-  Secondary,
-  Success,
-  Warn,
-} from '../../colors';
+import { Black, Danger, Gray, Light, Primary, Secondary, Success, Warn } from '../../colors';
 import { HEXToRGB } from '../../utils';
 import { devices } from '../../utils/Constants';
 
@@ -64,8 +55,7 @@ export const Container = styled.button<ContainerProps>`
   height: ${(props) => (props.height ? props.height : 'auto')};
   width: ${(props) => (props.width ? props.width : 'auto')};
   border: none;
-  padding: ${(props) =>
-    props.rounded ? '10px 10px' : '0.1rem 0.8rem 0.1rem 0.5rem'};
+  padding: ${(props) => (props.rounded ? '10px 10px' : '0.1rem 0.8rem 0.1rem 0.5rem')};
   border-radius: ${(props) => (props.rounded ? '50%' : '0.4rem')};
   background-color: ${(props) => props.bgColor};
   transition: background-color ease 0.5s;
@@ -82,10 +72,8 @@ export const Container = styled.button<ContainerProps>`
 
   ${`@media only screen and ${devices.sm}`} {
     font-size: 1.9rem;
-    width: ${(props) =>
-      props.width ? props.width : props.rounded ? 'auto' : '100%'};
-    padding: ${(props) =>
-      props.rounded ? '.8rem' : '0.1rem 0.8rem 0.1rem 0.5rem'};
+    width: ${(props) => (props.width ? props.width : props.rounded ? 'auto' : '100%')};
+    padding: ${(props) => (props.rounded ? '.8rem' : '0.1rem 0.8rem 0.1rem 0.5rem')};
   }
 `;
 

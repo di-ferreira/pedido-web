@@ -88,4 +88,3 @@ export const FormFooter = styled.footer`
   width: 100%;
   display: flex;
 `;
-

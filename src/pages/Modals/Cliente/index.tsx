@@ -40,11 +40,7 @@ export const ModalCliente: React.FC<iModalCliente> = ({ Cliente }) => {
           xs={{ width: '100%', height: '100vh' }}
         >
           <FormEditCliente>
-            <FlexComponent
-              direction='column'
-              overflow='hidden auto'
-              gapRow='1rem'
-            >
+            <FlexComponent direction='column' overflow='hidden auto' gapRow='1rem'>
               <FlexComponent
                 alignItems='flex-end'
                 gapColumn='1rem'
@@ -59,12 +55,7 @@ export const ModalCliente: React.FC<iModalCliente> = ({ Cliente }) => {
                   />
                 </FlexComponent>
                 <FlexComponent width='60%' sm={{ width: '100%' }}>
-                  <InputCustom
-                    label='NOME'
-                    onChange={() => {}}
-                    name='NOME'
-                    value={Cliente.NOME}
-                  />
+                  <InputCustom label='NOME' onChange={() => {}} name='NOME' value={Cliente.NOME} />
                 </FlexComponent>
                 <FlexComponent width='45%' sm={{ width: '100%' }}>
                   <InputCustom
@@ -93,11 +84,7 @@ export const ModalCliente: React.FC<iModalCliente> = ({ Cliente }) => {
               </FlexComponent>
               <FlexComponent sm={{ direction: 'column', gapRow: '1rem' }}>
                 <FlexComponent width='20%' sm={{ width: '100%' }}>
-                  <Checkbox
-                    type='checkbox'
-                    label='BLOQUEADO'
-                    checked={Cliente.BLOQUEADO === 'S' ? true : false}
-                  />
+                  <Checkbox type='checkbox' label='BLOQUEADO' checked={Cliente.BLOQUEADO === 'S'} />
                 </FlexComponent>
                 <FlexComponent width='75%' sm={{ width: '100%' }}>
                   <InputCustom

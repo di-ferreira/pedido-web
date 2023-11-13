@@ -18,14 +18,8 @@ interface iModalProduto {
   callback: (prodtuto: iProduto) => void;
 }
 
-export const ModalProduto: React.FC<iModalProduto> = ({
-  produtoPalavras,
-  produtos,
-  callback,
-}) => {
-  const { ListProduto, errorMessage, isLoading } = useAppSelector(
-    (state) => state.produto
-  );
+export const ModalProduto: React.FC<iModalProduto> = ({ produtoPalavras, produtos, callback }) => {
+  const { ListProduto, errorMessage, isLoading } = useAppSelector((state) => state.produto);
   const dispatch = useAppDispatch();
 
   const { Modal, showModal, OnCloseModal } = useModal();
@@ -43,7 +37,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
         skip,
         orderBy: 'PRODUTO',
         filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
-      })
+      }),
     );
   };
 
@@ -53,7 +47,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
       skip: 0,
       orderBy: 'PRODUTO',
       filter: [{ key: 'PRODUTO', value: ProdutoPalavras }],
-    }
+    },
   ) => {
     dispatch(SuperFindProducts(filter));
   };
@@ -73,7 +67,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
           skip: 0,
           orderBy: 'PRODUTO',
           filter: [{ key: 'PRODUTO', value: e.currentTarget.value }],
-        })
+        }),
       );
     }
   };
@@ -147,7 +141,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({
     <>
       {Modal && (
         <Modal
-          Title={`Buscar Produto`}
+          Title={'Buscar Produto'}
           width='100vw'
           height='100vh'
           sm={{ width: '100%', height: '100vh' }}

@@ -6,19 +6,14 @@ import { iFilter } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
 import { iColumnType } from '../../@types/Table';
 import { DataTable } from '../../components/DataTable';
-import {
-  GetListOrcamento,
-  GetOrcamento,
-} from '../../features/orcamento/Orcamento-Thunk';
+import { GetListOrcamento, GetOrcamento } from '../../features/orcamento/Orcamento-Thunk';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import { ModalOrcamento } from '../Modals/Orcamento';
 import { ModalPreVenda } from '../Modals/PreVenda';
 import { Container } from './styles';
 
 export const Orcamentos: React.FC = () => {
-  const { ListOrcamento, isLoading, errorMessage } = useAppSelector(
-    (state) => state.orcamento
-  );
+  const { ListOrcamento, isLoading, errorMessage } = useAppSelector((state) => state.orcamento);
   const [OpenModalOrc, setOpenModalOrc] = useState<boolean>(false);
   const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
@@ -42,7 +37,7 @@ export const Orcamentos: React.FC = () => {
       dispatch(GetOrcamento(value.ORCAMENTO));
       setOpenModalOrc(true);
     },
-    [setOpenModalOrc]
+    [setOpenModalOrc],
   );
 
   const onCloseModalOrcamento = useCallback(async (value: iOrcamento) => {
@@ -112,7 +107,7 @@ export const Orcamentos: React.FC = () => {
   ];
 
   const onFetchPagination = (top: number, skip: number) => {
-    handleListOrcamento({ top: top, skip: skip });
+    handleListOrcamento({ top, skip });
   };
 
   useEffect(() => {
@@ -122,12 +117,7 @@ export const Orcamentos: React.FC = () => {
   return (
     <Container>
       {OpenModalOrc && <ModalOrcamento callback={onCloseModalOrcamento} />}
-      {NewPreVenda && (
-        <ModalPreVenda
-          Orcamento={NewPreVenda}
-          callback={onCloseModalPreVenda}
-        />
-      )}
+      {NewPreVenda && <ModalPreVenda Orcamento={NewPreVenda} callback={onCloseModalPreVenda} />}
 
       <DataTable
         IsLoading={isLoading}

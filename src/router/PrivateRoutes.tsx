@@ -4,11 +4,7 @@ import { useLogin } from '../hooks/useLogin/index';
 const PrivateRoute = () => {
   const { isLogged } = useLogin();
   const location = useLocation();
-  return isLogged ? (
-    <Outlet />
-  ) : (
-    <Navigate to='/login' state={{ from: location }} replace />
-  );
+  return isLogged ? <Outlet /> : <Navigate to='/login' state={{ from: location }} replace />;
 };
 
 export default PrivateRoute;

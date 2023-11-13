@@ -8,12 +8,10 @@ export const TableRowItem = styled.tr`
   cursor: auto;
   display: flex;
   &:nth-child(even) {
-    background-color: ${(props) =>
-      props.theme.name === 'light' ? Light.surface : Black.text};
+    background-color: ${(props) => (props.theme.name === 'light' ? Light.surface : Black.text)};
   }
   &:nth-child(odd) {
-    background-color: ${(props) =>
-      props.theme.name === 'light' ? Light.surface : Dark.text};
+    background-color: ${(props) => (props.theme.name === 'light' ? Light.surface : Dark.text)};
   }
   &:last-child {
     border-bottom-left-radius: 1.2rem;

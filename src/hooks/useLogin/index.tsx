@@ -31,9 +31,7 @@ export const useLogin = () => {
   return useContext(LoginContext);
 };
 
-export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isError, setIsError] = useState(false);
 
   const [isLogged, setIsLogged] = useState(false);
@@ -42,9 +40,7 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [currentUser, setCurrentUser] = useState<iCurrentUser>(
-    {} as iCurrentUser
-  );
+  const [currentUser, setCurrentUser] = useState<iCurrentUser>({} as iCurrentUser);
 
   const GenerateNewToken = async () => {
     api.defaults.headers.common.Authorization = undefined;
@@ -71,19 +67,15 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
           USER_NAME_STORE,
           JSON.stringify({
             ...jwtDecode<iTokenPayload>(userLogin.value),
-          })
+          }),
         );
 
-        VendedorLocal = JSON.parse(
-          String(localStorage.getItem(VENDEDOR_STORE))
-        );
+        VendedorLocal = JSON.parse(String(localStorage.getItem(VENDEDOR_STORE)));
       })
       .finally(async () => {
         if (VendedorLocal.VENDEDOR) {
-          let DataVendedor = await api.get(
-            `${ROUTE_GET_VENDEDOR}(${VendedorLocal.VENDEDOR})`
-          );
-          let vendedor: iVendedor = DataVendedor.data;
+          const DataVendedor = await api.get(`${ROUTE_GET_VENDEDOR}(${VendedorLocal.VENDEDOR})`);
+          const vendedor: iVendedor = DataVendedor.data;
           vendedor.SENHA = '';
           setCurrentUser({
             ...currentUser,
@@ -97,12 +89,11 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
   const VerifyToken = (token: string | null): boolean => {
     if (token === null) return false;
 
-    const [day, month, year] =
-      jwtDecode<iTokenPayload>(token).Validade.split('/');
+    const [day, month, year] = jwtDecode<iTokenPayload>(token).Validade.split('/');
 
     const expirationDate = new Date(`${month}/${day}/${year}`);
 
-    let today = new Date();
+    const today = new Date();
     GenerateNewToken();
 
     setCurrentUser({
@@ -138,10 +129,9 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
       .then(async (response) => {
         const userLogin = response.data;
         setIsLogged(VerifyToken(userLogin.value));
-        api.defaults.headers.common['cache-control'] =
-          ' no-cache, no-store, must-revalidate';
-        api.defaults.headers.common['pragma'] = 'no-cache';
-        api.defaults.headers.common['Expires'] = 0;
+        api.defaults.headers.common['cache-control'] = ' no-cache, no-store, must-revalidate';
+        api.defaults.headers.common.pragma = 'no-cache';
+        api.defaults.headers.common.Expires = 0;
         api.defaults.headers.common.Accept = '*/*';
         api.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
         api.defaults.headers.common['Content-Type'] = 'application/json';
@@ -166,24 +156,21 @@ export const LoginProvider: React.FC<{ children: React.ReactNode }> = ({
               group: jwtDecode<iTokenPayload>(userLogin.value).Grupo,
             });
 
-            localStorage.setItem(
-              TOKEN_NAME_STORE,
-              JSON.stringify(userLogin.value)
-            );
+            localStorage.setItem(TOKEN_NAME_STORE, JSON.stringify(userLogin.value));
 
             localStorage.setItem(
               USER_NAME_STORE,
               JSON.stringify({
                 ...jwtDecode<iTokenPayload>(userLogin.value),
                 vendedor: user.codigoVendedor,
-              })
+              }),
             );
 
-            let DataVendedor = await api.get(
-              `${ROUTE_GET_VENDEDOR}(${parseInt(user.codigoVendedor)})`
+            const DataVendedor = await api.get(
+              `${ROUTE_GET_VENDEDOR}(${parseInt(user.codigoVendedor)})`,
             );
 
-            let vendedor: iVendedor = DataVendedor.data;
+            const vendedor: iVendedor = DataVendedor.data;
 
             vendedor.SENHA = '';
 

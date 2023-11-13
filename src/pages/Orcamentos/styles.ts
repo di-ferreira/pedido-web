@@ -60,4 +60,3 @@ export const ContainerInput = styled.div`
   width: 25rem;
   margin: 0 0.5rem;
 `;
-

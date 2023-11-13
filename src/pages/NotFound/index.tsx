@@ -10,4 +10,3 @@ export const NotFound: React.FC = () => {
     </Container>
   );
 };
-

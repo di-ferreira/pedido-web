@@ -17,13 +17,7 @@ export interface iButton {
   onclick?: () => void;
 }
 
-export type iButtonType =
-  | 'default'
-  | 'success'
-  | 'warn'
-  | 'danger'
-  | 'primary'
-  | 'secondary';
+export type iButtonType = 'default' | 'success' | 'warn' | 'danger' | 'primary' | 'secondary';
 
 export interface iButtonAction<T> {
   Text?: string;

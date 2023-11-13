@@ -1,12 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import styled from 'styled-components';
-import {
-  Danger,
-  Gray,
-  Primary,
-  Secondary,
-  Success,
-  Warn,
-} from '../../../colors';
+import { Danger, Gray, Primary, Secondary, Success, Warn } from '../../../colors';
 
 export const TypeToColor = {
   default: {
@@ -62,8 +56,8 @@ export const Container = styled.div<iContainerSwitch>`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: ${(props) => (props.width ? props.width : `6rem`)};
-  height: ${(props) => (props.height ? props.height : `3rem`)};
+  width: ${(props) => (props.width ? props.width : '6rem')};
+  height: ${(props) => (props.height ? props.height : '3rem')};
 `;
 
 export const LabelSwitch = styled.label`
@@ -86,9 +80,7 @@ export const SliderSwitch = styled.span<iSliderSwitch>`
   background: ${(props) => props.theme.colors.background};
   cursor: pointer;
   border: ${(props) =>
-    props.checked
-      ? `2px solid ${props.handdleSwitchOn}`
-      : '2px solid transparent'};
+    props.checked ? `2px solid ${props.handdleSwitchOn}` : '2px solid transparent'};
   overflow: hidden;
   transition: all ease 0.5s;
 
@@ -100,8 +92,7 @@ export const SliderSwitch = styled.span<iSliderSwitch>`
     background-color: ${(props) =>
       props.checked ? props.handdleSwitchOn : props.handdleSwitchOff};
     border-radius: 3rem;
-    transform: ${(props) =>
-      props.checked ? 'translateX(50%)' : 'translateX(-50%)'};
+    transform: ${(props) => (props.checked ? 'translateX(50%)' : 'translateX(-50%)')};
     transition: all ease 0.5s;
   }
 `;
@@ -109,10 +100,8 @@ export const SliderSwitch = styled.span<iSliderSwitch>`
 export const Label = styled.label<iSwitchLabel>`
   position: absolute;
   top: -13px;
-  color: ${(props) =>
-    props.TextColor ? props.TextColor : props.theme.colors.surface};
+  color: ${(props) => (props.TextColor ? props.TextColor : props.theme.colors.surface)};
   font-variant: small-caps;
   text-transform: lowercase;
   text-align: center;
 `;
-
