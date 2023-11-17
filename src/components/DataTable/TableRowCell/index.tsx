@@ -1,4 +1,5 @@
 import { get } from 'lodash';
+import { JSX } from 'react';
 import { iColumnType } from '../../../@types/Table';
 import Button from '../../Button';
 import { ActionContainer, TableCell } from './styles';

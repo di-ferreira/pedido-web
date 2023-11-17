@@ -2,6 +2,45 @@ import { iCliente } from './Cliente';
 import { iProduto } from './Produto';
 import { iVendedor } from './Vendedor';
 
+export interface iItemOrcamentoInserir {
+  CodigoProduto: string;
+  Qtd: number;
+  Valor: number;
+  SubTotal: number;
+  Frete: number;
+  Desconto: number;
+  Total: number;
+  Tabela: string;
+}
+
+export interface iItemRemove {
+  pIdOrcamento: number;
+  pProduto: string;
+}
+
+export interface iItemInserir {
+  pIdOrcamento: number;
+  pItemOrcamento: iItemOrcamentoInserir;
+}
+export interface iItensOrcamento {
+  QTD: number;
+  VALOR: number;
+  TOTAL: number;
+  SUBTOTAL: number;
+  DESCONTO: number;
+  TABELA: string;
+  OBS?: string;
+  MD5?: string;
+  ITEM?: number;
+  PRECO_LIQUIDO?: string;
+  IMP_SEPARACAO?: string;
+  GORDURA?: number;
+  P_DESC?: number;
+  ID_VALE_CASCO?: number;
+  // eslint-disable-next-line no-use-before-define
+  ORCAMENTO: iOrcamento;
+  PRODUTO: iProduto;
+}
 export interface iOrcamento {
   ORCAMENTO: number;
   DATA?: string;
@@ -40,25 +79,6 @@ export interface iOrcamento {
   ItensOrcamento: iItensOrcamento[];
 }
 
-export interface iItensOrcamento {
-  QTD: number;
-  VALOR: number;
-  TOTAL: number;
-  SUBTOTAL: number;
-  DESCONTO: number;
-  TABELA: string;
-  OBS?: string;
-  MD5?: string;
-  ITEM?: number;
-  PRECO_LIQUIDO?: string;
-  IMP_SEPARACAO?: string;
-  GORDURA?: number;
-  P_DESC?: number;
-  ID_VALE_CASCO?: number;
-  ORCAMENTO: iOrcamento;
-  PRODUTO: iProduto;
-}
-
 export interface iOrcamentoInserir {
   CodigoCliente: number;
   CodigoVendedor1: number;
@@ -78,25 +98,4 @@ export interface iOrcamentoInserir {
   TipoEntrega?: string;
   Origem?: string;
   Itens?: iItemInserir[];
-}
-
-export interface iItemOrcamentoInserir {
-  CodigoProduto: string;
-  Qtd: number;
-  Valor: number;
-  SubTotal: number;
-  Frete: number;
-  Desconto: number;
-  Total: number;
-  Tabela: string;
-}
-
-export interface iItemInserir {
-  pIdOrcamento: number;
-  pItemOrcamento: iItemOrcamentoInserir;
-}
-
-export interface iItemRemove {
-  pIdOrcamento: number;
-  pProduto: string;
 }

@@ -8,7 +8,7 @@ import Button from '../../../components/Button';
 import { DataTable } from '../../../components/DataTable';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
-import { SuperFindProducts } from '../../../features/produto/Produto-Thunk';
+import { SuperFindProducts } from '../../../features/produto/Produto.thunk';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
 

@@ -1,3 +1,74 @@
+import { iProduto } from './Produto';
+import { iVendedor } from './Vendedor';
+
+export interface iLocaisList {
+  ID: number;
+  CIDADE: string;
+  BAIRRO: string;
+  REGIAO: string;
+}
+export interface iRegiao {
+  ID: number;
+  DESCRICAO: string;
+  CARENCIA: number;
+  COMISSAO: number;
+  Locais_List: iLocaisList[];
+}
+
+export interface iTelefone {
+  ID: number;
+  CONTATO: string;
+  TIPO: string;
+  TELEFONE: string;
+  ANIVERSARIO: string;
+  EMAIL: string;
+  ID_CLIENTE: string;
+}
+
+export interface iFollowUpList {
+  ID: number;
+  DATA: string;
+  DESCRICAO: string;
+  USUARIO: string;
+  CLIENTE: string;
+}
+
+export interface iAgendamentosList {
+  ID: number;
+  DATA: string;
+  GEO_LAT: string;
+  GEO_LNG: string;
+  OK: string;
+  DATA_FIM: string;
+  HORA_INICIO: string;
+  HORA_FIM: string;
+  RECORRENTE: string;
+  PERIODICIDADE: string;
+  REAGENDADO: string;
+  CLIENTE: string;
+  VENDEDOR: iVendedor;
+}
+
+export interface iPendenciasList {
+  PEDIDO: number;
+  DATA: string;
+  QTD: number;
+  ENTREGUE: number;
+  PENDENTE: number;
+  VALOR_UNIT: number;
+  GORDURA: number;
+  Tabela: string;
+  VEND1: number;
+  VEND2: number;
+  ID_CONDICAO: number;
+  OBS1: string;
+  OBS2: string;
+  LIBERADO: string;
+  ID_PEDIDO_ECOMMERCE: string;
+  PRODUTO: iProduto;
+  CLIENTE: string;
+}
+
 export interface iCliente {
   CLIENTE: number;
   NOME: string;
@@ -81,73 +152,4 @@ export interface iCliente {
   FollowUpList: iFollowUpList[];
   AgendamentosList: iAgendamentosList[];
   PendenciasList: iPendenciasList[];
-}
-
-export interface iRegiao {
-  ID: number;
-  DESCRICAO: string;
-  CARENCIA: number;
-  COMISSAO: number;
-  Locais_List: iLocaisList[];
-}
-
-export interface iLocaisList {
-  ID: number;
-  CIDADE: string;
-  BAIRRO: string;
-  REGIAO: string;
-}
-
-export interface iTelefone {
-  ID: number;
-  CONTATO: string;
-  TIPO: string;
-  TELEFONE: string;
-  ANIVERSARIO: string;
-  EMAIL: string;
-  ID_CLIENTE: string;
-}
-
-export interface iFollowUpList {
-  ID: number;
-  DATA: string;
-  DESCRICAO: string;
-  USUARIO: string;
-  CLIENTE: string;
-}
-
-export interface iAgendamentosList {
-  ID: number;
-  DATA: string;
-  GEO_LAT: string;
-  GEO_LNG: string;
-  OK: string;
-  DATA_FIM: string;
-  HORA_INICIO: string;
-  HORA_FIM: string;
-  RECORRENTE: string;
-  PERIODICIDADE: string;
-  REAGENDADO: string;
-  CLIENTE: string;
-  VENDEDOR: iVendedor;
-}
-
-export interface iPendenciasList {
-  PEDIDO: number;
-  DATA: string;
-  QTD: number;
-  ENTREGUE: number;
-  PENDENTE: number;
-  VALOR_UNIT: number;
-  GORDURA: number;
-  Tabela: string;
-  VEND1: number;
-  VEND2: number;
-  ID_CONDICAO: number;
-  OBS1: string;
-  OBS2: string;
-  LIBERADO: string;
-  ID_PEDIDO_ECOMMERCE: string;
-  PRODUTO: iProduto;
-  CLIENTE: string;
 }

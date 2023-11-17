@@ -36,7 +36,7 @@ interface iNavBar {
   Open: boolean;
 }
 
-export const NavBar: React.FC<iNavBar> = memo(({ Open }) => {
+export const NavBar: React.FC<iNavBar> = memo(({ Open }: iNavBar) => {
   const { ThemeName } = useTheme();
   const [OpenCloseNavBar, SetOpenCloseNavBar] = useState<boolean>(Open);
 
@@ -57,7 +57,7 @@ export const NavBar: React.FC<iNavBar> = memo(({ Open }) => {
     <FontAwesomeIcon icon={faArrowRight} />
   );
 
-  const [NavigationButtons, _] = useState<iNavButton[]>([
+  const [NavigationButtons] = useState<iNavButton[]>([
     {
       Text: 'dashboard',
       Link: 'home',

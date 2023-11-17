@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 
 import { faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -15,9 +17,9 @@ import { DataTable } from '../../../components/DataTable';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
 import { TextAreaCustom } from '../../../components/TextAreaCustom';
-import { ResetCurrentItem, SetCurrentItem } from '../../../features/orcamento/orcamento-slice';
-import { SetProduct, SuperFindProducts } from '../../../features/produto/Produto-Thunk';
-import { ResetProduct } from '../../../features/produto/produto-slice';
+import { ResetCurrentItem, SetCurrentItem } from '../../../features/orcamento/Orcamento.slice';
+import { ResetProduct } from '../../../features/produto/Produto.slice';
+import { SetProduct, SuperFindProducts } from '../../../features/produto/Produto.thunk';
 import useSelect from '../../../hooks/UseSelect';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
@@ -25,19 +27,17 @@ import { useTheme } from '../../../hooks/useTheme';
 import { ObjectIsEmpty } from '../../../utils';
 import { ModalProduto } from '../Produto';
 
-export interface callback {
+export interface callbackResult {
   itemOrcamento: iItensOrcamento;
   update: boolean;
 }
 
 interface iModalItemOrcamento {
-  callback: (item: callback | null) => void;
+  callback: (item: callbackResult | null) => void;
 }
 
 export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) => {
-  const { ListProduto, errorMessage, isLoading, Current } = useAppSelector(
-    (state) => state.produto,
-  );
+  const { ListProduto, errorMessage, isLoading } = useAppSelector((state) => state.produto);
   const CurrentProduct = useAppSelector((state) => state.produto.Current);
   const CurrentItem = useAppSelector((state) => state.orcamento.CurrentItem);
   const IsLoadingItem = useAppSelector((state) => state.orcamento.isLoading);
@@ -78,7 +78,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
     dispatch(ResetProduct());
     dispatch(SuperFindProducts(filter));
 
-    if (ListProduto.Qtd_Registros == 1) {
+    if (ListProduto.Qtd_Registros === 1) {
       ProdutoToItem(ListProduto.value[0]);
     }
 
@@ -148,7 +148,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
   const GetTabelas = () => {
     const tabOptions: iOption[] = [];
 
-    Current.tables.map((tab) =>
+    CurrentProduct.tables.map((tab) =>
       tabOptions.push({
         label: `${tab.TABELA} - ${tab.PRECO.toLocaleString('pt-br', {
           style: 'currency',
@@ -162,7 +162,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
     dispatch(
       SetCurrentItem({
         ...CurrentItem,
-        PRODUTO: Current.produto,
+        PRODUTO: CurrentProduct.produto,
         SUBTOTAL: Number(tabOptions[0]?.value) * CurrentItem.QTD,
         TOTAL: Number(tabOptions[0]?.value) * CurrentItem.QTD,
         VALOR: Number(tabOptions[0]?.value),
@@ -195,13 +195,13 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
 
   useEffect(() => {
     GetTabelas();
-  }, [Current]);
+  }, [CurrentProduct]);
   const onSubmitForm = (e: React.FormEvent<HTMLFormElement>) => {
     const tabelaSplited = TabelaSelected.label.split('-');
     const tabela: string = tabelaSplited[0].replace(/\s/g, '');
 
     e.preventDefault();
-    const result: callback = {
+    const result: callbackResult = {
       itemOrcamento: {
         ...CurrentItem,
         TABELA: tabela,
@@ -294,7 +294,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                       readOnly={true}
                       label='REFERÊNCIA'
                       name='REFERENCIA'
-                      value={Current.produto.REFERENCIA}
+                      value={CurrentProduct.produto.REFERENCIA}
                     />
                   </FlexComponent>
                   <FlexComponent flexGrow={1}>
@@ -302,7 +302,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                       label='FABRICANTE'
                       readOnly={true}
                       name='FABRICANTE'
-                      value={Current.produto.FABRICANTE?.NOME}
+                      value={CurrentProduct.produto.FABRICANTE?.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent flexGrow={1}>
@@ -310,7 +310,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                       label='LOCALIZAÇÃO'
                       readOnly={true}
                       name='LOCALIZACAO'
-                      value={Current.produto.LOCAL}
+                      value={CurrentProduct.produto.LOCAL}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -320,7 +320,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                       label='NOME DO PRODUTO'
                       readOnly={true}
                       name='PRODUTO.NOME'
-                      value={Current.produto.NOME}
+                      value={CurrentProduct.produto.NOME}
                     />
                   </FlexComponent>
                   <FlexComponent>
@@ -328,7 +328,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                       label='APLICAÇÃO PRODUTO'
                       readOnly={true}
                       name='APLICACAO'
-                      value={Current.produto.APLICACOES}
+                      value={CurrentProduct.produto.APLICACOES}
                     />
                   </FlexComponent>
                   <FlexComponent>
@@ -336,7 +336,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                       label='INFORMACOES'
                       readOnly={true}
                       name='INFORMACOES.PRODUTO'
-                      value={Current.produto.INSTRUCOES}
+                      value={CurrentProduct.produto.INSTRUCOES}
                     />
                   </FlexComponent>
                 </FlexComponent>
@@ -346,7 +346,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                   columns={tableChavesHeaders}
                   IsLoading={IsLoadingItem}
                   ErrorMessage={errorMessage}
-                  TableData={Current.produto.ListaChaves}
+                  TableData={CurrentProduct.produto.ListaChaves}
                 />
               </FlexComponent>
             </FlexComponent>
@@ -367,7 +367,7 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                   name='ESTOQUE'
                   type='number'
                   textAlign='right'
-                  value={Current.produto.QTDATUAL}
+                  value={CurrentProduct.produto.QTDATUAL}
                 />
               </FlexComponent>
               <FlexComponent width='10%' sm={{ width: '49%' }}>

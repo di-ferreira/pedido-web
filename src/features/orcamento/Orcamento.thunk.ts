@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { iApiResult } from '../../@types';
 import { iFilter } from '../../@types/Filter';
@@ -41,7 +42,7 @@ const CreateFilter = (filter: iFilter<iOrcamento>): string => {
 
   let ResultTop = filter.top ? `$top=${filter.top}` : '$top=15';
 
-  ResultFilter !== '' ? (ResultTop = `&${ResultTop}`) : (ResultTop = ResultTop);
+  ResultFilter !== '' && (ResultTop = `&${ResultTop}`);
 
   const ResultRoute: string = `?${ResultFilter}${ResultTop}${ResultSkip}${ResultOrderBy}&$inlinecount=allpages&$orderby=ORCAMENTO desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`;
   return ResultRoute;
@@ -93,8 +94,9 @@ export const NewOrcamento = createAsyncThunk(
         ).data;
         return result;
       }
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );
@@ -107,15 +109,16 @@ export const GetOrcamento = createAsyncThunk(
         `${ROUTE_GET_ALL_ORCAMENTO}(${idOrcamento})?$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`,
       );
       return res.data;
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );
 
 export const GetListOrcamento = createAsyncThunk(
   'Orcamento/List',
-  async (filter: iFilter<iOrcamento> | undefined, thunkApi) => {
+  async (filter: iFilter<iOrcamento> | undefined, thunkAPI) => {
     try {
       const VendedorLocal: iVendedor = JSON.parse(String(localStorage.getItem(VENDEDOR_STORE)));
       const FILTER = filter
@@ -130,8 +133,9 @@ export const GetListOrcamento = createAsyncThunk(
       };
 
       return result;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );
@@ -156,8 +160,9 @@ export const NewItemOrcamento = createAsyncThunk(
         ).data;
         return result;
       }
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );
@@ -182,8 +187,9 @@ export const RemoveItemOrcamento = createAsyncThunk(
         ).data;
         return result;
       }
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );
@@ -221,8 +227,9 @@ export const UpdateItemOrcamento = createAsyncThunk(
           return result;
         }
       }
-    } catch (error: any) {
-      return thunkAPI.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );

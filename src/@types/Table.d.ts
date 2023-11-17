@@ -1,3 +1,12 @@
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import React from 'react';
+import { iButtonAction } from './Button';
+import { iFilter } from './Filter';
+
+export interface iOption {
+  label: string;
+  value: string | number;
+}
 export interface iTablePagination {
   CurrentPage: number;
   TotalPages: number;
@@ -9,22 +18,6 @@ export interface iTablePagination {
   onChange: (value: iOption) => void;
 }
 
-export interface iTableProps<T> {
-  messageNoData?: string;
-  data: T[];
-  columns: iColumnType<T>[];
-  pagination?: iTablePagination;
-}
-
-export interface iOption {
-  label: string;
-  value: string | number;
-}
-
-export interface iDataResultTable<T> {
-  Qtd_Registros: number;
-  value: T[];
-}
 export interface iColumnType<T> {
   key: string;
   title: string;
@@ -32,6 +25,17 @@ export interface iColumnType<T> {
   isHideMobile?: boolean;
   render?: (column: iColumnType<T>, item: T) => void;
   action?: iButtonAction<T>[];
+}
+export interface iTableProps<T> {
+  messageNoData?: string;
+  data: T[];
+  columns: iColumnType<T>[];
+  pagination?: iTablePagination;
+}
+
+export interface iDataResultTable<T> {
+  Qtd_Registros: number;
+  value: T[];
 }
 
 export type iTabData = {
@@ -48,6 +52,7 @@ export interface iTableRef<T> {
 }
 
 declare module 'react' {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   function forwardRef<T, P = {}>(
     render: (props: P, ref: React.Ref<T>) => React.JSX.Element | null,
   ): (props: P & React.RefAttributes<T>) => React.JSX.Element | null;

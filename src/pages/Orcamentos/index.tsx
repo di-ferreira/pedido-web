@@ -1,49 +1,54 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
-import { faEdit, faFileLines } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faFileInvoiceDollar, faFileLines } from '@fortawesome/free-solid-svg-icons';
 import dayjs from 'dayjs';
+import { useNavigate } from 'react-router-dom';
 import { iFilter } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
 import { iColumnType } from '../../@types/Table';
 import { DataTable } from '../../components/DataTable';
-import { GetListOrcamento, GetOrcamento } from '../../features/orcamento/Orcamento-Thunk';
+import { GetListOrcamento, GetOrcamento } from '../../features/orcamento/Orcamento.thunk';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
-import { ModalOrcamento } from '../Modals/Orcamento';
-import { ModalPreVenda } from '../Modals/PreVenda';
+import useTabListStore from '../../hooks/useTabList/index';
 import { Container } from './styles';
 
 export const Orcamentos: React.FC = () => {
+  const navigate = useNavigate();
+  const { openTab } = useTabListStore((state) => state);
   const { ListOrcamento, isLoading, errorMessage } = useAppSelector((state) => state.orcamento);
-  const [OpenModalOrc, setOpenModalOrc] = useState<boolean>(false);
-  const [NewPreVenda, setNewPreVenda] = useState<iOrcamento | null>(null);
 
   const dispatch = useAppDispatch();
 
-  const handleListOrcamento = (filter?: iFilter<iOrcamento>) => {
-    dispatch(GetListOrcamento(filter));
-  };
-
-  const onOpenModalPreVenda = async (value: iOrcamento) => {
-    setNewPreVenda(value);
-  };
-
-  const onCloseModalPreVenda = async (value: iOrcamento) => {
-    handleListOrcamento();
-    setNewPreVenda(null);
-  };
-
-  const onOpenModalOrcamento = useCallback(
-    (value: iOrcamento) => {
-      dispatch(GetOrcamento(value.ORCAMENTO));
-      setOpenModalOrc(true);
+  const handleListOrcamento = useCallback(
+    (filter?: iFilter<iOrcamento>) => {
+      dispatch(GetListOrcamento(filter));
     },
-    [setOpenModalOrc],
+    [dispatch],
   );
 
-  const onCloseModalOrcamento = useCallback(async (value: iOrcamento) => {
-    handleListOrcamento();
-    setOpenModalOrc(false);
-  }, []);
+  const handlePreVenda = (value: iOrcamento) => {
+    dispatch(GetOrcamento(value.ORCAMENTO));
+    openTab({
+      Icon: faFileInvoiceDollar,
+      Link: `orcamentos/pre-venda/${value.ORCAMENTO}`,
+      Closable: true,
+      TitleTab: `Pré-Venda ${value.ORCAMENTO}`,
+      isActive: true,
+    });
+    navigate(`pre-venda/${value.ORCAMENTO}`);
+  };
+
+  const handleOrcamento = (value: iOrcamento) => {
+    dispatch(GetOrcamento(value.ORCAMENTO));
+    openTab({
+      Icon: faFileLines,
+      Link: `orcamentos/orcamento/${value.ORCAMENTO}`,
+      Closable: true,
+      TitleTab: `Orcamento ${value.ORCAMENTO}`,
+      isActive: true,
+    });
+    navigate(`orcamento/${value.ORCAMENTO}`);
+  };
 
   const headers: iColumnType<iOrcamento>[] = [
     {
@@ -59,7 +64,6 @@ export const Orcamentos: React.FC = () => {
     {
       key: 'DATA',
       title: 'DATA',
-      isHideMobile: true,
       width: '20rem',
       render: (_, item) => {
         return dayjs(item.DATA).format('DD/MM/YYYY');
@@ -68,14 +72,12 @@ export const Orcamentos: React.FC = () => {
     {
       key: 'VENDEDOR.NOME',
       title: 'VENDEDOR',
-      isHideMobile: true,
       width: '20rem',
     },
     {
       key: 'TOTAL',
       title: 'TOTAL',
       width: '7rem',
-      isHideMobile: true,
       render: (_, item) => {
         return item.TOTAL.toLocaleString('pt-br', {
           style: 'currency',
@@ -89,14 +91,14 @@ export const Orcamentos: React.FC = () => {
       width: '5rem',
       action: [
         {
-          onclick: (value: iOrcamento) => onOpenModalPreVenda(value),
+          onclick: (value: iOrcamento) => handlePreVenda(value),
           Icon: faFileLines,
           Rounded: true,
           Title: 'Nova Pré-Venda',
           Type: 'success',
         },
         {
-          onclick: (value: iOrcamento) => onOpenModalOrcamento(value),
+          onclick: (value: iOrcamento) => handleOrcamento(value),
           Icon: faEdit,
           Rounded: true,
           Title: 'Editar',
@@ -112,13 +114,10 @@ export const Orcamentos: React.FC = () => {
 
   useEffect(() => {
     handleListOrcamento();
-  }, []);
+  }, [handleListOrcamento]);
 
   return (
     <Container>
-      {OpenModalOrc && <ModalOrcamento callback={onCloseModalOrcamento} />}
-      {NewPreVenda && <ModalPreVenda Orcamento={NewPreVenda} callback={onCloseModalPreVenda} />}
-
       <DataTable
         IsLoading={isLoading}
         ErrorMessage={errorMessage}

@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { iProduto, iProdutoWithTables, iTabelaVenda } from '../../@types/Produto';
 import { iDataResultTable } from '../../@types/Table';
-import { SetProduct, SuperFindProducts, TableFromProduct } from './Produto-Thunk';
+import { SetProduct, SuperFindProducts, TableFromProduct } from './Produto.thunk';
 
 interface iProdutoState {
   Current: iProdutoWithTables;
@@ -302,8 +303,10 @@ export const produtoSlice = createSlice({
       })
       .addCase(
         SuperFindProducts.fulfilled,
-        (state, action: PayloadAction<iDataResultTable<iProduto>>) => {
-          state.ListProduto = action.payload;
+        (state, action: PayloadAction<iDataResultTable<iProduto> | undefined>) => {
+          if (action.payload) {
+            state.ListProduto = action.payload;
+          }
           state.errorMessage = '';
           state.isLoading = false;
         },
@@ -318,11 +321,16 @@ export const produtoSlice = createSlice({
         state.errorMessage = '';
         state.isLoading = true;
       })
-      .addCase(TableFromProduct.fulfilled, (state, action: PayloadAction<iTabelaVenda[]>) => {
-        state.errorMessage = '';
-        state.isLoading = false;
-        state.TableList = action.payload;
-      })
+      .addCase(
+        TableFromProduct.fulfilled,
+        (state, action: PayloadAction<iTabelaVenda[] | undefined>) => {
+          state.errorMessage = '';
+          state.isLoading = false;
+          if (action.payload) {
+            state.TableList = action.payload;
+          }
+        },
+      )
       .addCase(TableFromProduct.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.errorMessage = action.payload;
@@ -333,12 +341,17 @@ export const produtoSlice = createSlice({
         state.errorMessage = '';
         state.isLoading = true;
       })
-      .addCase(SetProduct.fulfilled, (state, action: PayloadAction<iProdutoWithTables>) => {
-        state.errorMessage = '';
-        state.isLoading = false;
-        state.Current = action.payload;
-        state.TableList = action.payload.tables;
-      })
+      .addCase(
+        SetProduct.fulfilled,
+        (state, action: PayloadAction<iProdutoWithTables | undefined>) => {
+          state.errorMessage = '';
+          state.isLoading = false;
+          if (action.payload) {
+            state.Current = action.payload;
+            state.TableList = action.payload.tables;
+          }
+        },
+      )
       .addCase(SetProduct.rejected, (state, action: PayloadAction<any>) => {
         state.isLoading = false;
         state.errorMessage = action.payload;

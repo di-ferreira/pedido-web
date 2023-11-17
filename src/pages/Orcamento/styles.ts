@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { devices } from '../../../utils/Constants';
-
+import { devices } from '../../utils/Constants';
 interface iInputContainer {
   width?: string;
   align?: 'center' | 'left';
@@ -11,10 +10,21 @@ interface iRow {
   height?: string;
 }
 
+export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  ${`@media screen and ${devices.sm}`} {
+    overflow: hidden auto;
+  }
+`;
+
 export const FormEditOrcamento = styled.form`
   position: relative;
   width: 100%;
-  height: 83vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -87,4 +97,5 @@ export const FormEditOrcamentoSwitchContainer = styled.div<iInputContainer>`
 export const FormFooter = styled.footer`
   width: 100%;
   display: flex;
+  padding: 0rem 1.5rem 1.5rem 1.5rem;
 `;

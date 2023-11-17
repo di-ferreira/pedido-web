@@ -26,8 +26,8 @@ export const formatLocalDateAsDate = (date: string, pattern: string) => {
 
 export const HEXToRGB = (HexColor: string): string => {
   const aRgbHex = HexColor.replace('#', '').match(/.{1,2}/g);
-  if (aRgbHex?.length != 3) {
-    throw 'Only six-digit hex colors are allowed.';
+  if (aRgbHex?.length !== 3) {
+    throw new Error('Only six-digit hex colors are allowed.');
   }
 
   const aR = aRgbHex ? parseInt(aRgbHex[0], 16) : '0';
@@ -49,7 +49,7 @@ export const MaskFone = (value: string | undefined) => {
     .replace(/(-\d{4})(\d+?)/, '$1');
 };
 
-const MaskCpf = (value: string | undefined) => {
+export const MaskCpf = (value: string | undefined) => {
   if (!value) return '';
   return value
     .replace(/\D/g, '') // substitui qualquer caracter que nao seja numero por nada
@@ -81,7 +81,7 @@ export const FormatToNumber = (value: string): number => {
   return parseFloat(result);
 };
 
-const MaskCnpj = (value: string | undefined) => {
+export const MaskCnpj = (value: string | undefined) => {
   if (!value) return '';
 
   return value
@@ -121,9 +121,9 @@ export const MaskCEP = (value: string | undefined) => {
     .replace(/(-\d{3})(\d+?)/, '$1');
 };
 
-export const ObjectIsEmpty = (obj: Object): boolean => {
+export const ObjectIsEmpty = (obj: object): boolean => {
   for (const prop in obj) {
-    if (obj.hasOwnProperty(prop)) return false;
+    if (Object.prototype.hasOwnProperty.call(obj, prop)) return false;
   }
   return true;
 };

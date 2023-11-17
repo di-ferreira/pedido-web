@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 
-import { Container, TabList } from './styles';
-import { Tab } from '../Tab';
 import { faHouseChimney } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
-import useTabList from '../../hooks/useTabList';
 import { iTabData } from '../../@types/Table';
+import useTabList from '../../hooks/useTabList';
+import { Tab } from '../Tab';
+import { Container, TabList } from './styles';
 
 export const TabBar: React.FC = () => {
   const { Tabs, removeTab, openTab } = useTabList((state) => state);
@@ -27,10 +28,10 @@ export const TabBar: React.FC = () => {
 
   useEffect(() => {
     if (closedTab) {
-      navigate('home');
+      navigate(-1);
       setClosedTab(false);
     }
-  }, [Tabs, closedTab]);
+  }, [Tabs, closedTab, navigate]);
 
   const closeCurrentTab = (tab: iTabData) => {
     removeTab(tab);

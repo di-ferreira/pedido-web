@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 
 import {
@@ -74,7 +75,7 @@ export const TablePagination: React.FC<iDataTablePagination> = ({
     setTotalRegisters(QuantityRegiters);
     const NewOption = OptionsSelect.find((opt) => opt.value === RowsPerPage);
     setCurrentOption(NewOption || OptionsSelect[0]);
-  }, [RowsPerPage]);
+  }, [QuantityRegiters, RowsPerPage]);
 
   /*
   top = qtd registros por página

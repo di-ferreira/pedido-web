@@ -1,3 +1,6 @@
+/* eslint-disable quotes */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable array-callback-return */
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { iApiResult } from '../../@types';
 import { iFilter } from '../../@types/Filter';
@@ -24,44 +27,9 @@ const ROUTE_SELECT_SQL = 'ServiceSistema/SelectSQL';
 
 const ROUTE_GET_ALL_PRODUTO = '/Produto';
 
-const CreateFilter = (filter: iFilter<iProduto>): string => {
-  let ResultFilter: string = '';
-
-  if (filter.filter && filter.filter.length >= 1) {
-    ResultFilter = '$filter=';
-    const andStr = ' AND ';
-    filter.filter.map((itemFilter) => {
-      if (itemFilter.typeSearch)
-        itemFilter.typeSearch === 'like'
-          ? (ResultFilter = `${ResultFilter}${andStr}${itemFilter.key} like '% ${String(
-              itemFilter.value,
-            ).toUpperCase()} %'${andStr}`)
-          : itemFilter.typeSearch === 'eq' &&
-            (ResultFilter = `${ResultFilter}${andStr}${itemFilter.key} eq '${itemFilter.value}'${andStr}`);
-      else
-        ResultFilter = `${ResultFilter}${andStr}${itemFilter.key} like '% ${String(
-          itemFilter.value,
-        ).toUpperCase()} %'${andStr}`;
-    });
-    ResultFilter = ResultFilter.slice(0, -andStr.length);
-  }
-
-  const ResultOrderBy = filter.orderBy ? `&$orderby=${filter.orderBy}` : '';
-
-  const ResultSkip = filter.skip ? `&$skip=${filter.skip}` : '&$skip=0';
-
-  let ResultTop = filter.top ? `$top=${filter.top}` : '$top=15';
-
-  ResultFilter !== '' ? (ResultTop = `&${ResultTop}`) : (ResultTop = ResultTop);
-
-  const ResultRoute: string = `?${ResultFilter}${ResultTop}${ResultSkip}${ResultOrderBy}&$inlinecount=allpages`;
-
-  return ResultRoute;
-};
-
 export const SuperFindProducts = createAsyncThunk(
   'Produto/SuperFindProducts',
-  async (filter: iFilter<iProduto> | undefined, thunkApi) => {
+  async (filter: iFilter<iProduto> | undefined, thunkAPI) => {
     try {
       const bodyReq: iReqSuperBusca = {
         Palavras: filter?.filter ? String(filter.filter[0].value) : '',
@@ -80,17 +48,19 @@ export const SuperFindProducts = createAsyncThunk(
       };
 
       if (result.Qtd_Registros < 1)
-        return thunkApi.rejectWithValue('error: Não encontrou nenhum PRODUTO');
-      else return result;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(`error: ${error.message}`);
+        return thunkAPI.rejectWithValue('error: Não encontrou nenhum PRODUTO');
+
+      return result;
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );
 
 export const TableFromProduct = createAsyncThunk(
   'Produto/TableFromProduct',
-  async (product: iProduto, thunkApi) => {
+  async (product: iProduto, thunkAPI) => {
     try {
       let tabelas: iTabelaVenda[] = [];
 
@@ -115,34 +85,35 @@ export const TableFromProduct = createAsyncThunk(
       const { Data, StatusCode, StatusMessage } = res;
 
       if (StatusCode !== 200) {
-        return thunkApi.rejectWithValue(`error: ${StatusMessage}`);
-      } else {
-        const newTables: iTabelaVenda[] = [];
-
-        Data.map((tb) => {
-          if ('NOVO_PRECO' in tb) {
-            newTables.push({
-              BLOQUEADO: tb.BLOQUEADO,
-              PRECO: tb.NOVO_PRECO,
-              TABELA: tb.TABELA,
-            });
-          } else {
-            newTables.push(tb);
-          }
-        });
-        tabelas = [...tabelas, ...newTables];
+        return thunkAPI.rejectWithValue(`error: ${StatusMessage}`);
       }
 
+      const newTables: iTabelaVenda[] = [];
+
+      Data.map((tb) => {
+        if ('NOVO_PRECO' in tb) {
+          newTables.push({
+            BLOQUEADO: tb.BLOQUEADO,
+            PRECO: tb.NOVO_PRECO,
+            TABELA: tb.TABELA,
+          });
+        } else {
+          newTables.push(tb);
+        }
+      });
+      tabelas = [...tabelas, ...newTables];
+
       return tabelas;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );
 
 export const SetProduct = createAsyncThunk(
   'Produto/SetProduct',
-  async (CodeProduct: string, thunkApi) => {
+  async (CodeProduct: string, thunkAPI) => {
     try {
       const product: iProduto = (
         await api.get<iProduto>(
@@ -173,23 +144,22 @@ export const SetProduct = createAsyncThunk(
       const { Data, StatusCode, StatusMessage } = tablesResult;
 
       if (StatusCode !== 200) {
-        return thunkApi.rejectWithValue(`error: ${StatusMessage}`);
-      } else {
-        const newTables: iTabelaVenda[] = [];
-
-        Data.map((tb) => {
-          if ('NOVO_PRECO' in tb) {
-            newTables.push({
-              BLOQUEADO: tb.BLOQUEADO,
-              PRECO: tb.NOVO_PRECO,
-              TABELA: tb.TABELA,
-            });
-          } else {
-            newTables.push(tb);
-          }
-        });
-        tabelas = [...tabelas, ...newTables];
+        return thunkAPI.rejectWithValue(`error: ${StatusMessage}`);
       }
+      const newTables: iTabelaVenda[] = [];
+
+      Data.map((tb) => {
+        if ('NOVO_PRECO' in tb) {
+          newTables.push({
+            BLOQUEADO: tb.BLOQUEADO,
+            PRECO: tb.NOVO_PRECO,
+            TABELA: tb.TABELA,
+          });
+        } else {
+          newTables.push(tb);
+        }
+      });
+      tabelas = [...tabelas, ...newTables];
 
       const result: iProdutoWithTables = {
         produto: product,
@@ -197,8 +167,9 @@ export const SetProduct = createAsyncThunk(
       };
 
       return result;
-    } catch (error: any) {
-      return thunkApi.rejectWithValue(`error: ${error.message}`);
+    } catch (error: unknown) {
+      if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+      if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
     }
   },
 );

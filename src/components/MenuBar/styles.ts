@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Light } from './../../colors';
 
 export const Container = styled.header`
   display: flex;

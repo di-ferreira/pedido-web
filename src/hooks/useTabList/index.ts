@@ -8,9 +8,7 @@ type StateTab = {
 };
 
 const editTabList = (tab: iTabData, oldList: iTabData[]): iTabData[] => {
-  let NewList: iTabData[];
-
-  NewList = oldList.map((t) => {
+  const NewList: iTabData[] = oldList.map((t) => {
     if (t !== tab) {
       t.isActive = false;
     } else {
@@ -23,17 +21,14 @@ const editTabList = (tab: iTabData, oldList: iTabData[]): iTabData[] => {
 };
 
 const removeTabOfList = (tab: iTabData, oldList: iTabData[]): iTabData[] => {
-  let NewList: iTabData[];
-
-  NewList = oldList.filter((t) => (t !== tab ? t : ''));
+  const NewList: iTabData[] = oldList.filter((t) => t.Link !== tab.Link && t);
   return NewList;
 };
 
 const verifyList = (oldList: iTabData[]): iTabData[] => {
-  let NewList: iTabData[];
   const setList = new Set();
 
-  NewList = oldList.filter((t) => {
+  const NewList: iTabData[] = oldList.filter((t) => {
     const duplicatedTab = setList.has(t.Link);
     setList.add(t.Link);
     return !duplicatedTab;

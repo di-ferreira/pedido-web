@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from 'zustand';
 import { iDataResult, iSelectSQL } from '../../@types';
 import { iFilter } from '../../@types/Filter';
@@ -15,10 +17,6 @@ import { VENDEDOR_STORE } from '../../utils/Constants';
 interface iDataOrcamento {
   Qtd_Registros: number;
   value: iMovimento[];
-}
-
-interface iDataCreateOrcamento {
-  data: iDataResult<iMovimento>;
 }
 
 interface iResultPreVenda {
@@ -98,7 +96,7 @@ const CreateFilter = (filter: iFilter<iMovimento>): string => {
 
   let ResultTop = filter.top ? `$top=${filter.top}` : '$top=15';
 
-  ResultFilter !== '' ? (ResultTop = `&${ResultTop}`) : (ResultTop = ResultTop);
+  ResultFilter !== '' && (ResultTop = `&${ResultTop}`);
 
   const ResultRoute: string = `?${ResultFilter}${ResultTop}${ResultSkip}${ResultOrderBy}&$inlinecount=allpages&$orderby=DATA desc&$expand=CLIENTE,VENDEDOR,Itens_List,Itens_List/PRODUTO`;
 
@@ -160,7 +158,7 @@ const GetDataSelecSQL = async (sql: iSelectSQL): Promise<iResultSQL> => {
   return api.post(`${ROUTE_SELECT_SQL}`, sql);
 };
 
-const usePreVenda = create<iUsePreVenda>((set) => ({
+const usePreVenda = create<iUsePreVenda>(() => ({
   SavePreVenda: (PreVenda: iPreVenda) => SavePreVenda(PreVenda),
   GetPreVenda: (IdPreVenda: number) => GetPreVenda(IdPreVenda),
   GetPreVendas: (filter) => GetPreVendas(filter),

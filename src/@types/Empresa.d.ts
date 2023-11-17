@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 export interface iEmpresa {
   ID: number;
   RAZAO_SOCIAL: string;

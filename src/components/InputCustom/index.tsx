@@ -8,7 +8,7 @@ interface iInputCustom {
   labelPosition?: 'left' | 'right' | 'top';
   textAlign?: 'left' | 'right' | 'center';
   type?: 'text' | 'password' | 'date' | 'number' | 'radio';
-  value?: any;
+  value?: string | number | readonly string[] | undefined | null;
   name?: string;
   placeholder?: string;
   readOnly?: boolean;
@@ -23,58 +23,56 @@ interface iInputCustom {
 }
 type Ref = HTMLInputElement;
 
-export const InputCustom = forwardRef<Ref, iInputCustom>(
-  (
-    {
-      onChange,
-      onKeydown,
-      onBlur,
-      type,
-      labelAlign,
-      textAlign,
-      label,
-      labelPosition,
-      placeholder,
-      readOnly,
-      checked,
-      defaultChecked,
-      name,
-      value,
-      height,
-      widht,
-      autofocus,
-    },
-    ref,
-  ) => {
-    return (
-      <Container
-        labelPosition={labelPosition || 'top'}
-        height={height}
-        widht={widht}
-        label={label}
-        type={type}
-      >
-        {label && (
-          <LabelInput labelPosition={labelPosition || 'top'} align={labelAlign}>
-            {label}
-          </LabelInput>
-        )}
-        <Input
-          autoFocus={autofocus || false}
-          align={textAlign}
-          readOnly={readOnly || false}
-          value={value}
-          name={name}
-          ref={ref}
-          type={type || 'text'}
-          placeholder={placeholder}
-          onKeyDown={(e) => onKeydown && onKeydown(e)}
-          onChange={(e) => onChange && onChange(e)}
-          onBlur={(e) => onBlur && onBlur(e)}
-          checked={checked}
-          defaultChecked={defaultChecked}
-        />
-      </Container>
-    );
+export const InputCustom = forwardRef<Ref, iInputCustom>(function InputContainer(
+  {
+    onChange,
+    onKeydown,
+    onBlur,
+    type,
+    labelAlign,
+    textAlign,
+    label,
+    labelPosition,
+    placeholder,
+    readOnly,
+    checked,
+    defaultChecked,
+    name,
+    value,
+    height,
+    widht,
+    autofocus,
   },
-);
+  ref,
+) {
+  return (
+    <Container
+      labelPosition={labelPosition || 'top'}
+      height={height}
+      widht={widht}
+      label={label}
+      type={type}
+    >
+      {label && (
+        <LabelInput labelPosition={labelPosition || 'top'} align={labelAlign}>
+          {label}
+        </LabelInput>
+      )}
+      <Input
+        autoFocus={autofocus || false}
+        align={textAlign}
+        readOnly={readOnly || false}
+        value={value || ''}
+        name={name}
+        ref={ref}
+        type={type || 'text'}
+        placeholder={placeholder}
+        onKeyDown={(e) => onKeydown && onKeydown(e)}
+        onChange={(e) => onChange && onChange(e)}
+        onBlur={(e) => onBlur && onBlur(e)}
+        checked={checked}
+        defaultChecked={defaultChecked}
+      />
+    </Container>
+  );
+});

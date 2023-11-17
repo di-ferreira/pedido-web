@@ -1,19 +1,31 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import dayjs from 'dayjs';
 import { iFilter } from '../../@types/Filter';
 import { iMovimento } from '../../@types/PreVenda';
 import { iColumnType } from '../../@types/Table';
-import Table from '../../components/Table';
-import usePreVenda from '../../hooks/usePreVenda';
+import { DataTable } from '../../components/DataTable';
+import { GetPreVendas } from '../../features/pre-venda/PreVenda.thunk';
+import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import { Container } from './styles';
 
 export const PreVendas: React.FC = () => {
-  const { GetPreVendas } = usePreVenda();
+  const dispatch = useAppDispatch();
+  const { ListPreVendas, errorMessage, isLoading } = useAppSelector((state) => state.preVenda);
 
-  const ListPreVenda = async (filter?: iFilter<iMovimento>) => {
-    return await GetPreVendas(filter);
+  const handleListPV = useCallback(
+    (filter?: iFilter<iMovimento>) => {
+      dispatch(GetPreVendas(filter));
+    },
+    [dispatch],
+  );
+
+  const onFetchPreVendas = (top: number, skip: number) => {
+    handleListPV({ top, skip });
   };
+  useEffect(() => {
+    handleListPV();
+  }, [handleListPV]);
 
   const headers: iColumnType<iMovimento>[] = [
     {
@@ -56,7 +68,14 @@ export const PreVendas: React.FC = () => {
 
   return (
     <Container>
-      <Table onDataFetch={ListPreVenda} columns={headers} pagination />
+      <DataTable
+        columns={headers}
+        TableData={ListPreVendas.value}
+        ErrorMessage={errorMessage}
+        QuantityRegiters={ListPreVendas.Qtd_Registros}
+        IsLoading={isLoading}
+        onFetchPagination={onFetchPreVendas}
+      />
     </Container>
   );
 };

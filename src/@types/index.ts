@@ -1,14 +1,3 @@
-import * as Button from './Button';
-import * as Cliente from './Cliente';
-import * as Empresa from './Empresa';
-import * as Filter from './Filter';
-import * as Login from './Login';
-import * as Modal from './Modal';
-import * as Orcamento from './Orcamento';
-import * as Produto from './Produto';
-import * as Table from './Table';
-import * as Vendedor from './Vendedor';
-
 export interface iDataResult<T> {
   data: {
     Data: T;
@@ -16,6 +5,10 @@ export interface iDataResult<T> {
     StatusCode: number;
     StatusMessage: string;
   };
+}
+export interface iApiData<T> {
+  Qtd_Registros: number;
+  value: T[];
 }
 export interface iApiResult<T> {
   Data: T;
@@ -93,5 +86,3 @@ export interface iSelectSQL {
   pSQL: string;
   pPar: iSelectParam[];
 }
-
-export { Button, Cliente, Empresa, Filter, Login, Modal, Orcamento, Produto, Table, Vendedor };

@@ -1,5 +1,6 @@
 import { faBan, faCheck, faEdit, faFileLines, faSearch } from '@fortawesome/free-solid-svg-icons';
-import React, { useRef, useState } from 'react';
+import React, { JSX, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { iCliente } from '../../@types/Cliente';
 import { iFilter, iFilterQuery } from '../../@types/Filter';
@@ -12,15 +13,15 @@ import { FlexComponent } from '../../components/FlexComponent';
 import { Icon } from '../../components/Icon';
 import { InputCustom } from '../../components/InputCustom';
 import Table from '../../components/Table';
-import { NewOrcamento } from '../../features/orcamento/Orcamento-Thunk';
+import { NewOrcamento } from '../../features/orcamento/Orcamento.thunk';
 import useSelect from '../../hooks/UseSelect';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import useClientes from '../../hooks/useClientes';
 import { useLogin } from '../../hooks/useLogin';
+import useTabListStore from '../../hooks/useTabList/index';
 import { useTheme } from '../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../utils';
 import { ModalCliente } from '../Modals/Cliente';
-import { ModalOrcamento } from '../Modals/Orcamento';
 import { Container, ContainerInput, FilterContainer, SwitchContainer } from './styles';
 
 interface iSearchCliente {
@@ -33,8 +34,10 @@ export const Clientes: React.FC = () => {
   const { GetClientes } = useClientes();
   const { currentUser } = useLogin();
   const { ThemeName } = useTheme();
+  const { openTab } = useTabListStore((state) => state);
+  const navigate = useNavigate();
 
-  const { errorMessage, isLoading } = useAppSelector((state) => state.orcamento);
+  const { errorMessage, isLoading, Current } = useAppSelector((state) => state.orcamento);
   const dispatch = useAppDispatch();
 
   const OptionsSelect: iOption[] = [
@@ -47,8 +50,6 @@ export const Clientes: React.FC = () => {
   const TableRef = useRef<iTableRef<iCliente>>(null!);
 
   const [Cliente, setCliente] = useState<iCliente | null>(null);
-
-  const [OpenModalOrc, setOpenModalOrc] = useState<boolean>(false);
 
   /* OUTROS */
   const [SearchCliente, setSearchCliente] = useState<iSearchCliente>({
@@ -122,7 +123,7 @@ export const Clientes: React.FC = () => {
     setCliente(value);
   };
 
-  const onOpenModalOrcamento = (value: iCliente) => {
+  const handleOrcamento = (value: iCliente) => {
     const NewAddOrcamento: iOrcamento = {
       ORCAMENTO: 0,
       TOTAL: 0.0,
@@ -145,7 +146,15 @@ export const Clientes: React.FC = () => {
         progress: undefined,
         theme: ThemeName,
       });
-    } else setOpenModalOrc(true);
+    }
+    openTab({
+      Icon: faFileLines,
+      Link: `clientes/orcamento/${Current.ORCAMENTO}`,
+      Closable: true,
+      TitleTab: `Orcamento ${Current.ORCAMENTO}`,
+      isActive: true,
+    });
+    navigate(`orcamento/${Current.ORCAMENTO}`);
   };
 
   const headers: iColumnType<iCliente>[] = [
@@ -203,7 +212,7 @@ export const Clientes: React.FC = () => {
       width: '20rem',
       action: [
         {
-          onclick: onOpenModalOrcamento,
+          onclick: handleOrcamento,
           Icon: faFileLines,
           Rounded: true,
           Title: 'Novo Orçamento',
@@ -273,7 +282,6 @@ export const Clientes: React.FC = () => {
       </FilterContainer>
       {Cliente && <ModalCliente Cliente={Cliente} />}
 
-      {OpenModalOrc && <ModalOrcamento />}
       <FlexComponent height='100%'>
         <Table columns={headers} onDataFetch={ListClientes} ref={TableRef} pagination />
       </FlexComponent>

@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { iColumnType } from '../../../@types/Table';
 import { TableRowCell } from '../TableRowCell';
 import { TableRowHeaderCell } from '../TableRowHeaderCell';

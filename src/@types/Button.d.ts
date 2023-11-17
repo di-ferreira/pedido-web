@@ -1,3 +1,8 @@
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core';
+import React from 'react';
+
+export type iButtonType = 'default' | 'success' | 'warn' | 'danger' | 'primary' | 'secondary';
+
 export interface iButton {
   Text?: string;
   TypeButton?: 'button' | 'reset' | 'submit';
@@ -16,8 +21,6 @@ export interface iButton {
   AnimationPulse?: boolean;
   onclick?: () => void;
 }
-
-export type iButtonType = 'default' | 'success' | 'warn' | 'danger' | 'primary' | 'secondary';
 
 export interface iButtonAction<T> {
   Text?: string;

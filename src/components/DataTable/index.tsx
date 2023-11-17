@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 import { iColumnType } from '../../@types/Table';
 import { Loading } from '../Loading';
 import TableHeader from './TableHeader';

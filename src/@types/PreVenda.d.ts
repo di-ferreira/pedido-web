@@ -1,6 +1,88 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { typeSimNao } from '.';
 import { iCliente } from './Cliente';
 import { iProduto } from './Produto';
 import { iVendedor } from './Vendedor';
+
+export interface iItensList {
+  REGISTRO: number;
+  QTD: number;
+  VALOR: number;
+  CUSTO: number;
+  TOTAL: number;
+  CREDITO_GARANTIA: any;
+  DATA_CREDITO: any;
+  OBS_CREDITO: any;
+  CFOP_ITEM: any;
+  CST_ITEM: any;
+  ITEM: number;
+  TOTAL_CONTABIL: any;
+  ICMS: any;
+  IPI: any;
+  IPI_PIPI: any;
+  ST: any;
+  SUBTOTAL: number;
+  DESCONTO: number;
+  TOTALIZADOR: string;
+  CANCELADO: string;
+  QTD_PAGO: any;
+  PIS_CST: any;
+  PIS_VBC: any;
+  PIS_PPIS: any;
+  PIS_VPIS: any;
+  COFINS_CST: any;
+  COFINS_VBC: any;
+  COFINS_PCOFINS: any;
+  COFINS_VCOFINS: any;
+  MOTIVO_DEVOLUCAO: any;
+  MOTIVO_GARANTIA: any;
+  COMISSAO: any;
+  TABELA: any;
+  QTD_PEDIDO: any;
+  BASECALCULOICMS: any;
+  VALORICMS: any;
+  BASECALCULOICMSST: any;
+  VALORICMSST: any;
+  BASEFECP: any;
+  P_FECP: any;
+  VALORFECP: any;
+  BASEFECPST: any;
+  P_FECPST: any;
+  VALORFECPST: any;
+  VALORFRETE: any;
+  VALORSEGURO: any;
+  VALORDESCONTO: any;
+  VALORDESPESASACESSORIAS: any;
+  VALORIPI: any;
+  BASECALCULOIPI: any;
+  VALORREDUCAOBC: any;
+  TAXAREDUCAOBCST: any;
+  VALOR_ACEITO: any;
+  COMISSAO_INTERNO: any;
+  CALCULO_BC_ST: any;
+  CALCULO_ST: any;
+  CALCULO_P_ICMS: any;
+  QTD_GARANTIA_ENTREGUE: number;
+  QTD_GARANTIA_SALDO: number;
+  CST_ORIGINAL: any;
+  CFOP_ORIGINAL: any;
+  VENDEDOR: any;
+  ID_VALE_CASCO: any;
+  CONFERIDO: any;
+  QTD_CONFERIDA: any;
+  QUEM_CONFERIU: any;
+  P_RED_BC_ICMS: any;
+  GORDURA: any;
+  REF_EMISSAO: any;
+  REF_DOC: any;
+  REF_DANFE: any;
+  GNRE: any;
+  FECP: any;
+  ALIQ_II: any;
+  VALORII: any;
+  'MOVIMENTO@xdata.ref': string;
+  PRODUTO: iProduto;
+}
 
 export interface iMovimento {
   MOVIMENTO: number;
@@ -131,6 +213,16 @@ export interface iMovimento {
   Eventos_List: string;
 }
 
+export interface iItemPreVenda {
+  CodigoProduto: string;
+  Qtd: number;
+  Valor: number;
+  SubTotal: number;
+  Frete: number;
+  Desconto: number;
+  Total: number;
+  Tabela: string;
+}
 export interface iPreVenda {
   DataPedido: string;
   CodigoCliente: number;
@@ -151,97 +243,6 @@ export interface iPreVenda {
   TipoEntrega?: string;
   Origem?: string;
   Itens: iItemPreVenda[];
-}
-
-export interface iItemPreVenda {
-  CodigoProduto: string;
-  Qtd: number;
-  Valor: number;
-  SubTotal: number;
-  Frete: number;
-  Desconto: number;
-  Total: number;
-  Tabela: string;
-}
-
-export interface iItensList {
-  REGISTRO: number;
-  QTD: number;
-  VALOR: number;
-  CUSTO: number;
-  TOTAL: number;
-  CREDITO_GARANTIA: any;
-  DATA_CREDITO: any;
-  OBS_CREDITO: any;
-  CFOP_ITEM: any;
-  CST_ITEM: any;
-  ITEM: number;
-  TOTAL_CONTABIL: any;
-  ICMS: any;
-  IPI: any;
-  IPI_PIPI: any;
-  ST: any;
-  SUBTOTAL: number;
-  DESCONTO: number;
-  TOTALIZADOR: string;
-  CANCELADO: string;
-  QTD_PAGO: any;
-  PIS_CST: any;
-  PIS_VBC: any;
-  PIS_PPIS: any;
-  PIS_VPIS: any;
-  COFINS_CST: any;
-  COFINS_VBC: any;
-  COFINS_PCOFINS: any;
-  COFINS_VCOFINS: any;
-  MOTIVO_DEVOLUCAO: any;
-  MOTIVO_GARANTIA: any;
-  COMISSAO: any;
-  TABELA: any;
-  QTD_PEDIDO: any;
-  BASECALCULOICMS: any;
-  VALORICMS: any;
-  BASECALCULOICMSST: any;
-  VALORICMSST: any;
-  BASEFECP: any;
-  P_FECP: any;
-  VALORFECP: any;
-  BASEFECPST: any;
-  P_FECPST: any;
-  VALORFECPST: any;
-  VALORFRETE: any;
-  VALORSEGURO: any;
-  VALORDESCONTO: any;
-  VALORDESPESASACESSORIAS: any;
-  VALORIPI: any;
-  BASECALCULOIPI: any;
-  VALORREDUCAOBC: any;
-  TAXAREDUCAOBCST: any;
-  VALOR_ACEITO: any;
-  COMISSAO_INTERNO: any;
-  CALCULO_BC_ST: any;
-  CALCULO_ST: any;
-  CALCULO_P_ICMS: any;
-  QTD_GARANTIA_ENTREGUE: number;
-  QTD_GARANTIA_SALDO: number;
-  CST_ORIGINAL: any;
-  CFOP_ORIGINAL: any;
-  VENDEDOR: any;
-  ID_VALE_CASCO: any;
-  CONFERIDO: any;
-  QTD_CONFERIDA: any;
-  QUEM_CONFERIU: any;
-  P_RED_BC_ICMS: any;
-  GORDURA: any;
-  REF_EMISSAO: any;
-  REF_DOC: any;
-  REF_DANFE: any;
-  GNRE: any;
-  FECP: any;
-  ALIQ_II: any;
-  VALORII: any;
-  'MOVIMENTO@xdata.ref': string;
-  PRODUTO: iProduto;
 }
 
 export interface iCondicaoPgto {
