@@ -28,7 +28,7 @@ export const TabBar: React.FC = () => {
 
   useEffect(() => {
     if (closedTab) {
-      navigate(-1);
+      navigate(Tabs[Tabs.length - 1].Link);
       setClosedTab(false);
     }
   }, [Tabs, closedTab, navigate]);

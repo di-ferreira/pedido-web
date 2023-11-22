@@ -318,13 +318,6 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
   };
 
   const ClosePage = () => {
-    console.log('CANCELAR', {
-      Icon: faFileInvoiceDollar,
-      Link: `orcamentos/pre-venda/${Current.ORCAMENTO}`,
-      Closable: true,
-      TitleTab: `Pré-Venda ${Current.ORCAMENTO}`,
-      isActive: true,
-    });
     removeTab({
       Icon: faFileInvoiceDollar,
       Link: `orcamentos/pre-venda/${Current.ORCAMENTO}`,

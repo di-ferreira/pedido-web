@@ -4,6 +4,7 @@ import { ToastContainer } from 'react-toastify';
 import { MainLayout } from '../components/MainLayout';
 import { LoginProvider } from '../hooks/useLogin';
 import { useTheme } from '../hooks/useTheme';
+import { Cliente } from '../pages/Cliente';
 import { Clientes } from '../pages/Clientes';
 import { Home } from '../pages/Home';
 import { Login } from '../pages/Login';
@@ -40,6 +41,7 @@ const RoutesPage: React.FC = () => {
             <Route path='logout' element={<Logout />} />
             <Route path='home' element={<Home />} />
             <Route path='clientes' element={<Clientes />} />
+            <Route path='clientes/cliente/:clienteID' element={<Cliente />} />
             <Route path='clientes/orcamento/:orcamentoID' element={<Orcamento />} />
             <Route path='orcamentos' element={<Orcamentos />} />
             <Route path='orcamentos/orcamento/:orcamentoID' element={<Orcamento />} />

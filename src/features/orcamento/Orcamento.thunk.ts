@@ -123,7 +123,7 @@ export const GetListOrcamento = createAsyncThunk(
       const VendedorLocal: iVendedor = JSON.parse(String(localStorage.getItem(VENDEDOR_STORE)));
       const FILTER = filter
         ? CreateFilter(filter)
-        : `?$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR}&$top=15&$inlinecount=allpages&$orderby=ORCAMENTO desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`;
+        : `?$filter=VENDEDOR eq ${VendedorLocal.VENDEDOR} &$top=15&$inlinecount=allpages&$orderby=ORCAMENTO desc&$expand=VENDEDOR,CLIENTE,ItensOrcamento/PRODUTO/FORNECEDOR,ItensOrcamento/PRODUTO/FABRICANTE,ItensOrcamento,ItensOrcamento/PRODUTO`;
 
       const res = await api.get(`${ROUTE_GET_ALL_ORCAMENTO}${FILTER}`);
 

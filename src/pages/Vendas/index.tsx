@@ -1,18 +1,25 @@
-import React from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useCallback, useEffect } from 'react';
 
 import dayjs from 'dayjs';
 import { iFilter } from '../../@types/Filter';
 import { iMovimento } from '../../@types/PreVenda';
 import { iColumnType } from '../../@types/Table';
-import Table from '../../components/Table';
-import useVenda from '../../hooks/useVenda';
+import { DataTable } from '../../components/DataTable';
+import { GetVendas } from '../../features/venda/venda.thunk';
+import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import { Container } from './styles';
 
 export const Vendas: React.FC = () => {
-  const { GetVendas } = useVenda();
+  const dispatch = useAppDispatch();
+  const vendaStore = useAppSelector((state) => state.venda);
 
-  const ListVenda = async (filter?: iFilter<iMovimento>) => {
-    return await GetVendas(filter);
+  const handleVendaList = useCallback((filter?: iFilter<iMovimento>) => {
+    dispatch(GetVendas(filter));
+  }, []);
+
+  const onFetchPagination = (top: number, skip: number) => {
+    handleVendaList({ top, skip });
   };
 
   const headers: iColumnType<iMovimento>[] = [
@@ -54,9 +61,20 @@ export const Vendas: React.FC = () => {
     },
   ];
 
+  useEffect(() => {
+    handleVendaList();
+  }, [handleVendaList]);
+
   return (
     <Container>
-      <Table columns={headers} onDataFetch={ListVenda} pagination />
+      <DataTable
+        columns={headers}
+        TableData={vendaStore.List.value}
+        QuantityRegiters={vendaStore.List.Qtd_Registros}
+        ErrorMessage={vendaStore.errorMessage}
+        IsLoading={vendaStore.isLoading}
+        onFetchPagination={onFetchPagination}
+      />
     </Container>
   );
 };

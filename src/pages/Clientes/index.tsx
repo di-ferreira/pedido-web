@@ -1,27 +1,27 @@
 import { faBan, faCheck, faEdit, faFileLines, faSearch } from '@fortawesome/free-solid-svg-icons';
-import React, { JSX, useRef, useState } from 'react';
+import React, { JSX, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { iCliente } from '../../@types/Cliente';
 import { iFilter, iFilterQuery } from '../../@types/Filter';
 import { iOrcamento } from '../../@types/Orcamento';
-import { iColumnType, iOption, iTableRef } from '../../@types/Table';
+import { iColumnType, iOption } from '../../@types/Table';
 import { iVendedor } from '../../@types/Vendedor';
 import Button from '../../components/Button';
 import Checkbox from '../../components/Checkbox';
+import { DataTable } from '../../components/DataTable';
 import { FlexComponent } from '../../components/FlexComponent';
 import { Icon } from '../../components/Icon';
 import { InputCustom } from '../../components/InputCustom';
-import Table from '../../components/Table';
+import { SetCurrentCliente } from '../../features/cliente/Cliente.slice';
+import { GetCliente } from '../../features/cliente/Cliente.thunk';
 import { NewOrcamento } from '../../features/orcamento/Orcamento.thunk';
 import useSelect from '../../hooks/UseSelect';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
-import useClientes from '../../hooks/useClientes';
 import { useLogin } from '../../hooks/useLogin';
 import useTabListStore from '../../hooks/useTabList/index';
 import { useTheme } from '../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../utils';
-import { ModalCliente } from '../Modals/Cliente';
 import { Container, ContainerInput, FilterContainer, SwitchContainer } from './styles';
 
 interface iSearchCliente {
@@ -31,13 +31,13 @@ interface iSearchCliente {
 }
 
 export const Clientes: React.FC = () => {
-  const { GetClientes } = useClientes();
   const { currentUser } = useLogin();
   const { ThemeName } = useTheme();
   const { openTab } = useTabListStore((state) => state);
   const navigate = useNavigate();
 
   const { errorMessage, isLoading, Current } = useAppSelector((state) => state.orcamento);
+  const ClienteStore = useAppSelector((state) => state.cliente);
   const dispatch = useAppDispatch();
 
   const OptionsSelect: iOption[] = [
@@ -47,9 +47,6 @@ export const Clientes: React.FC = () => {
     { label: 'BAIRRO', value: 'BAIRRO' },
     { label: 'CIDADE', value: 'CIDADE' },
   ];
-  const TableRef = useRef<iTableRef<iCliente>>(null!);
-
-  const [Cliente, setCliente] = useState<iCliente | null>(null);
 
   /* OUTROS */
   const [SearchCliente, setSearchCliente] = useState<iSearchCliente>({
@@ -60,47 +57,48 @@ export const Clientes: React.FC = () => {
 
   const { Select } = useSelect();
 
-  const [checkedSwitchFilter, setCheckedSwitchFilter] = useState<boolean>(true);
-
   const RenderIconBloqueado = (value: string): JSX.Element => {
     if (value === 'S') return <Icon Icon={faBan} Type='danger' key={value} />;
     return <Icon Icon={faCheck} Type='success' key={value} />;
   };
 
-  const MountQueryFilter = (filter: iSearchCliente): iFilterQuery<iCliente>[] => {
-    let listFilter: iFilterQuery<iCliente>[] = [];
+  const MountQueryFilter = useCallback(
+    (filter: iSearchCliente): iFilterQuery<iCliente>[] => {
+      let listFilter: iFilterQuery<iCliente>[] = [];
 
-    if (filter.value !== '') {
-      if (filter.filterBy === 'CLIENTE' || filter.filterBy === 'CIC')
+      if (filter.value !== '') {
+        if (filter.filterBy === 'CLIENTE' || filter.filterBy === 'CIC')
+          listFilter = [
+            {
+              key: SearchCliente.filterBy as keyof iCliente,
+              value: SearchCliente.value,
+              typeSearch: 'eq',
+            },
+          ];
+        else
+          listFilter = [
+            {
+              key: SearchCliente.filterBy as keyof iCliente,
+              value: SearchCliente.value,
+            },
+          ];
+      }
+      if (filter.actives)
         listFilter = [
+          ...listFilter,
           {
-            key: SearchCliente.filterBy as keyof iCliente,
-            value: SearchCliente.value,
+            key: 'BLOQUEADO',
+            value: 'N',
             typeSearch: 'eq',
           },
         ];
-      else
-        listFilter = [
-          {
-            key: SearchCliente.filterBy as keyof iCliente,
-            value: SearchCliente.value,
-          },
-        ];
-    }
-    if (filter.actives)
-      listFilter = [
-        ...listFilter,
-        {
-          key: 'BLOQUEADO',
-          value: 'N',
-          typeSearch: 'eq',
-        },
-      ];
-    return listFilter;
-  };
+      return listFilter;
+    },
+    [SearchCliente.filterBy, SearchCliente.value],
+  );
 
   const SearchForFilter = () => {
-    TableRef.current.onRefresh({
+    handleListCliente({
       top: 15,
       skip: 0,
       orderBy: 'CLIENTE',
@@ -108,7 +106,7 @@ export const Clientes: React.FC = () => {
     });
   };
 
-  const ListClientes = async (
+  const handleListCliente = (
     filter: iFilter<iCliente> = {
       top: 15,
       skip: 0,
@@ -116,11 +114,19 @@ export const Clientes: React.FC = () => {
       filter: MountQueryFilter(SearchCliente),
     },
   ) => {
-    return await GetClientes(filter);
+    dispatch(GetCliente(filter));
   };
 
-  const onOpenModalCliente = (value: iCliente) => {
-    setCliente(value);
+  const handleCliente = (value: iCliente) => {
+    dispatch(SetCurrentCliente(value));
+    openTab({
+      Icon: faFileLines,
+      Link: `clientes/cliente/${value.CLIENTE}`,
+      Closable: true,
+      TitleTab: `Cliente ${value.NOME}`,
+      isActive: true,
+    });
+    navigate(`cliente/${value.CLIENTE}`);
   };
 
   const handleOrcamento = (value: iCliente) => {
@@ -219,7 +225,7 @@ export const Clientes: React.FC = () => {
           Type: 'success',
         },
         {
-          onclick: onOpenModalCliente,
+          onclick: handleCliente,
           Icon: faEdit,
           Rounded: true,
           Title: 'Editar',
@@ -228,6 +234,15 @@ export const Clientes: React.FC = () => {
       ],
     },
   ];
+
+  const onFetchPagination = (top: number, skip: number) => {
+    handleListCliente({ top, skip });
+  };
+
+  useEffect(() => {
+    handleListCliente();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Container>
@@ -246,12 +261,12 @@ export const Clientes: React.FC = () => {
           <InputCustom
             height='4rem'
             widht='31rem'
-            onChange={(e) =>
-              setSearchCliente({
-                ...SearchCliente,
-                value: e.target.value,
-              })
-            }
+            onChange={(e) => {
+              setSearchCliente(
+                (oldSearch) => (oldSearch = { ...oldSearch, value: e.target.value }),
+              );
+            }}
+            value={SearchCliente.value.toUpperCase()}
             placeholder='Digite sua busca'
           />
         </ContainerInput>
@@ -268,22 +283,27 @@ export const Clientes: React.FC = () => {
           <Checkbox
             type='checkbox'
             label='Ativos'
-            checked={checkedSwitchFilter}
+            checked={SearchCliente.actives}
             style='secondary'
             onClick={() => {
-              setCheckedSwitchFilter(!checkedSwitchFilter);
               setSearchCliente({
                 ...SearchCliente,
-                actives: !checkedSwitchFilter,
+                actives: !SearchCliente.actives,
               });
             }}
           />
         </SwitchContainer>
       </FilterContainer>
-      {Cliente && <ModalCliente Cliente={Cliente} />}
 
       <FlexComponent height='100%'>
-        <Table columns={headers} onDataFetch={ListClientes} ref={TableRef} pagination />
+        <DataTable
+          columns={headers}
+          TableData={ClienteStore.ListCliente.value}
+          IsLoading={ClienteStore.isLoading}
+          ErrorMessage={ClienteStore.errorMessage}
+          QuantityRegiters={ClienteStore.ListCliente.Qtd_Registros}
+          onFetchPagination={onFetchPagination}
+        />
       </FlexComponent>
     </Container>
   );
