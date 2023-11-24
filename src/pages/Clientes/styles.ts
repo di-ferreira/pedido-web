@@ -7,7 +7,7 @@ export const Container = styled.div`
   width: 100%;
   height: 100%;
   overflow: hidden;
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     overflow: hidden auto;
   }
 `;
@@ -15,8 +15,7 @@ export const Container = styled.div`
 export const FilterContainer = styled.div`
   display: flex;
   align-items: center;
-  padding: 0rem 30rem 0rem 20rem;
-  justify-content: space-evenly;
+  justify-content: center;
   width: 100%;
   min-height: 6rem;
   background-color: ${(props) => props.theme.colors.onSurface};
@@ -25,7 +24,7 @@ export const FilterContainer = styled.div`
     width: auto;
   }
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     flex-direction: column;
     min-height: 25rem;
     align-items: center;

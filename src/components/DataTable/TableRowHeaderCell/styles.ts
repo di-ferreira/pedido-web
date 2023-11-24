@@ -20,10 +20,13 @@ export const TableCell = styled.td<iTableCell>`
   display: none;
   font-weight: bold;
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     display: ${(props) => (props.isHideMobile ? 'none' : 'flex')};
     width: 50%;
     align-items: center;
+  }
+  ${`@media only screen and ${devices.md} and (orientation:landscape)`} {
+    display: ${(props) => props.isHideMobile && 'none'};
   }
 `;
 

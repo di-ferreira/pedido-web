@@ -103,8 +103,11 @@ export const Container = styled.nav<iNavBarStyle>`
     display: ${(props) => (props.isOpen ? 'block' : 'none')};
   }
 
-  ${`@media screen and ${devices.sm}`} {
-    width: ${(props) => (props.isOpen ? '45rem' : '0rem')};
+  ${`@media screen and ${devices.xs}`} {
+    width: ${(props) => (props.isOpen ? '35rem' : '0rem')};
+  }
+  ${`@media only screen and ${devices.md} and (orientation:landscape)`} {
+    width: ${(props) => (props.isOpen ? '25rem' : '0rem')};
   }
 `;
 
@@ -120,4 +123,8 @@ export const ContainerNav = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
+  ${'@media only screen and (orientation:landscape)'} {
+    padding-top: 1rem;
+    overflow: hidden auto;
+  }
 `;

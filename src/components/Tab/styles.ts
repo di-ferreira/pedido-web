@@ -1,7 +1,5 @@
-import styled from 'styled-components';
-import { Light } from '../../colors';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import styled from 'styled-components';
 
 interface iContainer {
   active: boolean;
@@ -18,6 +16,14 @@ export const Container = styled.li<iContainer>`
 `;
 
 export const IconClose = styled(FontAwesomeIcon)`
+  width: 100%;
+  height: 100%;
+  color: ${(props) => props.theme.colors.surface};
+  background-color: ${(props) => props.theme.colors.onSurface};
+`;
+
+export const ContainerIconClose = styled.span`
+  z-index: 999;
   position: absolute;
   top: -0.1rem;
   right: 0rem;
@@ -27,20 +33,18 @@ export const IconClose = styled(FontAwesomeIcon)`
   height: 1.1rem;
   align-items: center;
   justify-content: center;
-  color: ${(props) => props.theme.colors.surface};
-  background-color: ${(props) => props.theme.colors.onSurface};
 `;
 
 export const IconMain = styled(FontAwesomeIcon)`
   color: ${(props) => props.theme.colors.onSurface};
   margin-top: 1.2rem;
 `;
-export const TabLink = styled(Link)`
+
+export const TabLink = styled.span`
   position: relative;
   padding: 0.8rem 1.5rem;
   box-sizing: initial;
   height: 100%;
-  cursor: pointer;
 `;
 
 export const TabTitle = styled.h1<iContainer>`

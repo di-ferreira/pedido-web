@@ -35,7 +35,7 @@ export const FormEditOrcamentoRow = styled.div<iRow>`
     margin-bottom: 0;
   }
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     margin: 0.5rem 0;
   }
 `;
@@ -54,7 +54,7 @@ export const FormEditOrcamentoInputContainer = styled.div<iInputContainer>`
     font-size: 1.7rem;
   }
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     width: ${(props) => (props.width ? '45%' : '100%')};
 
     & * input {
@@ -78,7 +78,7 @@ export const FormFooter = styled.footer`
   margin: 1.5rem 0 0 0;
   width: 100%;
   display: flex;
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     margin: 0 0 1rem 0;
   }
 `;

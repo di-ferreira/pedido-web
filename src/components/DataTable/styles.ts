@@ -25,7 +25,7 @@ export const TableBody = styled.tbody`
     background: ${(props) => props.theme.colors.onSurface};
   }
 
-  ${`@media only screen and ${devices.sm}`} {
+  ${`@media only screen and ${devices.xs}`} {
     overflow: auto;
   }
 `;

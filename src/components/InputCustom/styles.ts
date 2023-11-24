@@ -29,7 +29,7 @@ export const Container = styled.div<iContainer>`
   height: ${(props) => (props.height ? props.height : 'auto')};
   ${(props) => (props.labelPosition !== 'top' ? 'align-items: center' : '')};
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     width: 100%;
   }
 `;
@@ -42,7 +42,7 @@ export const LabelInput = styled.label<iLabelInput>`
   padding: 0 0.2rem;
   width: 100%;
   text-align: ${(props) => (props.align ? props.align : 'left')};
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     font-size: 1.9rem;
   }
 `;
@@ -93,7 +93,7 @@ export const Input = styled.input<iInput>`
     }
   }
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     font-size: 1.9rem;
   }
 `;

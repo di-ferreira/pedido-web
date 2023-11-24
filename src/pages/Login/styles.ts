@@ -25,7 +25,7 @@ export const LoginContainer = styled.section`
       ${(props) => (props.theme.name === 'light' ? 0.4 : 0)}
     );
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     flex-direction: column;
     width: 100vw;
     height: 100vh;
@@ -39,7 +39,7 @@ export const LoginHeader = styled.header`
   display: flex;
   flex-direction: column;
   align-items: center;
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     height: 49%;
     width: 100%;
   }
@@ -71,7 +71,7 @@ export const LoginForm = styled.form`
   justify-content: space-evenly;
   padding: 13% 0;
   margin: 0 auto;
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     height: 49%;
     width: 100%;
     padding: 6% 1rem;
@@ -100,7 +100,7 @@ export const LineDivisor = styled.div`
     rgba(${props.theme.name === 'light' ? HEXToRGB(Light.main) : HEXToRGB(Dark.text)}, 1) 100%
   )`};
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     width: 100%;
     height: 1px;
     margin: 4rem 0 0.5rem 0;

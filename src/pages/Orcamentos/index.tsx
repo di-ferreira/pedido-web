@@ -73,6 +73,7 @@ export const Orcamentos: React.FC = () => {
       key: 'VENDEDOR.NOME',
       title: 'VENDEDOR',
       width: '20rem',
+      isHideMobile: true,
     },
     {
       key: 'TOTAL',

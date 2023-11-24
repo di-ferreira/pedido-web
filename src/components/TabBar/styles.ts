@@ -1,5 +1,5 @@
-import { DarkRed, Light } from './../../colors';
 import styled from 'styled-components';
+import { devices } from '../../utils/Constants';
 
 export const Container = styled.nav`
   position: relative;
@@ -18,6 +18,15 @@ export const Container = styled.nav`
     color: ${(props) => props.theme.colors.onSurface};
     text-transform: uppercase;
     margin-left: 5rem;
+  }
+
+  ${`@media screen and ${devices.xs}`} {
+    & h1 {
+      width: 80%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 `;
 

@@ -109,7 +109,7 @@ export const ModalHeader = styled.header`
     white-space: nowrap;
     text-align: left;
   }
-  ${`@media screen and (${devices.sm})`} {
+  ${`@media screen and (${devices.xs})`} {
     & > h1 {
       white-space: normal;
       text-align: center;

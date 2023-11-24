@@ -18,10 +18,13 @@ export const TableCell = styled.td<iTableCell>`
   overflow: hidden;
   table-layout: fixed;
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     display: ${(props) => props.isHideMobile && 'none'};
     width: 50%;
     align-items: center;
+  }
+  ${'@media only screen  and (orientation:landscape)'} {
+    display: ${(props) => props.isHideMobile && 'none'};
   }
 `;
 

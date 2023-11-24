@@ -70,7 +70,7 @@ export const Container = styled.button<ContainerProps>`
     cursor: not-allowed;
   }
 
-  ${`@media only screen and ${devices.sm}`} {
+  ${`@media only screen and ${devices.xs}`} {
     font-size: 1.9rem;
     width: ${(props) => (props.width ? props.width : props.rounded ? 'auto' : '100%')};
     padding: ${(props) => (props.rounded ? '.8rem' : '0.1rem 0.8rem 0.1rem 0.5rem')};

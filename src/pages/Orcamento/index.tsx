@@ -307,35 +307,72 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
                   gapRow: '1rem',
                   margin: '0rem',
                 }}
+                md={{
+                  padding: '1rem',
+                  wrap: 'wrap',
+                  gapColumn: '1rem',
+                  gapRow: '1rem',
+                  margin: '0rem',
+                }}
               >
-                <FlexComponent margin='0.5rem' width='45%' sm={{ margin: '0rem', width: '100%' }}>
+                <FlexComponent
+                  margin='0.5rem'
+                  width='45%'
+                  sm={{ margin: '0rem', width: '100%' }}
+                  md={{ margin: '0rem', width: '25%' }}
+                >
                   <InputCustom label='TELEFONE' name='TELEFONE' value={Current.CLIENTE.TELEFONE} />
                 </FlexComponent>
-                <FlexComponent margin='0.5rem' width='40%' sm={{ margin: '0rem', width: '48.5%' }}>
+                <FlexComponent
+                  margin='0.5rem'
+                  width='40%'
+                  md={{ margin: '0rem', width: '40%' }}
+                  sm={{ margin: '0rem', width: '48.5%' }}
+                >
                   <InputCustom
                     label='ENDEREÇO'
                     name='CLIENTE.ENDERECO'
                     value={Current.CLIENTE.ENDERECO}
                   />
                 </FlexComponent>
-                <FlexComponent margin='0.5rem' width='15%' sm={{ margin: '0rem', width: '48.5%' }}>
+                <FlexComponent
+                  margin='0.5rem'
+                  width='15%'
+                  md={{ margin: '0rem', width: '30%' }}
+                  sm={{ margin: '0rem', width: '48.5%' }}
+                >
                   <InputCustom
                     label='BAIRRO'
                     name='CLIENTE.BAIRRO'
                     value={Current.CLIENTE.BAIRRO}
                   />
                 </FlexComponent>
-                <FlexComponent margin='0.5rem' width='20%' sm={{ margin: '0rem', width: '48.5%' }}>
+                <FlexComponent
+                  margin='0.5rem'
+                  width='20%'
+                  md={{ margin: '0rem', width: '25%' }}
+                  sm={{ margin: '0rem', width: '48.5%' }}
+                >
                   <InputCustom
                     label='CIDADE'
                     name='CLIENTE.CIDADE'
                     value={Current.CLIENTE.CIDADE}
                   />
                 </FlexComponent>
-                <FlexComponent margin='0.5rem' width='5%' sm={{ margin: '0rem', width: '12%' }}>
+                <FlexComponent
+                  margin='0.5rem'
+                  width='5%'
+                  md={{ margin: '0rem', width: '25%' }}
+                  sm={{ margin: '0rem', width: '12%' }}
+                >
                   <InputCustom label='UF' name='CLIENTE.UF' value={Current.CLIENTE.UF} />
                 </FlexComponent>
-                <FlexComponent margin='0.5rem' width='10%' sm={{ margin: '0rem', width: '33.5%' }}>
+                <FlexComponent
+                  margin='0.5rem'
+                  width='10%'
+                  md={{ margin: '0rem', width: '25%' }}
+                  sm={{ margin: '0rem', width: '33.5%' }}
+                >
                   <InputCustom label='CEP' name='CLIENTE.CEP' value={Current.CLIENTE.CEP} />
                 </FlexComponent>
               </FlexComponent>
@@ -390,6 +427,10 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
                 gapRow: '1rem',
                 order: 1,
               }}
+              md={{
+                alignItems: 'center',
+                padding: '1rem 0 0 0',
+              }}
             >
               <FlexComponent width='25%' sm={{ width: '100%' }} lg={{ width: '100%' }}>
                 <Button
@@ -414,8 +455,9 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
               width='50%'
               justifyContent='flex-end'
               sm={{ width: '100%', order: 0, padding: '1.5rem 0 0 0' }}
+              md={{ width: '50%', margin: '1rem 0 0 0' }}
             >
-              <FlexComponent width='30%' sm={{ width: '100%' }}>
+              <FlexComponent width='30%' sm={{ width: '100%' }} md={{ width: '70%' }}>
                 <InputCustom
                   label='TOTAL ORCAMENTO'
                   name='TOTAL'

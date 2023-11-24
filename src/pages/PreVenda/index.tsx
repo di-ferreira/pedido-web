@@ -28,7 +28,7 @@ import useSelect from '../../hooks/UseSelect';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import useTabList from '../../hooks/useTabList';
 import { useTheme } from '../../hooks/useTheme';
-import { FormEditOrcamento, FormFooter } from './styles';
+import { Container, FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalPreVenda {
   callback?: (value: iOrcamento) => void;
@@ -145,7 +145,7 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
     }
 
     setOptTransportadorasSelected(optSelected);
-    setIdTransp(Number(optSelected.value));
+    if (optSelected !== undefined) setIdTransp(Number(optSelected.value));
 
     setOptTransportadoras(opt);
   }, [Current.CLIENTE.TRANSPORTADORA, Transportadora]);
@@ -329,238 +329,240 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
   };
 
   return (
-    <FormEditOrcamento>
-      <FlexComponent height='100%' direction='column' overflow='hidden auto'>
-        <FlexComponent width='100%' sm={{ direction: 'column' }}>
-          <FlexComponent
-            width='69%'
-            direction='column'
-            padding='1rem 0 0 0'
-            sm={{
-              width: '100%',
-              gapRow: '1rem',
-              height: '75rem',
-            }}
-          >
-            <h4>CONDIÇÃO DE PAGAMENTO</h4>
+    <Container>
+      <FormEditOrcamento>
+        <FlexComponent height='100%' direction='column' overflow='hidden auto'>
+          <FlexComponent width='100%' sm={{ direction: 'column' }}>
             <FlexComponent
-              width='100%'
-              margin='2rem 0rem 0rem 0rem'
-              wrap='wrap'
-              gapColumn='1rem'
-              gapRow='1rem'
-              sm={{ gapRow: '2.5rem' }}
-            >
-              <FlexComponent width='10%' sm={{ flexShrink: 2 }}>
-                <InputCustom name='ID_CONDICAO' value={IdCondicaoPgto} height='3.5rem' />
-              </FlexComponent>
-              <FlexComponent width='45%' sm={{ flexGrow: 1 }}>
-                <Select
-                  options={OptCondicaoPgto}
-                  menuPosition='bottom'
-                  value={OptCondicaoPgtoSelected}
-                  onChange={OnChangeCondicaoPgto}
-                />
-              </FlexComponent>
-              <FlexComponent width='42%' sm={{ flexGrow: 1 }}>
-                <Select
-                  label='FORMAS DE PGTº'
-                  options={OptFormasPgto}
-                  menuPosition='bottom'
-                  value={OptFormasPgtoSelected}
-                  onChange={OnChangeFormaPgto}
-                />
-              </FlexComponent>
-              <FlexComponent padding='0 1rem 0 0' width='100%' sm={{ flexGrow: 1 }}>
-                <InputCustom
-                  onChange={(e) => setvalueObsPedido1(e.target.value)}
-                  label='OBS PEDIDO'
-                  labelPosition='top'
-                  name='OBS_PEDIDO'
-                  value={valueObsPedido1}
-                  height='3.5rem'
-                />
-              </FlexComponent>
-            </FlexComponent>
-            <FlexComponent
-              width='100%'
-              margin='2rem 0rem 0rem 0rem'
-              padding='0rem 1rem 0rem 0rem'
-              wrap='wrap'
-              gapColumn='1rem'
-              gapRow='1rem'
+              width='69%'
+              direction='column'
+              padding='1rem 0 0 0'
               sm={{
-                direction: 'column',
+                width: '100%',
+                gapRow: '1rem',
+                height: '75rem',
               }}
             >
-              <FlexComponent width='100%' sm={{ margin: '1rem 0rem 0rem 0rem' }}>
-                <h4>TRANSPORTADORA</h4>
-              </FlexComponent>
+              <h4>CONDIÇÃO DE PAGAMENTO</h4>
               <FlexComponent
                 width='100%'
-                sm={{ gapRow: '2.5rem', gapColumn: '1rem', wrap: 'wrap' }}
+                margin='2rem 0rem 0rem 0rem'
+                wrap='wrap'
+                gapColumn='1rem'
+                gapRow='1rem'
+                sm={{ gapRow: '2.5rem' }}
               >
-                <FlexComponent width='7%' sm={{ flexShrink: 1 }}>
+                <FlexComponent width='10%' sm={{ flexShrink: 2 }}>
+                  <InputCustom name='ID_CONDICAO' value={IdCondicaoPgto} height='3.5rem' />
+                </FlexComponent>
+                <FlexComponent width='45%' sm={{ flexGrow: 1 }}>
+                  <Select
+                    options={OptCondicaoPgto}
+                    menuPosition='bottom'
+                    value={OptCondicaoPgtoSelected}
+                    onChange={OnChangeCondicaoPgto}
+                  />
+                </FlexComponent>
+                <FlexComponent width='42%' sm={{ flexGrow: 1 }}>
+                  <Select
+                    label='FORMAS DE PGTº'
+                    options={OptFormasPgto}
+                    menuPosition='bottom'
+                    value={OptFormasPgtoSelected}
+                    onChange={OnChangeFormaPgto}
+                  />
+                </FlexComponent>
+                <FlexComponent padding='0 1rem 0 0' width='100%' sm={{ flexGrow: 1 }}>
                   <InputCustom
-                    textAlign='right'
-                    name='ID_TRANSPORTADORA'
-                    value={IdTransp}
+                    onChange={(e) => setvalueObsPedido1(e.target.value)}
+                    label='OBS PEDIDO'
+                    labelPosition='top'
+                    name='OBS_PEDIDO'
+                    value={valueObsPedido1}
                     height='3.5rem'
                   />
                 </FlexComponent>
-                <FlexComponent width='93%' sm={{ flexGrow: 1, width: '90%' }}>
+              </FlexComponent>
+              <FlexComponent
+                width='100%'
+                margin='2rem 0rem 0rem 0rem'
+                padding='0rem 1rem 0rem 0rem'
+                wrap='wrap'
+                gapColumn='1rem'
+                gapRow='1rem'
+                sm={{
+                  direction: 'column',
+                }}
+              >
+                <FlexComponent width='100%' sm={{ margin: '1rem 0rem 0rem 0rem' }}>
+                  <h4>TRANSPORTADORA</h4>
+                </FlexComponent>
+                <FlexComponent
+                  width='100%'
+                  sm={{ gapRow: '2.5rem', gapColumn: '1rem', wrap: 'wrap' }}
+                >
+                  <FlexComponent width='7%' sm={{ flexShrink: 1 }}>
+                    <InputCustom
+                      textAlign='right'
+                      name='ID_TRANSPORTADORA'
+                      value={IdTransp}
+                      height='3.5rem'
+                    />
+                  </FlexComponent>
+                  <FlexComponent width='93%' sm={{ flexGrow: 1, width: '90%' }}>
+                    <Select
+                      options={OptTransportadoras}
+                      menuPosition='bottom'
+                      value={OptTransportadorasSelected}
+                      onChange={(SingleValue) => OnChangeTransp(SingleValue)}
+                    />
+                  </FlexComponent>
+                </FlexComponent>
+              </FlexComponent>
+              <FlexComponent
+                width='100%'
+                margin='2rem 0rem 0rem 0rem'
+                wrap='wrap'
+                gapColumn='1rem'
+                gapRow='1rem'
+              >
+                <FlexComponent width='18%' sm={{ width: '35%' }}>
+                  <Checkbox
+                    type='checkbox'
+                    labelColor='#fff'
+                    label='ENTREGAR'
+                    checkedOnColor={Secondary.main}
+                    checked={SwitchEntrega === 'S'}
+                    onClick={() =>
+                      SwitchEntrega === 'S' ? setSwitchEntrega('N') : setSwitchEntrega('S')
+                    }
+                  />
+                </FlexComponent>
+                <FlexComponent width='80%' sm={{ width: '62%' }}>
                   <Select
-                    options={OptTransportadoras}
+                    options={OptVeiculos}
                     menuPosition='bottom'
-                    value={OptTransportadorasSelected}
-                    onChange={(SingleValue) => OnChangeTransp(SingleValue)}
+                    onChange={(SingleValue) => SelectVeic(SingleValue)}
+                  />
+                </FlexComponent>
+                <FlexComponent padding='0 1rem 0 0' width='100%'>
+                  <InputCustom
+                    onChange={(e) => setvalueObsNotaFiscal(e.target.value)}
+                    label='OBS NOTA FISCAL'
+                    labelPosition='top'
+                    name='OBS_NF'
+                    value={valueObsNotaFiscal}
+                    height='3.5rem'
+                  />
+                </FlexComponent>
+              </FlexComponent>
+              <FlexComponent
+                padding='0 1rem 0 0'
+                width='100%'
+                margin='2rem 0rem 0rem 0rem'
+                sm={{ margin: '1rem 0rem' }}
+              >
+                <FieldSet legend='FRETE POR CONTA'>
+                  <InputCustom
+                    onChange={() => setFretePorConta(0)}
+                    label='EMITENTE'
+                    labelPosition='left'
+                    name='FRETE_POR'
+                    value='0'
+                    type='radio'
+                    defaultChecked={true}
+                  />
+                  <InputCustom
+                    onChange={() => setFretePorConta(1)}
+                    label='DESTINATARIO'
+                    labelPosition='left'
+                    name='FRETE_POR'
+                    value='1'
+                    type='radio'
+                  />
+                </FieldSet>
+              </FlexComponent>
+              <FlexComponent
+                width='100%'
+                margin='2rem 0rem 0rem 0rem'
+                wrap='wrap'
+                gapColumn='1.3rem'
+                gapRow='1rem'
+                justifyContent='space-between'
+                sm={{ gapRow: '2.5rem' }}
+              >
+                <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
+                  <InputCustom
+                    readOnly={true}
+                    onChange={() => {}}
+                    label='SUBTOTAL'
+                    textAlign='right'
+                    name='SUBTOTAL'
+                    value={valueSubTotal.toLocaleString('pt-br', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })}
+                    height='3.5rem'
+                  />
+                </FlexComponent>
+                <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
+                  <InputCustom
+                    onChange={(e) => OnChangeFrete(e)}
+                    onBlur={(e) => OnBlurFrete(e)}
+                    label='FRETE R$'
+                    textAlign='right'
+                    name='FRETE'
+                    value={valueFrete}
+                    height='3.5rem'
+                  />
+                </FlexComponent>
+                <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
+                  <InputCustom
+                    readOnly={true}
+                    label='TOTAL'
+                    textAlign='right'
+                    name='TOTAL'
+                    value={valueTotal.toLocaleString('pt-br', {
+                      style: 'currency',
+                      currency: 'BRL',
+                    })}
+                    height='3.5rem'
                   />
                 </FlexComponent>
               </FlexComponent>
             </FlexComponent>
-            <FlexComponent
-              width='100%'
-              margin='2rem 0rem 0rem 0rem'
-              wrap='wrap'
-              gapColumn='1rem'
-              gapRow='1rem'
-            >
-              <FlexComponent width='18%' sm={{ width: '35%' }}>
-                <Checkbox
-                  type='checkbox'
-                  labelColor='#fff'
-                  label='ENTREGAR'
-                  checkedOnColor={Secondary.main}
-                  checked={SwitchEntrega === 'S'}
-                  onClick={() =>
-                    SwitchEntrega === 'S' ? setSwitchEntrega('N') : setSwitchEntrega('S')
-                  }
-                />
-              </FlexComponent>
-              <FlexComponent width='80%' sm={{ width: '62%' }}>
-                <Select
-                  options={OptVeiculos}
-                  menuPosition='bottom'
-                  onChange={(SingleValue) => SelectVeic(SingleValue)}
-                />
-              </FlexComponent>
-              <FlexComponent padding='0 1rem 0 0' width='100%'>
-                <InputCustom
-                  onChange={(e) => setvalueObsNotaFiscal(e.target.value)}
-                  label='OBS NOTA FISCAL'
-                  labelPosition='top'
-                  name='OBS_NF'
-                  value={valueObsNotaFiscal}
-                  height='3.5rem'
-                />
-              </FlexComponent>
+            <FlexComponent width='31%' height='100%' sm={{ width: '100%', height: '40vh' }}>
+              <DataTable columns={tableHeaders} TableData={ListaParcelas} IsLoading={false} />
             </FlexComponent>
-            <FlexComponent
-              padding='0 1rem 0 0'
-              width='100%'
-              margin='2rem 0rem 0rem 0rem'
-              sm={{ margin: '1rem 0rem' }}
-            >
-              <FieldSet legend='FRETE POR CONTA'>
-                <InputCustom
-                  onChange={() => setFretePorConta(0)}
-                  label='EMITENTE'
-                  labelPosition='left'
-                  name='FRETE_POR'
-                  value='0'
-                  type='radio'
-                  defaultChecked={true}
-                />
-                <InputCustom
-                  onChange={() => setFretePorConta(1)}
-                  label='DESTINATARIO'
-                  labelPosition='left'
-                  name='FRETE_POR'
-                  value='1'
-                  type='radio'
-                />
-              </FieldSet>
-            </FlexComponent>
-            <FlexComponent
-              width='100%'
-              margin='2rem 0rem 0rem 0rem'
-              wrap='wrap'
-              gapColumn='1.3rem'
-              gapRow='1rem'
-              justifyContent='space-between'
-              sm={{ gapRow: '2.5rem' }}
-            >
-              <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
-                <InputCustom
-                  readOnly={true}
-                  onChange={() => {}}
-                  label='SUBTOTAL'
-                  textAlign='right'
-                  name='SUBTOTAL'
-                  value={valueSubTotal.toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
-                  height='3.5rem'
-                />
-              </FlexComponent>
-              <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
-                <InputCustom
-                  onChange={(e) => OnChangeFrete(e)}
-                  onBlur={(e) => OnBlurFrete(e)}
-                  label='FRETE R$'
-                  textAlign='right'
-                  name='FRETE'
-                  value={valueFrete}
-                  height='3.5rem'
-                />
-              </FlexComponent>
-              <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
-                <InputCustom
-                  readOnly={true}
-                  label='TOTAL'
-                  textAlign='right'
-                  name='TOTAL'
-                  value={valueTotal.toLocaleString('pt-br', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  })}
-                  height='3.5rem'
-                />
-              </FlexComponent>
-            </FlexComponent>
-          </FlexComponent>
-          <FlexComponent width='31%' height='100%' sm={{ width: '100%', height: '40vh' }}>
-            <DataTable columns={tableHeaders} TableData={ListaParcelas} IsLoading={false} />
           </FlexComponent>
         </FlexComponent>
-      </FlexComponent>
-      <FormFooter>
-        <FlexComponent
-          padding='1.5rem 0'
-          sm={{ direction: 'column', gapRow: '1rem', height: '12vh' }}
-          gapColumn='1.5rem'
-        >
-          <FlexComponent width='20%' sm={{ width: '100%' }}>
-            <Button
-              onclick={GerarPV}
-              Text='GERAR PRÉ-VENDA'
-              Type='success'
-              Icon={faSave}
-              Height='3.5rem'
-            />
+        <FormFooter>
+          <FlexComponent
+            padding='1.5rem 0'
+            sm={{ direction: 'column', gapRow: '1rem', height: '12vh' }}
+            gapColumn='1.5rem'
+          >
+            <FlexComponent width='20%' sm={{ width: '100%' }}>
+              <Button
+                onclick={GerarPV}
+                Text='GERAR PRÉ-VENDA'
+                Type='success'
+                Icon={faSave}
+                Height='3.5rem'
+              />
+            </FlexComponent>
+            <FlexComponent sm={{ width: '100%' }}>
+              <Button
+                Text='CANCELAR'
+                onclick={ClosePage}
+                Type='danger'
+                Icon={faBan}
+                Height='3.5rem'
+              />
+            </FlexComponent>
           </FlexComponent>
-          <FlexComponent sm={{ width: '100%' }}>
-            <Button
-              Text='CANCELAR'
-              onclick={ClosePage}
-              Type='danger'
-              Icon={faBan}
-              Height='3.5rem'
-            />
-          </FlexComponent>
-        </FlexComponent>
-      </FormFooter>
-    </FormEditOrcamento>
+        </FormFooter>
+      </FormEditOrcamento>
+    </Container>
   );
 };

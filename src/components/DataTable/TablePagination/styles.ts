@@ -11,9 +11,16 @@ export const Container = styled.div`
   background-color: ${(props) => props.theme.colors.onSurface};
   border-top: solid 1px ${(props) => props.theme.colors.secondary};
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.md} and (orientation: landscape)`} {
+    padding-right: 1.5rem;
+    height: 13vh;
+  }
+
+  ${`@media screen and ${devices.xs}`} {
     flex-direction: column;
-    height: fit-content;
+    height: 25vh;
+    overflow: hidden auto;
+    padding-bottom: 5.5rem;
   }
 `;
 
@@ -28,12 +35,13 @@ export const ContainerInfo = styled.div`
     width: auto;
   }
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     flex-direction: column;
     padding: 0 25%;
     width: 100%;
     height: 50%;
     margin-top: 1rem;
+    margin-bottom: 1rem;
     & > div {
       width: 100%;
     }
@@ -50,7 +58,7 @@ export const ContainerButtons = styled.div`
   width: 50%;
   height: 100%;
 
-  ${`@media screen and ${devices.sm}`} {
+  ${`@media screen and ${devices.xs}`} {
     flex-wrap: wrap;
     column-gap: 1rem;
     row-gap: 1rem;
