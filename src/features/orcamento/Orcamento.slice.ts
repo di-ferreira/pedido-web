@@ -570,6 +570,9 @@ export const orcamentoSlice = createSlice({
     ResetCurrentItem: (state) => {
       state.CurrentItem = initialState.CurrentItem;
     },
+    ResetCurrentOrcamento: (state) => {
+      state.Current = initialState.Current;
+    },
   },
   extraReducers(builder) {
     builder
@@ -688,6 +691,6 @@ export const orcamentoSlice = createSlice({
   },
 });
 
-export const { ResetCurrentItem, SetCurrentItem } = orcamentoSlice.actions;
+export const { ResetCurrentItem, SetCurrentItem, ResetCurrentOrcamento } = orcamentoSlice.actions;
 
 export const orcamentoReducer = orcamentoSlice.reducer;

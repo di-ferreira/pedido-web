@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import {
   faEdit,
   faFileInvoiceDollar,
+  faFileLines,
   faPlus,
   faSave,
   faTrashAlt,
@@ -20,10 +21,16 @@ import { FlexComponent } from '../../components/FlexComponent';
 import { InputCustom } from '../../components/InputCustom';
 import { SetCurrentItem } from '../../features/orcamento/Orcamento.slice';
 import {
+  GetOrcamento,
   NewItemOrcamento,
   RemoveItemOrcamento,
   UpdateItemOrcamento,
 } from '../../features/orcamento/Orcamento.thunk';
+import {
+  GetCondicaoPGTO,
+  GetFormasPGTO,
+  GetTransport,
+} from '../../features/pre-venda/PreVenda.thunk';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import useTabList from '../../hooks/useTabList';
 import { useTheme } from '../../hooks/useTheme';
@@ -38,7 +45,7 @@ interface iModalOrcamento {
 export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
   const { ThemeName } = useTheme();
   const navigate = useNavigate();
-  const { openTab } = useTabList((state) => state);
+  const { openTab, removeTab } = useTabList((state) => state);
 
   const dispatch = useAppDispatch();
 
@@ -180,18 +187,43 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
   };
 
   const SalvarOrcamento = () => {
+    removeTab({
+      Icon: faFileLines,
+      Link: `orcamentos/orcamento/${Current.ORCAMENTO}`,
+      Closable: true,
+      TitleTab: `Orcamento ${Current.ORCAMENTO}`,
+      isActive: true,
+    });
+
+    toast.success('Orçamento salvo com sucesso!', {
+      position: 'top-left',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: ThemeName,
+    });
+
+    navigate('/orcamentos');
+
     callback && callback(Current);
   };
 
   const GerarPreVenda = (orc: iOrcamento) => {
+    dispatch(GetOrcamento(orc.ORCAMENTO));
+    dispatch(GetFormasPGTO());
+    dispatch(GetCondicaoPGTO(orc.TOTAL));
+    dispatch(GetTransport());
     openTab({
       Icon: faFileInvoiceDollar,
-      Link: `orcamentos/${orc.ORCAMENTO}/pre-venda`,
+      Link: 'orcamentos/pre-venda',
       Closable: true,
-      TitleTab: `Pré-Venda ${orc.ORCAMENTO}`,
+      TitleTab: 'Nova Pré-Venda',
       isActive: true,
     });
-    navigate(`/orcamentos/${orc.ORCAMENTO}/pre-venda`);
+    navigate('/orcamentos/pre-venda');
   };
 
   const tableHeaders: iColumnType<iItensOrcamento>[] = [

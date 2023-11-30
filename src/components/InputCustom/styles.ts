@@ -9,6 +9,7 @@ interface iContainer {
   label?: string;
   type?: 'text' | 'password' | 'date' | 'number' | 'radio';
   labelPosition?: 'left' | 'right' | 'top';
+  disabled: boolean;
 }
 
 interface iLabelInput {
@@ -18,6 +19,7 @@ interface iLabelInput {
 
 interface iInput {
   align?: string;
+  disabled: boolean;
 }
 
 export const Container = styled.div<iContainer>`

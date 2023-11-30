@@ -45,8 +45,7 @@ const RoutesPage: React.FC = () => {
             <Route path='clientes/orcamento/:orcamentoID' element={<Orcamento />} />
             <Route path='orcamentos' element={<Orcamentos />} />
             <Route path='orcamentos/orcamento/:orcamentoID' element={<Orcamento />} />
-            <Route path='orcamentos/pre-venda/:prevendaID' element={<PreVenda />} />
-            <Route path='orcamentos/:prevendaID/pre-venda/' element={<PreVenda />} />
+            <Route path='orcamentos/pre-venda' element={<PreVenda />} />
             <Route path='pre-vendas' element={<PreVendas />} />
             <Route path='vendas' element={<Vendas />} />
             <Route path='*' element={<NotFound />} />

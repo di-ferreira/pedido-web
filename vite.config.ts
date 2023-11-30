@@ -13,8 +13,16 @@ export default defineConfig({
     },
   },
   build: {
-    minify: 'esbuild',
+    minify: 'terser',
     chunkSizeWarningLimit: 500,
+    cssMinify: true,
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        dir: 'dist',
+        entryFileNames: 'assets/index.js',
+        manualChunks: undefined,
+      },
+    },
   },
 });
-

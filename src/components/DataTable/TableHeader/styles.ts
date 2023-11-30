@@ -26,8 +26,7 @@ export const TableHeaderCell = styled.th<iTableCell>`
   ${`@media only screen and ${devices.xs}`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
-
-  ${'@media only screen and (orientation:landscape)'} {
+  ${`@media only screen and ${devices.sm}   and (orientation:landscape)`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
 `;

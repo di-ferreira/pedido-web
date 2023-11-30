@@ -18,12 +18,8 @@ import { DataTable } from '../../components/DataTable';
 import { FieldSet } from '../../components/FieldSet';
 import { FlexComponent } from '../../components/FlexComponent';
 import { InputCustom } from '../../components/InputCustom';
-import {
-  GetCondicaoPGTO,
-  GetFormasPGTO,
-  GetTransport,
-  SavePreVenda,
-} from '../../features/pre-venda/PreVenda.thunk';
+import { ResetCurrentOrcamento } from '../../features/orcamento/Orcamento.slice';
+import { SavePreVenda } from '../../features/pre-venda/PreVenda.thunk';
 import useSelect from '../../hooks/UseSelect';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import useTabList from '../../hooks/useTabList';
@@ -41,6 +37,7 @@ interface iParcelasPgto {
 
 export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
   const dispatch = useAppDispatch();
+  const IsLoadingOrc = useAppSelector((state) => state.orcamento.isLoading);
   const { Current } = useAppSelector((state) => state.orcamento);
   const { CondicaoPgto, FormaPgto, Transportadora, errorMessage, isLoading } = useAppSelector(
     (state) => state.preVenda,
@@ -60,7 +57,6 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
   const [OptFormasPgto, setOptFormasPgto] = useState<iOption[]>([]);
   const [OptTransportadoras, setOptTransportadoras] = useState<iOption[]>([]);
 
-  const [valueSubTotal, setvalueSubTotal] = useState(0);
   const [valueTotal, setvalueTotal] = useState(0);
   const [valueFrete, setvalueFrete] = useState<string>('');
   const [valueFreteNumero, setvalueFreteNumero] = useState<number>(0);
@@ -150,25 +146,22 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
     setOptTransportadoras(opt);
   }, [Current.CLIENTE.TRANSPORTADORA, Transportadora]);
 
-  const handleLoadPV = useCallback(() => {
+  useEffect(() => {
+    // handleLoadPV();
     ListarCondicaoPgto();
     ListarFormaPgto();
     ListarTransportadoras();
-    setvalueSubTotal(Current.TOTAL);
-    setvalueTotal(Current.TOTAL);
-  }, [Current, ListarCondicaoPgto, ListarFormaPgto, ListarTransportadoras]);
-
-  useEffect(() => {
-    const Open = () => {
-      if (!isLoading) {
-        dispatch(GetFormasPGTO());
-        dispatch(GetCondicaoPGTO(Current.TOTAL));
-        dispatch(GetTransport());
-        handleLoadPV();
-      }
-    };
-    return () => Open();
-  }, [isLoading]);
+    setvalueTotal((old) => (old = Current.TOTAL));
+    // const Open = () => {
+    // if (!ObjectIsEmpty(Current)) {
+    // dispatch(GetFormasPGTO());
+    // dispatch(GetCondicaoPGTO(Current.TOTAL));
+    // dispatch(GetTransport());
+    //     handleLoadPV();
+    //   }
+    // };
+    // return () => Open();
+  }, [Current]);
 
   const OnChangeTransp = (newValue: SingleValue<iOption>) => {
     if (newValue) {
@@ -196,8 +189,16 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
 
     setvalueFreteNumero(newValueFrete);
     setvalueFrete(String(newValueFrete));
-    const total = valueSubTotal + newValueFrete;
-    setvalueTotal(total);
+    if (SwitchEntrega === 'S') {
+      const total = Current.TOTAL + newValueFrete;
+      setvalueTotal(total);
+    }
+  };
+
+  const OnChangeEntrega = () => {
+    SwitchEntrega === 'S' ? setSwitchEntrega('N') : setSwitchEntrega('S');
+    if (SwitchEntrega === 'N') setvalueTotal(Current.TOTAL + valueFreteNumero);
+    else setvalueTotal(Current.TOTAL);
   };
 
   const OnChangeCondicaoPgto = (newValue: SingleValue<iOption>) => {
@@ -274,7 +275,7 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
       DataPedido: dayjs().format('YYYY-MM-DD').toString(),
       ModeloNota: '55',
       Itens: ItensPV,
-      SubTotal: valueSubTotal,
+      SubTotal: Current.TOTAL,
       Total: valueTotal,
       ObsPedido1: valueObsPedido1,
       ObsPedido2: '',
@@ -318,11 +319,12 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
   };
 
   const ClosePage = () => {
+    dispatch(ResetCurrentOrcamento());
     removeTab({
       Icon: faFileInvoiceDollar,
-      Link: `orcamentos/pre-venda/${Current.ORCAMENTO}`,
+      Link: 'orcamentos/pre-venda',
       Closable: true,
-      TitleTab: `Pré-Venda ${Current.ORCAMENTO}`,
+      TitleTab: 'Nova Pré-Venda',
       isActive: false,
     });
     navigate(-1);
@@ -433,26 +435,15 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
                     label='ENTREGAR'
                     checkedOnColor={Secondary.main}
                     checked={SwitchEntrega === 'S'}
-                    onClick={() =>
-                      SwitchEntrega === 'S' ? setSwitchEntrega('N') : setSwitchEntrega('S')
-                    }
+                    onClick={OnChangeEntrega}
                   />
                 </FlexComponent>
                 <FlexComponent width='80%' sm={{ width: '62%' }}>
                   <Select
+                    disabled={SwitchEntrega === 'N'}
                     options={OptVeiculos}
                     menuPosition='bottom'
                     onChange={(SingleValue) => SelectVeic(SingleValue)}
-                  />
-                </FlexComponent>
-                <FlexComponent padding='0 1rem 0 0' width='100%'>
-                  <InputCustom
-                    onChange={(e) => setvalueObsNotaFiscal(e.target.value)}
-                    label='OBS NOTA FISCAL'
-                    labelPosition='top'
-                    name='OBS_NF'
-                    value={valueObsNotaFiscal}
-                    height='3.5rem'
                   />
                 </FlexComponent>
               </FlexComponent>
@@ -462,7 +453,7 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
                 margin='2rem 0rem 0rem 0rem'
                 sm={{ margin: '1rem 0rem' }}
               >
-                <FieldSet legend='FRETE POR CONTA'>
+                <FieldSet legend='FRETE POR CONTA' disabled={SwitchEntrega === 'N'}>
                   <InputCustom
                     onChange={() => setFretePorConta(0)}
                     label='EMITENTE'
@@ -482,6 +473,16 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
                   />
                 </FieldSet>
               </FlexComponent>
+              <FlexComponent padding='0 1rem 0 0' margin='1.5rem 0' width='100%'>
+                <InputCustom
+                  onChange={(e) => setvalueObsNotaFiscal(e.target.value)}
+                  label='OBS NOTA FISCAL'
+                  labelPosition='top'
+                  name='OBS_NF'
+                  value={valueObsNotaFiscal}
+                  height='3.5rem'
+                />
+              </FlexComponent>
               <FlexComponent
                 width='100%'
                 margin='2rem 0rem 0rem 0rem'
@@ -494,11 +495,10 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
                 <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
                   <InputCustom
                     readOnly={true}
-                    onChange={() => {}}
                     label='SUBTOTAL'
                     textAlign='right'
                     name='SUBTOTAL'
-                    value={valueSubTotal.toLocaleString('pt-br', {
+                    value={Current.TOTAL.toLocaleString('pt-br', {
                       style: 'currency',
                       currency: 'BRL',
                     })}
@@ -514,6 +514,7 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
                     name='FRETE'
                     value={valueFrete}
                     height='3.5rem'
+                    disabled={SwitchEntrega === 'N'}
                   />
                 </FlexComponent>
                 <FlexComponent width='32%' sm={{ flexGrow: 1, width: '100%' }}>
@@ -532,7 +533,11 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
               </FlexComponent>
             </FlexComponent>
             <FlexComponent width='31%' height='100%' sm={{ width: '100%', height: '40vh' }}>
-              <DataTable columns={tableHeaders} TableData={ListaParcelas} IsLoading={false} />
+              <DataTable
+                columns={tableHeaders}
+                TableData={ListaParcelas}
+                IsLoading={IsLoadingOrc}
+              />
             </FlexComponent>
           </FlexComponent>
         </FlexComponent>

@@ -27,13 +27,15 @@
     ],
     "rules": {
         "react/react-in-jsx-scope": "off",
+        "react/display-name": "off",
         "camelcase": "error",
         "spaced-comment": "error",
         "quotes": [
             "error",
             "single"
         ],
-        "no-duplicate-imports": "error"
+        "no-duplicate-imports": "error",
+        "react-hooks/rules-of-hooks": "off"
     },
     "parser": "@typescript-eslint/parser",
     "settings": {

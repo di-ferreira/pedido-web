@@ -8,6 +8,11 @@ import { iOrcamento } from '../../@types/Orcamento';
 import { iColumnType } from '../../@types/Table';
 import { DataTable } from '../../components/DataTable';
 import { GetListOrcamento, GetOrcamento } from '../../features/orcamento/Orcamento.thunk';
+import {
+  GetCondicaoPGTO,
+  GetFormasPGTO,
+  GetTransport,
+} from '../../features/pre-venda/PreVenda.thunk';
 import { useAppDispatch, useAppSelector } from '../../hooks/useAppSelector';
 import useTabListStore from '../../hooks/useTabList/index';
 import { Container } from './styles';
@@ -28,14 +33,17 @@ export const Orcamentos: React.FC = () => {
 
   const handlePreVenda = (value: iOrcamento) => {
     dispatch(GetOrcamento(value.ORCAMENTO));
+    dispatch(GetFormasPGTO());
+    dispatch(GetCondicaoPGTO(value.TOTAL));
+    dispatch(GetTransport());
     openTab({
       Icon: faFileInvoiceDollar,
-      Link: `orcamentos/pre-venda/${value.ORCAMENTO}`,
+      Link: 'orcamentos/pre-venda',
       Closable: true,
-      TitleTab: `Pré-Venda ${value.ORCAMENTO}`,
+      TitleTab: 'Nova Pré-Venda',
       isActive: true,
     });
-    navigate(`pre-venda/${value.ORCAMENTO}`);
+    navigate('pre-venda');
   };
 
   const handleOrcamento = (value: iOrcamento) => {

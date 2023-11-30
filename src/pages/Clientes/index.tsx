@@ -92,6 +92,8 @@ export const Clientes: React.FC = () => {
             typeSearch: 'eq',
           },
         ];
+      console.log('filter', listFilter);
+
       return listFilter;
     },
     [SearchCliente.filterBy, SearchCliente.value],
@@ -114,6 +116,8 @@ export const Clientes: React.FC = () => {
       filter: MountQueryFilter(SearchCliente),
     },
   ) => {
+    console.log('handleListCliente', filter);
+
     dispatch(GetCliente(filter));
   };
 
@@ -236,7 +240,9 @@ export const Clientes: React.FC = () => {
   ];
 
   const onFetchPagination = (top: number, skip: number) => {
-    handleListCliente({ top, skip });
+    console.log('fetch');
+
+    handleListCliente({ top, skip, orderBy: 'CLIENTE', filter: MountQueryFilter(SearchCliente) });
   };
 
   useEffect(() => {

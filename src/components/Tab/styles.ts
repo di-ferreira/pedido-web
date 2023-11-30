@@ -23,7 +23,6 @@ export const IconClose = styled(FontAwesomeIcon)`
 `;
 
 export const ContainerIconClose = styled.span`
-  z-index: 999;
   position: absolute;
   top: -0.1rem;
   right: 0rem;

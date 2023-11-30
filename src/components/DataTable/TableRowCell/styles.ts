@@ -23,7 +23,8 @@ export const TableCell = styled.td<iTableCell>`
     width: 50%;
     align-items: center;
   }
-  ${'@media only screen  and (orientation:landscape)'} {
+
+  ${`@media only screen and ${devices.sm}   and (orientation:landscape)`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
 `;

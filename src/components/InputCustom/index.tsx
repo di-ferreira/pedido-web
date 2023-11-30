@@ -17,6 +17,7 @@ interface iInputCustom {
   checked?: boolean;
   defaultChecked?: boolean;
   autofocus?: boolean;
+  disabled?: boolean;
   onKeydown?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement, Element>) => void;
@@ -42,6 +43,7 @@ export const InputCustom = forwardRef<Ref, iInputCustom>(function InputContainer
     height,
     widht,
     autofocus,
+    disabled,
   },
   ref,
 ) {
@@ -52,6 +54,7 @@ export const InputCustom = forwardRef<Ref, iInputCustom>(function InputContainer
       widht={widht}
       label={label}
       type={type}
+      disabled={disabled || false}
     >
       {label && (
         <LabelInput labelPosition={labelPosition || 'top'} align={labelAlign}>
@@ -72,6 +75,7 @@ export const InputCustom = forwardRef<Ref, iInputCustom>(function InputContainer
         onBlur={(e) => onBlur && onBlur(e)}
         checked={checked}
         defaultChecked={defaultChecked}
+        disabled={disabled || false}
       />
     </Container>
   );
