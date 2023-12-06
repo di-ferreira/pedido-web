@@ -123,6 +123,7 @@ export const ModalBody = styled.article<iStyle>`
   width: ${(props) => (props.width ? props.width : '100%')};
   height: ${(props) => (props.height ? `calc(${props.height} - 3.5rem)` : 'calc(100vh - 3.5rem)')};
   padding: 1rem;
+  overflow: hidden auto;
 
   ${`@media screen and (${devices.xl})`} {
     height: calc(90vh - 3.5rem);

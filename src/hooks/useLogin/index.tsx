@@ -1,5 +1,5 @@
 import jwtDecode from 'jwt-decode';
-import { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { iCurrentUser, iTokenPayload, iVendaLogin } from '../../@types/Login';
 import { iVendedor } from '../../@types/Vendedor';
 import api from '../../services';

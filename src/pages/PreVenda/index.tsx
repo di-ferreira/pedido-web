@@ -327,7 +327,7 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
       TitleTab: 'Nova Pré-Venda',
       isActive: false,
     });
-    navigate(-1);
+    navigate('/home');
   };
 
   return (
@@ -409,10 +409,12 @@ export const PreVenda: React.FC<iModalPreVenda> = ({ callback }) => {
                       name='ID_TRANSPORTADORA'
                       value={IdTransp}
                       height='3.5rem'
+                      disabled={SwitchEntrega === 'N'}
                     />
                   </FlexComponent>
                   <FlexComponent width='93%' sm={{ flexGrow: 1, width: '90%' }}>
                     <Select
+                      disabled={SwitchEntrega === 'N'}
                       options={OptTransportadoras}
                       menuPosition='bottom'
                       value={OptTransportadorasSelected}

@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 import { Container } from './styles';
 
 interface iFlexStyle {
+  style?: React.CSSProperties | undefined;
   container?: boolean;
   isHide?: boolean;
   direction?: 'row' | 'column';
@@ -33,6 +34,11 @@ interface iFlexStyle {
   alignSelf?: 'auto' | 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
   width?: string;
   height?: string;
+  minWidth?: string;
+  minHeight?: string;
+  maxWidth?: string;
+  maxHeight?: string;
+  background?: string;
   overflow?:
     | 'hidden'
     | 'hidden scroll'
@@ -52,6 +58,12 @@ interface iFlexComponent extends iFlexStyle {
   lg?: iFlexStyle;
   xl?: iFlexStyle;
   children?: ReactNode;
+  ref?:
+    | ((instance: HTMLDivElement | null) => void)
+    | React.RefObject<HTMLDivElement>
+    | null
+    | undefined;
+  id?: string | undefined;
 }
 
 export const FlexComponent: React.FC<iFlexComponent> = ({
@@ -67,10 +79,15 @@ export const FlexComponent: React.FC<iFlexComponent> = ({
   flexShrink,
   gapColumn,
   gapRow,
+  background,
   height,
   justifyContent,
   order,
   width,
+  maxHeight,
+  maxWidth,
+  minHeight,
+  minWidth,
   wrap,
   overflow,
   margin,
@@ -80,9 +97,15 @@ export const FlexComponent: React.FC<iFlexComponent> = ({
   sm,
   xl,
   xs,
+  ref,
+  id,
+  style,
 }) => {
   return (
     <Container
+      style={style}
+      id={id}
+      ref={ref}
       isHide={isHide || false}
       container={container || true}
       direction={direction}
@@ -102,11 +125,16 @@ export const FlexComponent: React.FC<iFlexComponent> = ({
       overflow={overflow}
       margin={margin}
       padding={padding}
+      background={background}
       lg={lg}
       md={md}
       sm={sm}
       xl={xl}
       xs={xs}
+      minWidth={minWidth}
+      minHeight={minHeight}
+      maxWidth={maxWidth}
+      maxHeight={maxHeight}
     >
       {children}
     </Container>

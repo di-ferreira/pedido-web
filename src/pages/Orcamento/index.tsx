@@ -36,6 +36,7 @@ import useTabList from '../../hooks/useTabList';
 import { useTheme } from '../../hooks/useTheme';
 import { MaskCnpjCpf } from '../../utils';
 import { ModalItemOrcamento, callbackResult } from '../Modals/ItemOrcamento';
+import ViewPdf from '../Modals/ViewPdf';
 import { Container, FormEditOrcamento, FormFooter } from './styles';
 
 interface iModalOrcamento {
@@ -51,6 +52,7 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
 
   const { Current, errorMessage, isLoading } = useAppSelector((state) => state.orcamento);
   const [ItemModalIsOpen, setItemModalIsOpen] = useState<boolean>(false);
+  const [OpenPDF, setOpenPDF] = useState<boolean>(false);
 
   const OpenModalItemOrcamento = () => {
     dispatch(
@@ -464,7 +466,7 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
                 padding: '1rem 0 0 0',
               }}
             >
-              <FlexComponent width='25%' sm={{ width: '100%' }} lg={{ width: '100%' }}>
+              <FlexComponent width='fit-content' sm={{ width: '100%' }} lg={{ width: '100%' }}>
                 <Button
                   onclick={() => SalvarOrcamento()}
                   Text='ORÇAMENTO'
@@ -473,12 +475,21 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
                   Height='3.5rem'
                 />
               </FlexComponent>
-              <FlexComponent width='25%' sm={{ width: '100%' }} lg={{ width: '100%' }}>
+              <FlexComponent width='fit-content' sm={{ width: '100%' }} lg={{ width: '100%' }}>
                 <Button
                   onclick={() => GerarPreVenda(Current)}
                   Text='PRÉ-VENDA'
                   Type='success'
                   Icon={faSave}
+                  Height='3.5rem'
+                />
+              </FlexComponent>
+              <FlexComponent width='fit-content' sm={{ width: '100%' }} lg={{ width: '100%' }}>
+                <Button
+                  onclick={() => setOpenPDF(true)}
+                  Text='GERAR PDF'
+                  Type='primary'
+                  Icon={faFileLines}
                   Height='3.5rem'
                 />
               </FlexComponent>
@@ -507,6 +518,7 @@ export const Orcamento: React.FC<iModalOrcamento> = ({ callback }) => {
       </FormEditOrcamento>
 
       {ItemModalIsOpen && <ModalItemOrcamento callback={SaveOrUpdate} />}
+      {OpenPDF && <ViewPdf content={Current} callback={() => setOpenPDF(false)} />}
     </Container>
   );
 };

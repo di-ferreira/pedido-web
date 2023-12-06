@@ -5,6 +5,10 @@ interface iStyle {
   isHide?: boolean;
   width?: string;
   height?: string;
+  minWidth?: string;
+  minHeight?: string;
+  maxWidth?: string;
+  maxHeight?: string;
   container?: boolean;
   direction?: string;
   wrap?: string;
@@ -21,6 +25,7 @@ interface iStyle {
   overflow?: string;
   margin?: string;
   padding?: string;
+  background?: string;
 }
 
 interface iFlexComponentStyle extends iStyle {
@@ -35,17 +40,27 @@ export const Container = styled.div<iFlexComponentStyle>`
   ${({
     width,
     height,
+    minHeight,
+    minWidth,
+    maxHeight,
+    maxWidth,
     order,
     flexGrow,
     flexShrink,
     flexBasis,
     alignSelf,
     overflow,
+    background,
     margin,
     padding,
   }) => `
     ${width ? `width:${width};` : 'width:100%;'}
     ${height ? `height:${height};` : 'height:auto;'}
+    ${minWidth ? `min-width:${minWidth};` : ''}
+    ${minHeight ? `min-height:${minHeight};` : ''}
+    ${maxWidth ? `max-width:${maxWidth};` : ''}
+    ${maxHeight ? `max-height:${maxHeight};` : ''}
+    ${background ? `background:${background};` : 'background:none;'}
     ${order ? `order:${order};` : ''}
     ${flexGrow ? `flex-grow:${flexGrow};` : ''}
     ${flexShrink ? `flex-shrink:${flexShrink};` : ''}

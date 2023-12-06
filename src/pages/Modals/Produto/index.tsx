@@ -54,7 +54,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({ produtoPalavras, produto
 
   const OnChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const { value, name } = e.target;
+    const { value } = e.target;
     setProdutoPalavras(value.toUpperCase());
   };
 
