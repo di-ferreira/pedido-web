@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 
-import { faPlus, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSearch, faStoreAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { iFilter } from '../../../@types/Filter';
 import { iProduto } from '../../../@types/Produto';
 import { iColumnType } from '../../../@types/Table';
@@ -8,9 +9,10 @@ import Button from '../../../components/Button';
 import { DataTable } from '../../../components/DataTable';
 import { FlexComponent } from '../../../components/FlexComponent';
 import { InputCustom } from '../../../components/InputCustom';
-import { SuperFindProducts } from '../../../features/produto/Produto.thunk';
+import { SetProduct, SuperFindProducts } from '../../../features/produto/Produto.thunk';
 import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
+import ModalEstoqueLojas from '../EstoqueLojas';
 
 interface iModalProduto {
   produtos: iProduto[];
@@ -24,6 +26,7 @@ export const ModalProduto: React.FC<iModalProduto> = ({ produtoPalavras, produto
 
   const { Modal, showModal, OnCloseModal } = useModal();
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
+  const [ShowModalEstoqueLojas, setShowModalEstoqueLojas] = useState<boolean>(false);
 
   useEffect(() => {
     setProdutoPalavras(produtoPalavras);
@@ -88,6 +91,16 @@ export const ModalProduto: React.FC<iModalProduto> = ({ produtoPalavras, produto
           Icon: faPlus,
           Title: 'Adicionar',
           Type: 'success',
+          Rounded: true,
+        },
+        {
+          onclick: (item) => {
+            setShowModalEstoqueLojas(true);
+            dispatch(SetProduct(item.PRODUTO));
+          },
+          Icon: faStoreAlt,
+          Title: 'Consulta Estoque Lojas',
+          Type: 'primary',
           Rounded: true,
         },
       ],
@@ -195,6 +208,9 @@ export const ModalProduto: React.FC<iModalProduto> = ({ produtoPalavras, produto
             </FlexComponent>
           </FlexComponent>
         </Modal>
+      )}
+      {ShowModalEstoqueLojas && (
+        <ModalEstoqueLojas callback={() => setShowModalEstoqueLojas(false)} />
       )}
     </>
   );

@@ -14,6 +14,7 @@ import { Orcamento } from '../pages/Orcamento';
 import { Orcamentos } from '../pages/Orcamentos';
 import { PreVenda } from '../pages/PreVenda';
 import { PreVendas } from '../pages/PreVendas';
+import { Produtos } from '../pages/Produtos';
 import { Vendas } from '../pages/Vendas';
 import PrivateRoute from './PrivateRoutes';
 
@@ -44,6 +45,7 @@ const RoutesPage: React.FC = () => {
             <Route path='clientes/cliente/:clienteID' element={<Cliente />} />
             <Route path='clientes/orcamento/:orcamentoID' element={<Orcamento />} />
             <Route path='orcamentos' element={<Orcamentos />} />
+            <Route path='produtos' element={<Produtos />} />
             <Route path='orcamentos/orcamento/:orcamentoID' element={<Orcamento />} />
             <Route path='orcamentos/pre-venda' element={<PreVenda />} />
             <Route path='pre-vendas' element={<PreVendas />} />

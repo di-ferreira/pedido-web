@@ -2,9 +2,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable array-callback-return */
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { iApiResult } from '../../@types';
+import { iApiData, iApiResult } from '../../@types';
 import { iFilter } from '../../@types/Filter';
-import { iProduto, iProdutoWithTables, iTabelaVenda } from '../../@types/Produto';
+import { iEstoqueLoja, iProduto, iProdutoWithTables, iTabelaVenda } from '../../@types/Produto';
 import { iDataResultTable } from '../../@types/Table';
 import api from '../../services';
 
@@ -24,6 +24,7 @@ const SQL_2D =
   "SELECT 'TAB01' AS TABELA, fab_liquido1 AS NOVO_PRECO  FROM EST E  WHERE E.PRODUTO=:PRODUTO AND E.fab_liquido1>0 UNION  SELECT 'TAB02' AS TABELA, fab_liquido2 AS NOVO_PRECO FROM EST E  WHERE E.PRODUTO=:PRODUTO AND E.fab_st>0";
 const ROUTE_SUPER_BUSCA = 'ServiceProdutos/SuperBusca';
 const ROUTE_SELECT_SQL = 'ServiceSistema/SelectSQL';
+const ROUTE_ESTOQUE_LOJAS = '/EstoqueFiliais';
 
 const ROUTE_GET_ALL_PRODUTO = '/Produto';
 
@@ -141,6 +142,12 @@ export const SetProduct = createAsyncThunk(
         })
       ).data;
 
+      const estoqueResult: iApiData<iEstoqueLoja> = (
+        await api.get<iApiData<iEstoqueLoja>>(
+          `${ROUTE_ESTOQUE_LOJAS}?$filter=PRODUTO eq '${product.PRODUTO}'`,
+        )
+      ).data;
+
       const { Data, StatusCode, StatusMessage } = tablesResult;
 
       if (StatusCode !== 200) {
@@ -164,7 +171,9 @@ export const SetProduct = createAsyncThunk(
       const result: iProdutoWithTables = {
         produto: product,
         tables: tabelas,
+        estoque_lojas: estoqueResult.value,
       };
+      console.log('SetProduto', result);
 
       return result;
     } catch (error: unknown) {
@@ -173,3 +182,14 @@ export const SetProduct = createAsyncThunk(
     }
   },
 );
+
+// export const StokStore = createAsyncThunk(
+//   'Produto/StokStore',
+//   async (CodeProduct: string, thunkAPI) => {
+//     try {
+//     } catch (error: unknown) {
+//       if (typeof error === 'string') return thunkAPI.rejectWithValue(`error: ${error}`);
+//       if (error instanceof Error) return thunkAPI.rejectWithValue(`error: ${error.message}`);
+//     }
+//   },
+// );

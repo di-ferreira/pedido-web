@@ -273,6 +273,7 @@ const initialState: iProdutoState = {
       ListaChaves: [],
     },
     tables: [],
+    estoque_lojas: [],
   },
   ListProduto: {
     Qtd_Registros: 0,

@@ -10,6 +10,22 @@ export interface iUnidadeTrib {
   Descricao: string;
 }
 
+export interface iEstoqueLoja {
+  PRODUTO: string;
+  LOJA: string;
+  ATUALIZACAO: string;
+  CURVA_EST: string;
+  CURVA_FAB: string;
+  ESTOQUE: number;
+  MINIMO: number;
+  MAXIMO: number;
+  PRECO: number;
+  LOCAL1: string;
+  LOCAL2: string;
+  LOCAL3: string;
+  PEDIDO: string;
+}
+
 export interface iNcm {
   NCM: string;
   DESCRICAO: string;
@@ -347,4 +363,5 @@ export interface iProduto {
 export interface iProdutoWithTables {
   produto: iProduto;
   tables: iTabelaVenda[];
+  estoque_lojas: iEstoqueLoja[];
 }

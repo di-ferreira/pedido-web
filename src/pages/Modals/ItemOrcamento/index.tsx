@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 
-import { faSave, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faSearch, faSpinner, faStore } from '@fortawesome/free-solid-svg-icons';
 import { FormEditOrcamento, FormFooter } from './styles';
 
 import dayjs from 'dayjs';
@@ -25,6 +25,7 @@ import { useAppDispatch, useAppSelector } from '../../../hooks/useAppSelector';
 import useModal from '../../../hooks/useModal';
 import { useTheme } from '../../../hooks/useTheme';
 import { ObjectIsEmpty } from '../../../utils';
+import ModalEstoqueLojas from '../EstoqueLojas';
 import { ModalProduto } from '../Produto';
 
 export interface callbackResult {
@@ -48,6 +49,8 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
   const { ThemeName } = useTheme();
 
   const [ProdutoPalavras, setProdutoPalavras] = useState<string>('');
+
+  const [ShowModalEstoqueLojas, setShowModalEstoqueLojas] = useState<boolean>(false);
 
   const [SaveOrUpdateItem, setSaveOrUpdateItem] = useState<boolean>(false);
 
@@ -77,10 +80,10 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
   const fetchProdutoList = (filter?: iFilter<iProduto>) => {
     dispatch(ResetProduct());
     dispatch(SuperFindProducts(filter));
-
-    if (ListProduto.Qtd_Registros === 1) {
-      ProdutoToItem(ListProduto.value[0]);
-    }
+    if (!isLoading)
+      if (ListProduto.Qtd_Registros === 1) {
+        ProdutoToItem(ListProduto.value[0]);
+      }
 
     if (errorMessage !== '')
       toast.error(`Opps, ${errorMessage} 🤯`, {
@@ -282,7 +285,8 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
                         Type='primary'
                         TypeButton='button'
                         onclick={OnSearchProdutoClick}
-                        Icon={faSearch}
+                        Icon={isLoading ? faSpinner : faSearch}
+                        AnimationSpin={isLoading}
                         Height='3.5rem'
                         Width='3.5rem'
                         Title='Buscar Produto'
@@ -419,23 +423,41 @@ export const ModalItemOrcamento: React.FC<iModalItemOrcamento> = ({ callback }) 
               </FlexComponent>
             </FlexComponent>
             <FormFooter>
-              <Button
-                Text='SALVAR'
-                Type='success'
-                TypeButton='submit'
-                Icon={faSave}
-                Height='3.5rem'
-              />
+              <FlexComponent width='fit-content' sm={{ width: '100%' }}>
+                <Button
+                  Text='SALVAR'
+                  Type='success'
+                  TypeButton='submit'
+                  Icon={faSave}
+                  Height='3.5rem'
+                />
+              </FlexComponent>
+              <FlexComponent
+                width='fit-content'
+                margin='0 1.5rem'
+                sm={{ width: '100%', margin: '0' }}
+              >
+                <Button
+                  Text='ESTOQUE LOJAS'
+                  Type='primary'
+                  Icon={faStore}
+                  Height='3.5rem'
+                  onclick={() => setShowModalEstoqueLojas(true)}
+                />
+              </FlexComponent>
             </FormFooter>
           </FormEditOrcamento>
         </Modal>
       )}
-      {ListProduto.Qtd_Registros > 0 && (
+      {ListProduto.Qtd_Registros > 1 && (
         <ModalProduto
           produtoPalavras={ProdutoPalavras}
           callback={ProdutoToItem}
           produtos={ListProduto.value}
         />
+      )}
+      {ShowModalEstoqueLojas && (
+        <ModalEstoqueLojas callback={() => setShowModalEstoqueLojas(false)} />
       )}
     </>
   );

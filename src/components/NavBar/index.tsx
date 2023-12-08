@@ -5,6 +5,7 @@ import {
   faFileLines,
   faHouseChimney,
   faPowerOff,
+  faStore,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -74,6 +75,12 @@ export const NavBar: React.FC<iNavBar> = memo(({ Open }: iNavBar) => {
       Text: 'orçamentos',
       Link: 'orcamentos',
       Icon: faFileLines,
+      onClick: CloseNavBarMobile,
+    },
+    {
+      Text: 'produtos',
+      Link: 'produtos',
+      Icon: faStore,
       onClick: CloseNavBarMobile,
     },
     {
