@@ -1,10 +1,12 @@
 import axios from 'axios';
 
-const URL = 'http://51.81.246.218:2002/emsoft/emauto/';
+import { API_URL } from '../config';
+
+const URL = API_URL + '/emsoft/emauto/';
 
 const api = axios.create({
-  baseURL: URL,
-  withCredentials: false,
+    baseURL: URL,
+    withCredentials: false,
 });
 
 export default api;

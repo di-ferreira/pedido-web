@@ -33,7 +33,7 @@ export const TableCellContainer = styled.div<iTableRow>`
   ${`@media only screen and ${devices.md} and (orientation:landscape)`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
-  ${`@media screen and ${devices.xs}`} {
+  ${`@media screen and ${devices.sm}`} {
     display: ${(props) => (props.isHideMobile ? 'none' : 'flex')};
     padding: 0rem 2.5rem;
     border-bottom: solid 0.1rem ${(props) => props.theme.colors.onSurface};

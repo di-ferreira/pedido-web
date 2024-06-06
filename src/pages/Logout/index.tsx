@@ -1,31 +1,31 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Container } from './styles';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Container } from './styles';
 
 export const Logout: React.FC = () => {
-  const [time, setTime] = useState(3);
-  const timeout = useRef(0);
-  const navigate = useNavigate();
+    const [time, setTime] = useState(3);
+    const [timeOut] = useState<number>(0);
+    const navigate = useNavigate();
 
-  useEffect(() => {
-    clearTimeout(timeout.current);
+    useEffect(() => {
+        clearTimeout(timeOut);
 
-    timeout.current = setTimeout(() => {
-      setTime((t) => t - 1);
-    }, 2000);
+        setTimeout(() => {
+            setTime((t) => t - 1);
+        }, 2000);
 
-    if (time <= 0) {
-      navigate('/login');
-    }
+        if (time <= 0) {
+            navigate('/login');
+        }
 
-    return () => {
-      clearTimeout(timeout.current);
-    };
-  }, [time]);
+        return () => {
+            clearTimeout(timeOut);
+        };
+    }, [navigate, time, timeOut]);
 
-  return (
-    <Container>
-      <h1>Saindo...</h1>
-    </Container>
-  );
+    return (
+        <Container>
+            <h1>Saindo...</h1>
+        </Container>
+    );
 };

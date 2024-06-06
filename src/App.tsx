@@ -9,14 +9,14 @@ import RoutesPage from './router';
 import { store } from './store';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <AppThemeProvider>
-      <Provider store={store}>
-        <HashRouter>
-          <GlobalStyle />
-          <RoutesPage />
-        </HashRouter>
-      </Provider>
-    </AppThemeProvider>
-  </React.StrictMode>,
+    <React.StrictMode>
+        <AppThemeProvider>
+            <Provider store={store}>
+                <HashRouter>
+                    <GlobalStyle />
+                    <RoutesPage />
+                </HashRouter>
+            </Provider>
+        </AppThemeProvider>
+    </React.StrictMode>,
 );

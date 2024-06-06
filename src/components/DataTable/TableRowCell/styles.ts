@@ -24,7 +24,13 @@ export const TableCell = styled.td<iTableCell>`
     align-items: center;
   }
 
-  ${`@media only screen and ${devices.sm}   and (orientation:landscape)`} {
+  ${`@media screen and ${devices.sm}`} {
+    display: ${(props) => props.isHideMobile && 'none'};
+    width: 50%;
+    align-items: center;
+  }
+
+  ${`@media only screen and ${devices.sm} and (orientation:landscape)`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
 `;

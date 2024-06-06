@@ -26,6 +26,11 @@ export const TableHeaderCell = styled.th<iTableCell>`
   ${`@media only screen and ${devices.xs}`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
+  ${`@media only screen and ${devices.sm}`} {
+    display: ${(props) => props.isHideMobile && 'none'};
+    width: 50% !important;
+    align-items: center;
+  }
   ${`@media only screen and ${devices.sm}   and (orientation:landscape)`} {
     display: ${(props) => props.isHideMobile && 'none'};
   }
